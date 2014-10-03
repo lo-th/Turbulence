@@ -1,79 +1,215 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DOCS</title>
+<style>
+*{ padding:0; margin: 0; -o-user-select:none; -ms-user-select:none; -khtml-user-select:none; -webkit-user-select:none; -moz-user-select: none; box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;}
+@font-face {
+    font-family: 'ConsolasRegular';
+    src: url('../font/consolas/consolas-webfont.eot');
+    src: url('../font/consolas/consolas-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/consolas/consolas-webfont.woff') format('woff'),
+         url('../font/consolas/consolas-webfont.ttf') format('truetype'),
+         url('../font/consolas/consolas-webfont.svg#ConsolasRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+html, body {background-color: #212324;  font: normal 12px Consolas;}
+#menu{position: absolute; top:0; left:0; width:100%; height:30px; background-color: #212324;  color:#343434;}
+#menutop{position:absolute; top:0px; left:150px; width:300px; height:30px; }
+#title{position: absolute; top:6px; left:10px; width:200px; height:14px; color:#a6a6a6; font-weight:bold; font-size:14px;  pointer-events:none;}
+.b{ position:absolute; top:6px; width:20px; height:20px; background-color: #212324; color:#343434; font-weight:bold; font-size:14px; cursor: pointer; border:1px solid #343434; text-align:center;}
+a { color:#128812; text-decoration:none; font-size:14px; border:1px solid #128812;}
+a[data-disabled] { color: #343434; text-decoration:none; pointer-events:none; border:1px solid #343434;}
+</style>
+</head>
+<body>
+<div id='menu'></div>
+<div id='title'>OIMO lesson &gt;</div>
+<div id='b0' style="right:6px" class="b">V</div>
+<div id='b1' style="right:36px; display:none; background-color:#128812;" class="b">S</div>
+<div id="preview"></div>
+<div id='menutop'></div>
+<script>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Turbulence : Universal mechanical linkage for representing the voluntary movements of nature animals">
+var numLesson = 4;
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+var doc = document;
+var b0 = doc.getElementById('b0');
+var b1 = doc.getElementById('b1');
+var menutop = doc.getElementById( 'menutop' );
+var views = [];
+var items = [];
+var rootValue = null;
+var viewType = 'vertical';
+var defStyle = 'position:absolute; display:block; border:none; border-left:1px solid #27292a; border-top:1px solid #000000;';
+var topy = 30;
+var currentLesson = -1;
+var a = null;
 
-    <title>Turbulence</title>
-  </head>
+window.onload = init;
 
-  <body>
+function init(){
+	var edit = doc.createElement( 'iframe' );
+	edit.src = 'frame/edit.html';
+	edit.style.cssText = defStyle;
+	doc.body.appendChild(edit);
+	views[0] = edit;
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/lo-th/Turbulence">View on GitHub</a>
+	var preview = doc.getElementById( 'preview' );
+	preview.style.cssText = defStyle;
+	preview.style.background = '#212324';
+	views[1] = preview;
 
-          <h1 id="project_title">Turbulence</h1>
-          <h2 id="project_tagline">Universal mechanical linkage for representing the voluntary movements of nature animals</h2>
+	b0.onclick = function (e){
+		if(viewType=='vertical'){
+			viewType = 'horizon'; 
+			b0.innerHTML = 'H';
+		}else {
+			viewType = 'vertical'; 
+			b0.innerHTML = 'V';
+		}
+		resize();
+	};
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/lo-th/Turbulence/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/lo-th/Turbulence/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+	b1.onclick = function (e){
+		views[0].contentWindow.save();
+	};
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+	var item, txt;
+	for(var i=0; i< numLesson; i++){
+	    item = doc.createElement( 'div' );
+	    item.style.cssText = 'width:22px; height:22px; position:relative; background:#121212; margin-top:5px; margin-right:6px; display:inline-block;border-radius: 25px; border: 1px solid #343434; ';
+	    item.name=i;
+	    txt = doc.createElement( 'div' );
+	    txt.style.cssText = 'width:20px; height:20px; position:absolute; top:2px; text-align:center; margin-right:2px;color:#ffffff; pointer-events:none;';
+	    txt.innerHTML = i;
+	    item.appendChild( txt );
+	    menutop.appendChild( item );
+	    item.onclick = function (e){currentLesson = this.name; loadFile('demos/demo_'+this.name+'.js');}
+	    item.onmouseover = function (e){this.style.background = '#128812';}
+	    item.onmouseout = function (e){checkCurrent();}
+	    items[i] = item;
+	}
+	var _this = this;
+	views[0].onload = function (e){views[0].contentWindow.setRoot(_this);};
+    window.onresize = resize;
+    resize();
+}
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+function resize(){
+	var w = window.innerWidth;
+	var h = window.innerHeight;
+	var v0 = 0;
+	var v1 = Math.floor((w-v0)*0.5);
+	var v2 = Math.floor((h-v0-topy)*0.5);
+	switch(viewType){
+		case 'vertical':
+		    setStyle (0, v0, topy, v1, h-topy);
+		    setStyle (1, v0+v1, topy, v1, h-topy);
+		break;
+		case 'horizon':
+		    setStyle (0, 0, topy+v0, w, v2);
+		    setStyle (1, 0, topy+v0+v2, w, v2);
+		break;
+	}
+}
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+function setStyle(n, l, t, w, h){
+	views[n].style.left=l+'px';
+	views[n].style.top=t+'px';
+	views[n].style.width=w+'px';
+	views[n].style.height=h+'px';
+}
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+function loadFile(name){
+    views[0].contentWindow.loadfile(name);
+    showSave();
+}
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+function openFile(o){
+    views[0].contentWindow.openFile(o);
+}
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+function update(value, isPureSrcipt) {
+	if(value) rootValue = value;
+	if ( preview.children.length > 0 )preview.removeChild( preview.firstChild );
+	var iframe = doc.createElement( 'iframe' );
+	iframe.style.width = '100%';
+	iframe.style.height = 'calc(100% - 5px)';
+	iframe.style.border = '0';
+	preview.appendChild( iframe );
+	
+	if(isPureSrcipt){
+		iframe.src = 'frame/basic.html';
+		iframe.onload = function (e){
+			var content = iframe.contentDocument || iframe.contentWindow.document;
+			var head = content.getElementsByTagName('head')[0];
+			var nscript = content.createElement("script");
+			nscript.type = "text/javascript";
+			nscript.id = "topScript";
+			nscript.charset = "utf-8";
+			nscript.text = rootValue;
+			head.appendChild(nscript);
+		}
+	} else {
+		var content = iframe.contentDocument || iframe.contentWindow.document;
+		content.open();
+		content.write( rootValue );
+		content.close();
+	}
+}
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+function checkCurrent(){
+	for(var i=0; i< numLesson; i++){
+		if(items[i].name==currentLesson)items[i].style.background = '#881288';
+		else items[i].style.background = '#121212';
+	}
+}
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+function createLink(blob, name, type){
+	window.URL = window.webkitURL || window.URL;
+	if (a) {
+	    window.URL.revokeObjectURL(a.href);
+	    doc.body.removeChild(a);
+	}
+	a = document.createElement('a');
+	a.style.cssText = "position:absolute; top:6px; right:65px; width:120px; height:20px; text-align:center;"
+	a.download = name; //container.querySelector('input[type="text"]').value;
+	a.href = window.URL.createObjectURL(blob);
+	a.textContent = 'Download ready';
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+	a.dataset.downloadurl = [type, a.download, a.href].join(':');
+	//a.dataset.downloadurl = [type, name, a.href].join(':');
+	a.draggable = true; // Don't really need, but good practice.
+	a.classList.add('dragout');
+	//a.filename = name;
+	doc.body.appendChild(a);
+	a.onclick = function(e) {
+	    if ('disabled' in this.dataset) return false;
+	    cleanUp();
+	};
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+}
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+// drag link outside :)
+document.body.addEventListener('dragstart', function(e) {
+  var a = e.target;
+  if (a.classList.contains('dragout')) {
+    e.dataTransfer.setData('DownloadURL', a.dataset.downloadurl);
+  }
+}, false);
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Turbulence maintained by <a href="https://github.com/lo-th">lo-th</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+function cleanUp() {
+	a.textContent = 'Downloaded';
+	a.dataset.disabled = true;
+	// Need a small delay for the revokeObjectURL to work properly.
+	setTimeout(function() { window.URL.revokeObjectURL(a.href); }, 1500);
+};
+function showSave(){
+	b1.style.display = 'block';
+}
+</script>
+</body>
 </html>
