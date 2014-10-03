@@ -20,22 +20,24 @@
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-  background-color: #202020; /* The little square between H and V scrollbars */
+  background-color: #D6D6D6; /* The little square between H and V scrollbars */
+  background-image:url(../images/corner.jpg);
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
-  background-color: #f7f7f7;
   white-space: nowrap;
+  background: none;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
   min-width: 20px;
   text-align: right;
-  color: #999;
+  background: none;
+  color: #AAA;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
@@ -300,12 +302,12 @@ div.CodeMirror-cursors {
   }
 }
 
-.cm-s-monokai.CodeMirror {background: #272822; color: #f8f8f2;}
+/*.cm-s-monokai.CodeMirror {background: #272822; color: #f8f8f2;}*/
 .cm-s-monokai div.CodeMirror-selected {background: #49483E !important;}
-.cm-s-monokai .CodeMirror-gutters {background: #272822; border-right: 0px;}
+.cm-s-monokai .CodeMirror-gutters {background:none; border-right: 0px;}
 .cm-s-monokai .CodeMirror-guttermarker { color: white; }
 .cm-s-monokai .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
-.cm-s-monokai .CodeMirror-linenumber {color: #d0d0d0;}
+.cm-s-monokai .CodeMirror-linenumber { color: #343434; background: none; }
 .cm-s-monokai .CodeMirror-cursor {border-left: 1px solid #f8f8f0 !important;}
 
 .cm-s-monokai span.cm-comment {color: #75715e;}
@@ -336,16 +338,37 @@ div.CodeMirror-cursors {
 .cm-s-monokai span.cm-header {color: blue;}
 .cm-s-monokai span.cm-quote {color: #0F0;}
 
+
+.cm-s-monokai ::-webkit-scrollbar-track:vertical{
+    background-color: #212324;
+    box-shadow: -12px 0px 12px -12px rgba(0, 0, 0, 0.3) inset;
+}
+.cm-s-monokai ::-webkit-scrollbar-track:horizontal{
+    background-color: #212324;
+    box-shadow: 0px -12px 12px -12px rgba(0, 0, 0, 0.3) inset;
+}
+
+.cm-s-monokai .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  background-color: #212324; /* The little square between H and V scrollbars */
+  background-image:url(../images/cornern.jpg);
+}
+
+
 ::-webkit-scrollbar {
     width:20px;
     height:20px;
 }
-::-webkit-scrollbar-track, ::-webkit-scrollbar-corner{
-    background-color: #212324;
-    box-shadow: 2px 2px 6px 4px rgba(0, 0, 0, 0.2) inset;
+::-webkit-scrollbar-track:vertical{
+    background-color: #D6D6D6;
+    box-shadow: -12px 0px 12px -12px rgba(0, 0, 0, 0.3) inset;
+}
+
+::-webkit-scrollbar-track:horizontal{
+    background-color: #D6D6D6;
+    box-shadow: 0px -12px 12px -12px rgba(0, 0, 0, 0.3) inset;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #343434;
+    background-color: #AAAAAA;
     border:5px solid rgba(0,0,0,0);
     border-radius: 25px;
     -webkit-background-clip: padding-box;
@@ -353,5 +376,5 @@ div.CodeMirror-cursors {
     box-shadow: 1px 1px 0px 1px rgba(255, 255, 255, 0.1) inset;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #606162;
+    background-color: #999999;
 }

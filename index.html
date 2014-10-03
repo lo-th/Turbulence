@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>DOCS</title>
+<title>Turbulence</title>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=11" />
+<link rel="shortcut icon" href="favicon.ico">
 <style>
 *{ padding:0; margin: 0; -o-user-select:none; -ms-user-select:none; -khtml-user-select:none; -webkit-user-select:none; -moz-user-select: none; box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;}
 @font-face {
@@ -15,20 +18,20 @@
     font-weight: normal;
     font-style: normal;
 }
-html, body {background-color: #212324;  font: normal 12px Consolas;}
-#menu{position: absolute; top:0; left:0; width:100%; height:30px; background-color: #212324;  color:#343434;}
+html, body {background-color: #D6D6D6;  font: normal 12px Consolas;}
+body.night {background-color: #212324;  font: normal 12px Consolas;}
+/*#menu{position: absolute; top:0; left:0; width:100%; height:30px; background-color: #212324;  color:#343434;}
 #menutop{position:absolute; top:0px; left:150px; width:300px; height:30px; }
 #title{position: absolute; top:6px; left:10px; width:200px; height:14px; color:#a6a6a6; font-weight:bold; font-size:14px;  pointer-events:none;}
 .b{ position:absolute; top:6px; width:20px; height:20px; background-color: #212324; color:#343434; font-weight:bold; font-size:14px; cursor: pointer; border:1px solid #343434; text-align:center;}
 a { color:#128812; text-decoration:none; font-size:14px; border:1px solid #128812;}
-a[data-disabled] { color: #343434; text-decoration:none; pointer-events:none; border:1px solid #343434;}
+a[data-disabled] { color: #343434; text-decoration:none; pointer-events:none; border:1px solid #343434;}*/
 </style>
 </head>
 <body>
-<div id='menu'></div>
-<div id='title'>OIMO lesson &gt;</div>
-<div id='b0' style="right:6px" class="b">V</div>
-<div id='b1' style="right:36px; display:none; background-color:#128812;" class="b">S</div>
+<!--<div id='menu'></div>
+<div id='title'>Turbulence &gt;</div>
+<div id='b1' style="right:36px; display:none; background-color:#128812;" class="b">S</div>-->
 <div id="preview"></div>
 <div id='menutop'></div>
 <script>
@@ -36,21 +39,25 @@ a[data-disabled] { color: #343434; text-decoration:none; pointer-events:none; bo
 var numLesson = 4;
 
 var doc = document;
-var b0 = doc.getElementById('b0');
 var b1 = doc.getElementById('b1');
 var menutop = doc.getElementById( 'menutop' );
 var views = [];
 var items = [];
 var rootValue = null;
+var showCode = false;
 var viewType = 'vertical';
-var defStyle = 'position:absolute; display:block; border:none; border-left:1px solid #27292a; border-top:1px solid #000000;';
-var topy = 30;
+var styleType = 'day';
+var scriptText = 12;
+var defStyle = 'position:absolute; display:block; border:none;';
+var topy = 0;
 var currentLesson = -1;
 var a = null;
 
 window.onload = init;
 
 function init(){
+	
+
 	var edit = doc.createElement( 'iframe' );
 	edit.src = 'frame/edit.html';
 	edit.style.cssText = defStyle;
@@ -62,18 +69,14 @@ function init(){
 	preview.style.background = '#212324';
 	views[1] = preview;
 
-	b0.onclick = function (e){
-		if(viewType=='vertical'){
-			viewType = 'horizon'; 
-			b0.innerHTML = 'H';
-		}else {
-			viewType = 'vertical'; 
-			b0.innerHTML = 'V';
-		}
-		resize();
-	};
+	var menu = doc.createElement( 'iframe' );
+	menu.src = 'frame/menu.html';
+	menu.style.cssText = defStyle;
+	doc.body.appendChild(menu);
+	views[2] = menu;
 
-	b1.onclick = function (e){
+
+	/*b1.onclick = function (e){
 		views[0].contentWindow.save();
 	};
 
@@ -91,9 +94,10 @@ function init(){
 	    item.onmouseover = function (e){this.style.background = '#128812';}
 	    item.onmouseout = function (e){checkCurrent();}
 	    items[i] = item;
-	}
+	}*/
 	var _this = this;
 	views[0].onload = function (e){views[0].contentWindow.setRoot(_this);};
+	views[2].onload = function (e){views[2].contentWindow.setRoot(_this);};
     window.onresize = resize;
     resize();
 }
@@ -101,26 +105,50 @@ function init(){
 function resize(){
 	var w = window.innerWidth;
 	var h = window.innerHeight;
-	var v0 = 0;
+	var v0 = 220;
 	var v1 = Math.floor((w-v0)*0.5);
-	var v2 = Math.floor((h-v0-topy)*0.5);
-	switch(viewType){
-		case 'vertical':
-		    setStyle (0, v0, topy, v1, h-topy);
-		    setStyle (1, v0+v1, topy, v1, h-topy);
-		break;
-		case 'horizon':
-		    setStyle (0, 0, topy+v0, w, v2);
-		    setStyle (1, 0, topy+v0+v2, w, v2);
-		break;
+	var v2 = Math.floor((h-topy)*0.5);
+	if(showCode){
+		views[0].style.display = 'block';
+		switch(viewType){
+			case 'vertical':
+			    setStyle (0, v0, 0, v1, h);
+			    setStyle (1, v0+v1, 0, v1, h);
+			break;
+			case 'horizon':
+			    setStyle (0, v0, 0, w-v0, v2);
+			    setStyle (1, v0, v2, w-v0, v2);
+			break;
+		}
+	} else {
+		views[0].style.display = 'none';
+		setStyle (1, v0, 0, w-v0, h);
 	}
+	setStyle (2, 0, 0, 220, 0);
+}
+
+function setTextSize(){
+	views[0].contentWindow.changeFontSize(scriptText);
+
 }
 
 function setStyle(n, l, t, w, h){
 	views[n].style.left=l+'px';
 	views[n].style.top=t+'px';
 	views[n].style.width=w+'px';
-	views[n].style.height=h+'px';
+	if(h==0) views[n].style.height='100%';
+	else views[n].style.height=h+'px';
+}
+
+function switchStyle(){
+	if(styleType == 'day') {
+		document.body.className = '';
+		views[0].contentWindow.changeTheme(0);
+	}
+	else{ 
+		document.body.className = 'night';
+		views[0].contentWindow.changeTheme(1);
+	}
 }
 
 function loadFile(name){
@@ -208,7 +236,7 @@ function cleanUp() {
 	setTimeout(function() { window.URL.revokeObjectURL(a.href); }, 1500);
 };
 function showSave(){
-	b1.style.display = 'block';
+	//b1.style.display = 'block';
 }
 </script>
 </body>

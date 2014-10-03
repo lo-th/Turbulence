@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>drag</title>
+<body>
+<link rel="stylesheet" href="../css/consolas.css">
+<style>
+*{ padding:0; margin: 0; -o-user-select:none; -ms-user-select:none; -khtml-user-select:none; -webkit-user-select:none; -moz-user-select: none; pointer-events:none; 
+ box-sizing:border-box; -moz-box-sizing:border-box; -webkit-box-sizing:border-box;
+ }
+html, body {
+	font-family: Consolas, 'ConsolasRegular', 'Courier New', monospace;
+	font-size: 14px;
+    color:#2b2e41;
+    margin:0; padding:0; overflow:hidden; height:100%;
+    background:#D6D6D6;
+}
+body.night {
+	font-family: Consolas, 'ConsolasRegular', 'Courier New', monospace;
+	font-size: 14px;
+    color:#D6D6D6;
+    margin:0; padding:0; overflow:hidden; height:100%;
+    background:#212324;
+}
+#bg{position:absolute; width:220px; height:100%; background-color:#D0D0D0; 
+	box-shadow: -12px 0px 12px -12px rgba(0, 0, 0, 0.3) inset;
+}
+#bg.night{position:absolute; width:220px; height:100%; background-color:#212324; 
+	box-shadow: -12px 0px 12px -12px rgba(0, 0, 0, 0.3) inset;
+}
+#bmenu{ position:absolute; bottom:20px; width:220px; height:20px;}
+#logo{ position:absolute; left:50px; top:15px; width:120px; height:120px; }
+#title{ position:absolute; left:0px; top:150px; width:220px; height:30px; text-align:center; font-size:16px;}
+#dragZone{position:absolute; left:20px; top:200px; width:180px; height:calc(100% - 260px); border:1px dashed rgba(0,0,0,0.1); pointer-events:auto;}
+#dragZone.hover { border: 1px dashed rgba(0,0,0,0.3); }
+.b{ width:20px; height:20px; color:#2b2e41; font-size:14px; cursor:pointer; border:1px solid #2b2e41; text-align:center; pointer-events:auto; display:inline-block;}
+.bn{ width:20px; height:20px; color:#D6D6D6; font-size:14px; cursor:pointer; border:1px solid #D6D6D6; text-align:center; pointer-events:auto; display:inline-block;}
+
+</style>
+<div id="bg"></div>
+<img src="../images/logo.png" id="logo">
+<div id="title">UNIVERSAL<br>MECHANICAL LINKAGE</div>
+<div id="dragZone"></div>
+<div id="bmenu" align="center">
+    <div id='bn' class="b">N</div>
+    <div id='bc' style="width:40px; text-decoration: line-through;" class="b">CODE</div>
+	<div id='b0' class="b">V</div>
+	<div id='b1' class="b">+</div>
+	<div id='b2' class="b">-</div>
+</div>
+<script>
+var root = null;
+function setRoot(r){ root=r;}
+
+
+//---------------------------------------------
+//  BUTTON
+//---------------------------------------------
+var bn = document.getElementById('bn');
+var bc = document.getElementById('bc');
+
+var b0 = document.getElementById('b0');
+var b1 = document.getElementById('b1');
+var b2 = document.getElementById('b2');
+
+// code hide at start
+bc.style.textDecoration = "none";
+b0.style.display = "none";
+b1.style.display = "none";
+b2.style.display = "none";
+
+bc.onclick = function (e){
+	if(root.showCode){
+		root.showCode = false;
+		bc.style.textDecoration = "none";
+		b0.style.display = "none";
+		b1.style.display = "none";
+		b2.style.display = "none";
+	}else{
+		bc.style.textDecoration = "line-through";
+		root.showCode = true;
+		b0.style.display = "inline-block";
+		b1.style.display = "inline-block";
+		b2.style.display = "inline-block";
+	}
+	root.resize();
+}
+
+bn.onclick = function (e){
+	if(root.styleType=='day'){
+		root.styleType = 'night'; bn.innerHTML = 'D';
+		document.body.className = 'night';
+		document.getElementById('logo').src="../images/logon.png";
+		document.getElementById('bg').className = 'night';
+		bn.className = 'bn';
+		bc.className = 'bn';
+		b0.className = 'bn';
+		b1.className = 'bn';
+		b2.className = 'bn';
+
+	}else {
+		root.styleType = 'day'; bn.innerHTML = 'N';
+		document.body.className = '';
+		document.getElementById('logo').src="../images/logo.png";
+		document.getElementById('bg').className = '';
+		bn.className = 'b';
+		bc.className = 'b';
+		b0.className = 'b';
+		b1.className = 'b';
+		b2.className = 'b';
+	}
+	root.switchStyle();
+};
+
+b0.onclick = function (e){
+	if(root.viewType=='vertical'){
+		root.viewType = 'horizon'; b0.innerHTML = 'H';
+	}else {
+		root.viewType = 'vertical'; b0.innerHTML = 'V';
+	}
+	root.resize();
+};
+
+document.getElementById('b1').onclick = function (e){
+	root.scriptText ++;
+	root.setTextSize();
+}
+document.getElementById('b2').onclick = function (e){
+	root.scriptText --;
+	root.setTextSize();
+}
+
+//---------------------------------------------
+//  DRAG ZONE
+//---------------------------------------------
+var icons = [];
+var files = [];
+var zone = document.getElementById('dragZone')
+zone.ondragover = function () { this.className = 'hover'; return false; };
+zone.ondragend = function () { this.className = ''; return false; };
+zone.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    var i; 
+
+    
+  // console.log(i)
+    if(e.dataTransfer.items){
+        i = e.dataTransfer.items.length;
+        while(i--){
+            var entry = e.dataTransfer.items[i].webkitGetAsEntry();
+            if (entry.isFile) {
+                //console.log(e.dataTransfer.items[i])
+                addFile(e.dataTransfer.items[i].getAsFile());
+            } else if (entry.isDirectory) {
+                console.log('dir', e.dataTransfer.items[i].getAsFile(), entry.fullPath);
+            }
+        }
+    } else{
+        i = e.dataTransfer.files.length;
+        while(i--){
+            addFile(e.dataTransfer.files[i]);
+        }
+    }
+  //  var i =  l;
+    //console.log(l)
+  /*  while(i--){
+        var entry = e.dataTransfer.items[i].webkitGetAsEntry();
+        if (entry.isFile) {
+            addFile(e.dataTransfer.files[i]);
+      //... // do whatever you want
+    } else if (entry.isDirectory) {
+     // ... // do whatever you want
+    }
+    }*/
+    //r.readAsText(f);
+    //return false;
+};
+
+function addFile(file){
+    //var file = dropfiles[i];
+    var reader = new FileReader();
+    reader.onload = function (e){
+        var o = {};
+        o.name = file.name;
+        switch(o.name.substr(o.name.lastIndexOf(".")+1, o.name.length)){
+            case 'sea': o.t = 'sea'; o.c='#cccccc'; break;
+            case 'css': o.t = 'css'; o.c='#cc6600'; break;
+        }
+        switch(file.type){
+            case 'application/javascript': o.t='js'; o.c='#cccc00'; break;
+            case 'text/html': o.t='html'; o.c='#00cccc'; break;
+
+            case 'image/svg+xml': o.t='svg'; o.c='#cc3300'; break;
+            case 'image/png': o.t='png'; o.c='#cc0066'; break;
+            case 'image/jpeg': o.t='jpg'; o.c='#cc0033'; break;
+        }
+
+        o.file = file;
+        o.result = e.target.result;
+        pushFile(o.name, o.c);
+    };
+    reader.readAsDataURL(file);
+}
+
+function pushFile(name, c){
+    //console.log(o.t);
+    var id = icons.length;
+    var ic = document.createElement('div');
+    ic.style.cssText = 'display:block; width:180px; height:30px; background-color:rgba(0,0,0,0); cursor:pointer; pointer-events:auto;';
+    var iner = document.createElement('div');
+    iner.style.cssText = 'position:relative; left:5px; top:5px; width:18px; height:18px; pointer-events:none; background-color: '+c+'; border:2px solid rgba(0,0,0,0); ';
+    var title = document.createElement('div');
+    title.style.cssText = 'position:relative; left:30px; top:-12px; width:140px; height:20px; pointer-events:none; text-align:right;';
+    title.innerHTML = name.substr(0, name.lastIndexOf("."));
+    ic.appendChild( iner );
+    ic.appendChild( title );
+    zone.appendChild( ic );
+    //o.drag = false;
+    ic.name = id;
+    ic.onmousedown = selected;
+    //ic.onmousemove = moveicon;
+    ic.onmouseover = iconOver;
+    ic.onmouseout = unselected;
+    ic.onmouseup = unselected;
+    ic.ondblclick = openFile;
+    icons[id]=ic;
+    files[id]=name;
+}
+
+// pop demo at start
+for(var i=0; i< 4; i++){
+	pushFile("demo_"+i+'.js', '#cccc00');
+}
+
+
+function iconOver(e){
+    e.preventDefault();
+    var id = e.target.name;
+    var child = icons[id].childNodes;
+    child[0].style.border ='2px solid #aaa';
+}
+
+function selected(e){
+    e.preventDefault();
+    var id = e.target.name;
+    var child = icons[id].childNodes;
+    child[0].style.border ='2px solid #ccc';
+    
+    var rect = icons[id].getBoundingClientRect();
+   // files[id].px = e.clientX-rect.left;
+   // files[id].py = e.clientY-rect.top;
+    //files[id].drag = true;
+    //console.log(id);
+}
+
+function unselected(e){
+    e.preventDefault();
+    var id = e.target.name;
+    var child = icons[id].childNodes;
+    //files[id].drag = false;
+    child[0].style.border ='2px solid rgba(0,0,0,0)';
+    //icons[id].style.position ='relative';
+    //console.log(id);
+}
+
+/*function moveicon(e){
+    e.preventDefault();
+    var id = e.target.name;
+    if(files[id].drag){
+        icons[id].style.position ='absolute';
+        icons[id].style.left = e.clientX-files[id].px+'px';
+        icons[id].style.top = e.clientY-files[id].py+'px';
+    }
+}*/
+
+function addIconLink(){
+
+}
+
+function openFile(e){
+    e.preventDefault();
+    var id = e.target.name;
+    console.log(files[id]);
+    //root.openFile(files[id]);
+    root.loadFile('demos/'+files[id]);
+}
+
+</script>
+</body>
+</html>

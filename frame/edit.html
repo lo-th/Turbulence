@@ -7,21 +7,23 @@
 	<link rel="stylesheet" href="../css/codemirror.css">
 	<link rel="stylesheet" href="../css/consolas.css">
 	<style>
-	html, body { margin:0; padding:0; border:none; overflow:hidden; width:100%; height:100%; background:#212324; }
-	#editor {position:absolute; left:0; top:0; width:100%; height:100%; display:block; border:none; }
-	#editor .CodeMirror-linenumber {background-color: #212324; color:#343434;}
-	#editor .CodeMirror-gutters {background-color: #212324; color:#343434;}
+	html { margin:0; padding:0; border:none; overflow:hidden; width:100%; height:100%;}
+	body { margin:0; padding:0; border:none; overflow:hidden; width:100%; height:100%; background-color:#D6D6D6; color:#2b2e41;}
+	body.night{ background-color:#212324; color:#D6D6D6;}
+	#editor {position:absolute; left:0; top:0; width:100%; height:100%; display:block; border:none; background: none;}
+	/*#editor .CodeMirror-linenumber { background: none; color:#AAAAAA; }
+	#editor .CodeMirror-gutters {background: none; color:#343434;}*/
 	#editor .CodeMirror {
 		height: 100%;
-		font-family: Consolas, 'ConsolasRegular', 'Courier New', monospace !important;
+		font-family: Consolas, 'ConsolasRegular', 'Courier New', monospace;
 		/*-webkit-font-smoothing: subpixel-antialiased;*/
 
 		font-size: 12px;
 		line-height: 123%;
 		/*letter-spacing:0px;*/
 		padding-right: 20px;
-		background-color: #212324;
-		color:#dadad5;
+		background: none;/*#D6D6D6;
+		color:#2b2e41;*/
 		-webkit-transform: translateZ(0);
 		border:none;
 	}
@@ -71,7 +73,7 @@ function init() {
         matchBrackets: true,
         indentWithTabs: true,
         styleActiveLine: true,
-        theme:'monokai',
+        theme:'default',
         mode:'text/javascript',
 		tabSize: 4,
 		indentUnit: 4,
@@ -101,9 +103,20 @@ function init() {
 	//changeFontSize(20);
 }
 
+function changeTheme(n){
+	if(n==0){
+		document.body.className = '';
+		editor.setOption("theme", "default");
+	}
+	else{
+		document.body.className = 'night';
+	    editor.setOption("theme", "monokai");
+	}
+}
+
 function changeFontSize(size){
-  editor.getWrapperElement().style["font-size"] = size+"px";
-  editor.refresh();
+    editor.getWrapperElement().style["font-size"] = size+"px";
+    editor.refresh();
 }
 
 function close(){
@@ -113,7 +126,7 @@ function close(){
 function loadfile(url){
 	var type = url.substring(url.lastIndexOf(".")+1, url.length);
 	currentName = url.substring(0,url.lastIndexOf(".") );
-	console.log(type, currentName);
+	//console.log(type, currentName);
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', "../"+url, true);
 	xhr.responseType = 'blob';
