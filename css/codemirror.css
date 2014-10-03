@@ -29,14 +29,14 @@
 .CodeMirror-gutters {
   border-right: 1px solid #ddd;
   white-space: nowrap;
-  background: none;
+  background: #D6D6D6;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
   padding: 0 3px 0 5px;
   min-width: 20px;
   text-align: right;
-  background: none;
+  background: #D6D6D6;
   color: #AAA;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
@@ -304,10 +304,10 @@ div.CodeMirror-cursors {
 
 /*.cm-s-monokai.CodeMirror {background: #272822; color: #f8f8f2;}*/
 .cm-s-monokai div.CodeMirror-selected {background: #49483E !important;}
-.cm-s-monokai .CodeMirror-gutters {background:none; border-right: 0px;}
+.cm-s-monokai .CodeMirror-gutters {background:#212324; border-right: 0px;}
 .cm-s-monokai .CodeMirror-guttermarker { color: white; }
 .cm-s-monokai .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
-.cm-s-monokai .CodeMirror-linenumber { color: #343434; background: none; }
+.cm-s-monokai .CodeMirror-linenumber { color: #343434; background: #212324; }
 .cm-s-monokai .CodeMirror-cursor {border-left: 1px solid #f8f8f0 !important;}
 
 .cm-s-monokai span.cm-comment {color: #75715e;}
@@ -352,7 +352,17 @@ div.CodeMirror-cursors {
   background-color: #212324; /* The little square between H and V scrollbars */
   background-image:url(../images/cornern.jpg);
 }
-
+.cm-s-monokai ::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border:5px solid rgba(0,0,0,0);
+    border-radius: 25px;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    box-shadow: 1px 1px 0px 1px rgba(255, 255, 255, 0.1) inset;
+}
+.cm-s-monokai ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
 
 ::-webkit-scrollbar {
     width:20px;
