@@ -118,7 +118,7 @@ function oimoLoop()
         if(i==1){
             mesh.rotation.y +=0.01;
             body.setQuaternion(mesh.quaternion);
-            console.log(body.name)
+            //console.log(body.name)
 
         }else{
             mesh.position.copy(body.getPosition());

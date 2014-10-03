@@ -14,12 +14,20 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 </style>
 <script src="../js/libs/three.min.js"></script>
 <script src="../js/libs/Oimo.min.js"></script>
+
 <script src="../js/v3d.js"></script>
 <script type="text/javascript" id="topScript"></script>
 <script>
+var C1, C2;
 function changeTheme(n){
-	if(n==0) document.body.className = '';
-	else document.body.className = 'night';
+	if(n==0){
+		document.body.className = '';
+		if(v3d)v3d.newgradTexture(C1);
+	}
+	else{ 
+		document.body.className = 'night';
+		if(v3d)v3d.newgradTexture(C2);
+	}
 }
 </script>
 </head>

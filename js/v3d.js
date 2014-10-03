@@ -17,6 +17,7 @@ V3D.View = function(h,v,d){
 	this.init(h,v,d);
 	this.initBasic();
 	this.initMaterial();
+	this.initBackground();
 }
 
 V3D.View.prototype = {
@@ -29,7 +30,7 @@ V3D.View.prototype = {
     	this.renderer.setClearColor( 0x1d1f20, 1 );
     	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 2000 );
     	this.scene = new THREE.Scene();
-    	this.initBackground();
+    	
     	
         this.container = document.getElementById(this.id)
         this.container.appendChild( this.renderer.domElement );
@@ -45,10 +46,10 @@ V3D.View.prototype = {
     },
     initBackground:function(){
     	var buffgeoBack = new THREE.BufferGeometry();
-        buffgeoBack.fromGeometry( new THREE.IcosahedronGeometry(1000,1) );
-        var back = new THREE.Mesh( buffgeoBack, new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  ));
-        back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*V3D.ToRad));
-        this.scene.add( back );
+        buffgeoBack.fromGeometry( new THREE.IcosahedronGeometry(1000,2) );
+        this.back = new THREE.Mesh( buffgeoBack, this.mats.bg);
+        //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*V3D.ToRad));
+        this.scene.add( this.back );
         this.renderer.autoClear = false;
     },
     initLight:function(){
@@ -94,6 +95,7 @@ V3D.View.prototype = {
     },
     initMaterial:function(){
 	    var mats = {};
+	    mats['bg'] = new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -109,6 +111,7 @@ V3D.View.prototype = {
     },
     initLightMaterial:function(){
 	    var mats = {};
+	    mats['bg'] = new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -182,6 +185,15 @@ V3D.View.prototype = {
 			fragmentShader: shader.fs
 		});
 		return material;
+    },
+
+    newgradTexture : function(c) {
+       // tx.needsUpdate = true;
+        this.mats.bg.map = new THREE.Texture(c);
+        this.mats.bg.map.needsUpdate = true;
+        this.back.material = this.mats.bg
+       // console.log("yoo")
+
     },
 
     gradTexture : function(color) {

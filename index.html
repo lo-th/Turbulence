@@ -21,6 +21,7 @@
 html, body {background-color: #D6D6D6;  font: normal 12px Consolas;}
 body.night {background-color: #212324;  font: normal 12px Consolas;}
 </style>
+<script src="js/ui/grad.js"></script>
 </head>
 <body>
 <script>
@@ -42,11 +43,17 @@ var codeLoaded = false;
 var topy = 0;
 var currentLesson = -1;
 var a = null;
+var C1, C2;
 
 window.onload = init;
 
 function init(){
-	
+	C1 = document.createElement( 'canvas' );
+	C1.width = C1.height = 512;
+	C2 = document.createElement( 'canvas' );
+	C2.width = C2.height = 512;
+	var grad1 = new GRAD.Create(C1, 'linear', {x0:0,y0:0,x1:0,y1:512}, [[1,180,180,180, 255],[0.5,214,214,214,255],[0,250,250,250,255]]);
+	var grad2 = new GRAD.Create(C2, 'linear', {x0:0,y0:0,x1:0,y1:512}, [[1,0,0,0, 255],[0.5,33,35,36,255],[0,60,64,66,255]]);
 
 	var edit = doc.createElement( 'iframe' );
 	edit.src = 'frame/edit.html';
@@ -156,6 +163,8 @@ function update(value, isPureSrcipt) {
 			nscript.text = value;//rootValue;
 			head.appendChild(nscript);
 			codeLoaded=true;
+			views[1].contentWindow.C1 = C1;
+			views[1].contentWindow.C2 = C2;
 			if(styleType == 'day') views[1].contentWindow.changeTheme(0);
 			else views[1].contentWindow.changeTheme(1);	
 		}
