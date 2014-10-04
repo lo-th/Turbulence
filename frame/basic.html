@@ -12,27 +12,30 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 #container{ position: absolute; left:0; top:0; width:100%; height:100%; }
 #container canvas { position: absolute; left:0; top:0; width:100%; height:100%; border: 0 none;}
 </style>
+<script src="../js/libs/tween.min.js"></script>
 <script src="../js/libs/three.min.js"></script>
+<script src="../js/libs/sea3d.min.js"></script>
 <script src="../js/libs/Oimo.min.js"></script>
 
 <script src="../js/v3d.js"></script>
+
 <script type="text/javascript" id="topScript"></script>
 <script>
 var C1, C2;
 function changeTheme(n){
 	if(n==0){
 		document.body.className = '';
-		if(v3d)v3d.newgradTexture(C1);
+		if(v3d)v3d.newgradTexture(C1, n);
 	}
 	else{ 
 		document.body.className = 'night';
-		if(v3d)v3d.newgradTexture(C2);
+		if(v3d)v3d.newgradTexture(C2, n);
 	}
 }
 </script>
 </head>
 <body>
 <div id='container'></div>
-<div id='info'>something wrong in the code</div>
+<div id='info'>something wrong in the code :(</div>
 </body>
 </html>

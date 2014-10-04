@@ -2,7 +2,7 @@
 //--------------------------------
 //   0 - OIMO WORLD
 //--------------------------------
-
+ console.log("-----------------")
 // The time between each step
 var timestep = 1/60;
 
@@ -39,11 +39,14 @@ var bodys = [];
 // Array to keep reference of three mesh
 var meshs = [];
 
-populate(1);
 
+//;
 // start loops
 setInterval(oimoLoop, timestep*1000);
 renderLoop();
+
+
+populate(1)
 
 /* three.js render loop */
 function renderLoop()
@@ -102,6 +105,7 @@ function populate(n)
     //add random objects
     var x, y, z, w, h, d, t;
     var i = 100;
+    obj = {};
 
     while (i--){
         t = rand(1,3);
@@ -126,6 +130,8 @@ function rand(min, max, n)
 {
     var r, n = n||0;
     if (min < 0) r = min + Math.random() * (Math.abs(min)+max);
-    else r = min + Math.random() * max;
+    else r = (Math.random() * (max - min + 1) | 0) + min;//min + Math.random() * max;
     return r.toFixed(n)*1;
 }
+
+
