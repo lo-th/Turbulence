@@ -34,8 +34,8 @@ body.night {
 #title{ position:absolute; left:0px; top:150px; width:220px; height:30px; text-align:center; font-size:16px;}
 #dragZone{position:absolute; left:20px; top:200px; width:180px; height:calc(100% - 260px); border:1px dashed rgba(0,0,0,0.1); pointer-events:auto;}
 #dragZone.hover { border: 1px dashed rgba(0,0,0,0.3); }
-.b{ width:20px; height:20px; color:#2b2e41; font-size:14px; cursor:pointer; border:1px solid #2b2e41; text-align:center; pointer-events:auto; display:inline-block;}
-.bn{ width:20px; height:20px; color:#D6D6D6; font-size:14px; cursor:pointer; border:1px solid #D6D6D6; text-align:center; pointer-events:auto; display:inline-block;}
+.b{ width:20px; height:20px; color:#2b2e41; font-size:14px; cursor:pointer; border:1px solid #2b2e41; text-align:center; pointer-events:auto; display:inline-block; border-radius:20px; }
+.bn{ width:20px; height:20px; color:#D6D6D6; font-size:14px; cursor:pointer; border:1px solid #D6D6D6; text-align:center; pointer-events:auto; display:inline-block; border-radius:20px; }
 
 </style>
 <div id="bg"></div>
@@ -57,6 +57,7 @@ function setRoot(r){ root=r;}
 //---------------------------------------------
 //  BUTTON
 //---------------------------------------------
+
 var bn = document.getElementById('bn');
 var bc = document.getElementById('bc');
 
@@ -64,6 +65,14 @@ var b0 = document.getElementById('b0');
 var b1 = document.getElementById('b1');
 var b2 = document.getElementById('b2');
 
+var currentFile = -1;
+var inModif =  -1;
+var colorSelect = '#2b2e41';
+var colorModif = '#FF0073';
+var colorOver = 'rgba(0,0,0,0.3)';
+var iconImg = '../images/sc.png';
+var iconImgModif = '../images/scm.png';
+var currentLink = null;
 // code hide at start
 bc.style.textDecoration = "none";
 b0.style.display = "none";
@@ -77,12 +86,14 @@ bc.onclick = function (e){
 		b0.style.display = "none";
 		b1.style.display = "none";
 		b2.style.display = "none";
+		
 	}else{
 		bc.style.textDecoration = "line-through";
 		root.showCode = true;
 		b0.style.display = "inline-block";
 		b1.style.display = "inline-block";
 		b2.style.display = "inline-block";
+
 	}
 	root.resize();
 }
@@ -98,7 +109,9 @@ bn.onclick = function (e){
 		b0.className = 'bn';
 		b1.className = 'bn';
 		b2.className = 'bn';
-
+		colorSelect = '#D6D6D6';
+		colorOver = 'rgba(255,255,255,0.3)';
+		iconImg = '../images/sc2.png';
 	}else {
 		root.styleType = 'day'; bn.innerHTML = 'N';
 		document.body.className = '';
@@ -109,7 +122,11 @@ bn.onclick = function (e){
 		b0.className = 'b';
 		b1.className = 'b';
 		b2.className = 'b';
+		colorSelect = '#2b2e41';
+		colorOver = 'rgba(0,0,0,0.3)';
+		iconImg = '../images/sc.png';
 	}
+	resetIcon(true);
 	root.switchStyle();
 };
 
@@ -134,6 +151,7 @@ document.getElementById('b2').onclick = function (e){
 //---------------------------------------------
 //  DRAG ZONE
 //---------------------------------------------
+
 var icons = [];
 var files = [];
 var zone = document.getElementById('dragZone')
@@ -199,32 +217,46 @@ function addFile(file){
 
         o.file = file;
         o.result = e.target.result;
-        pushFile(o.name, o.c);
+        pushFile(o.name);
     };
     reader.readAsDataURL(file);
 }
 
-function pushFile(name, c){
+function pushFile(name){
+	// don't add if same file
+	var i = files.length;
+	while(i--){
+		if(name == files[i]) return;
+	}
     //console.log(o.t);
     var id = icons.length;
     var ic = document.createElement('div');
     ic.style.cssText = 'display:block; width:180px; height:30px; background-color:rgba(0,0,0,0); cursor:pointer; pointer-events:auto;';
     var iner = document.createElement('div');
-    iner.style.cssText = 'position:relative; left:5px; top:5px; width:18px; height:18px; pointer-events:none; background-color: '+c+'; border:2px solid rgba(0,0,0,0); ';
+    iner.style.cssText = 'position:relative; left:5px; top:5px; width:18px; height:18px; pointer-events:none; background-color: none; border:1px solid rgba(0,0,0,0);  border-radius:20px;';
     var title = document.createElement('div');
     title.style.cssText = 'position:relative; left:30px; top:-12px; width:140px; height:20px; pointer-events:none; text-align:right;';
+    var img = document.createElement('img');
+    img.style.cssText = 'position:relative; left:5px; top:-33px; width:18px; height:18px; pointer-events:none;';
+    img.src = iconImg;
     title.innerHTML = name.substr(0, name.lastIndexOf("."));
     ic.appendChild( iner );
     ic.appendChild( title );
+    ic.appendChild( img );
     zone.appendChild( ic );
     //o.drag = false;
     ic.name = id;
-    ic.onmousedown = openFile;//selected;
+    //ic.onmousedown = openFile;//selected;
+    ic.onclick = openFile;//selected;
+    ic.ondblclick = openFile;
     //ic.onmousemove = moveicon;
     ic.onmouseover = iconOver;
     ic.onmouseout = unselected;
     ic.onmouseup = unselected;
-    ic.ondblclick = openFile;
+
+    ic.ondragstart = dragstart;
+    ic.ondragend = dragend;
+    
     icons[id]=ic;
     files[id]=name;
 }
@@ -238,53 +270,99 @@ for(var i=0; i< 4; i++){
 function iconOver(e){
     e.preventDefault();
     var id = e.target.name;
-    var child = icons[id].childNodes;
-    child[0].style.border ='2px solid #aaa';
-}
-
-function selected(e){
-    e.preventDefault();
-    var id = e.target.name;
-    var child = icons[id].childNodes;
-    child[0].style.border ='2px solid #ccc';
-    
-    var rect = icons[id].getBoundingClientRect();
-   // files[id].px = e.clientX-rect.left;
-   // files[id].py = e.clientY-rect.top;
-    //files[id].drag = true;
-    //console.log(id);
+   // if(id==inModif){
+   //	root.callSave();
+    //}
+    if(id!==currentFile){
+	    var child = icons[id].childNodes;
+	    child[0].style.border ='1px solid ' + colorOver;
+	}
 }
 
 function unselected(e){
     e.preventDefault();
     var id = e.target.name;
-    var child = icons[id].childNodes;
-    //files[id].drag = false;
-    child[0].style.border ='2px solid rgba(0,0,0,0)';
-    //icons[id].style.position ='relative';
-    //console.log(id);
+    if(id!==currentFile){
+	    var child = icons[id].childNodes;
+	    child[0].style.border ='1px solid rgba(0,0,0,0)';
+	}
 }
 
-/*function moveicon(e){
-    e.preventDefault();
-    var id = e.target.name;
-    if(files[id].drag){
-        icons[id].style.position ='absolute';
-        icons[id].style.left = e.clientX-files[id].px+'px';
-        icons[id].style.top = e.clientY-files[id].py+'px';
-    }
-}*/
+function addIconLink(blob, name, type){
+	window.URL = window.webkitURL || window.URL;
+	if (currentLink){
+	    window.URL.revokeObjectURL(currentLink.href);
+	    currentLink=null;
+	}
+	currentLink = document.createElement('a');
+	currentLink.style.cssText = "position:absolute; top:6px; right:65px; width:120px; height:20px; text-align:center;"
+	currentLink.download = name;
+	currentLink.href = window.URL.createObjectURL(blob);
+	currentLink.dataset.downloadurl = [type, currentLink.download, currentLink.href].join(':');
+}
 
-function addIconLink(){
-
+function dragstart(e){
+	var id = e.target.name;
+	//console.log("drag" + id);
+	if (e.target.classList.contains('dragout') && currentLink!==null) { e.dataTransfer.setData('DownloadURL', currentLink.dataset.downloadurl ); }
+}
+function dragend(e){
+	resetModified();
 }
 
 function openFile(e){
     e.preventDefault();
     var id = e.target.name;
-    console.log(files[id]);
-    //root.openFile(files[id]);
-    root.loadFile('demos/'+files[id]);
+    
+    if(currentFile!==id){
+    	resetModified();
+        currentFile = id;
+    	root.loadFile('demos/'+files[id]);
+    	resetIcon();
+    }
+}
+function resetIcon(plus){
+	var i = icons.length, child;
+	while(i--){
+		child = icons[i].childNodes;
+	    if(i==currentFile){
+	    	if(i==inModif)child[0].style.border ='1px solid '+colorModif;
+	    	else child[0].style.border ='1px solid '+colorSelect;
+	    }
+	    else child[0].style.border ='1px solid rgba(0,0,0,0)';
+	    if(plus){
+	    	if(i==inModif)child[2].src = iconImgModif;
+	    	else child[2].src = iconImg;
+	    }
+	}
+}
+
+function modified(){
+	inModif = currentFile;
+	var child = icons[currentFile].childNodes;
+	icons[currentFile].draggable = true;
+	icons[currentFile].classList.add('dragout');
+	child[0].style.border ='1px solid '+colorModif;
+	child[1].style.color = colorModif;
+	child[2].src = iconImgModif;
+	root.callSave();
+}
+function resetModified(){
+	inModif = -1;
+	var i = icons.length, child;
+	while(i--){
+		icons[i].draggable = false;
+		icons[i].classList.remove('dragout');
+		child = icons[i].childNodes;
+		if(i==currentFile)child[0].style.border ='1px solid '+colorSelect;
+	    child[1].style.color = colorSelect;
+	    child[2].src = iconImg;
+	}
+	if (currentLink){
+		//currentLink.dataset.disabled = true;
+	    window.URL.revokeObjectURL(currentLink.href);
+	    currentLink=null;
+	}
 }
 
 </script>

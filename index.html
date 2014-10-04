@@ -42,8 +42,8 @@ var defStyle = 'position:absolute; display:block; border:none;';
 var codeLoaded = false;
 var topy = 0;
 var currentLesson = -1;
-var a = null;
 var C1, C2;
+var isFirst = false;
 
 window.onload = init;
 
@@ -134,8 +134,9 @@ function switchStyle(){
 }
 
 function loadFile(name){
+	isFirst = true;
     views[0].contentWindow.loadfile(name);
-    showSave();
+    //showSave();
 }
 
 function openFile(o){
@@ -166,7 +167,9 @@ function update(value, isPureSrcipt) {
 			views[1].contentWindow.C1 = C1;
 			views[1].contentWindow.C2 = C2;
 			if(styleType == 'day') views[1].contentWindow.changeTheme(0);
-			else views[1].contentWindow.changeTheme(1);	
+			else views[1].contentWindow.changeTheme(1);
+			if(isFirst)isFirst=false;
+			else showModif();
 		}
 	} /*else {
 		var content = iframe.contentDocument || iframe.contentWindow.document;
@@ -184,47 +187,21 @@ function checkCurrent(){
 }
 
 function createLink(blob, name, type){
-	window.URL = window.webkitURL || window.URL;
-	if (a) {
-	    window.URL.revokeObjectURL(a.href);
-	    doc.body.removeChild(a);
-	}
-	a = document.createElement('a');
-	a.style.cssText = "position:absolute; top:6px; right:65px; width:120px; height:20px; text-align:center;"
-	a.download = name; //container.querySelector('input[type="text"]').value;
-	a.href = window.URL.createObjectURL(blob);
-	a.textContent = 'Download ready';
-
-	a.dataset.downloadurl = [type, a.download, a.href].join(':');
-	//a.dataset.downloadurl = [type, name, a.href].join(':');
-	a.draggable = true; // Don't really need, but good practice.
-	a.classList.add('dragout');
-	//a.filename = name;
-	doc.body.appendChild(a);
-	a.onclick = function(e) {
-	    if ('disabled' in this.dataset) return false;
-	    cleanUp();
-	};
-
+	views[2].contentWindow.addIconLink(blob, name, type);
 }
 
-// drag link outside :)
-document.body.addEventListener('dragstart', function(e) {
-  var a = e.target;
-  if (a.classList.contains('dragout')) {
-    e.dataTransfer.setData('DownloadURL', a.dataset.downloadurl);
-  }
-}, false);
-
-function cleanUp() {
-	a.textContent = 'Downloaded';
-	a.dataset.disabled = true;
-	// Need a small delay for the revokeObjectURL to work properly.
-	setTimeout(function() { window.URL.revokeObjectURL(a.href); }, 1500);
-};
 function showSave(){
 	//b1.style.display = 'block';
 }
+
+function showModif(){
+	views[2].contentWindow.modified();
+}
+
+function callSave(){
+	views[0].contentWindow.save();
+}
+
 </script>
 </body>
 </html>

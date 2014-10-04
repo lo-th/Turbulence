@@ -125,7 +125,7 @@ function close(){
 
 function loadfile(url){
 	var type = url.substring(url.lastIndexOf(".")+1, url.length);
-	currentName = url.substring(0,url.lastIndexOf(".") );
+	currentName = url.substring(url.lastIndexOf("/")+1,url.lastIndexOf(".") );
 	//console.log(type, currentName);
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', "../"+url, true);
@@ -158,7 +158,7 @@ function save() {
 		//documents[ 0 ].code = editor.getValue();
 
 		//localStorage.codeeditor = JSON.stringify( documents );
-		console.log('file name:'+ currentName)
+		//console.log('file name:'+ currentName)
 		var blob = new Blob( [ editor.getValue() ], { type: type } );
 		//var objectURL = URL.createObjectURL( blob );
 
