@@ -149,6 +149,38 @@ V3D.View.prototype = {
     render : function(){
     	this.renderer.render( this.scene, this.camera );
     },
+    addLabel:function(text, size, color){
+    	if(!color) color = "#F964A7";
+		if(!size) size = 36;
+
+		var canvas = document.createElement("canvas");
+
+		//if(n==24)canvas.width = 116*3;
+		canvas.width = 20*3;
+		canvas.height = 20*3;
+		var ctx = canvas.getContext("2d");
+		ctx.font = 'normal '+size+'pt Consolas';
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+
+		/*var gradient=ctx.createLinearGradient(0,0,0,canvas.height);
+		gradient.addColorStop("0","white");
+		gradient.addColorStop("1.0","yellow");
+
+		ctx.strokeStyle = gradient;
+		ctx.lineWidth=3;
+		ctx.strokeText(text, canvas.width / 2, canvas.height / 2);*/
+		ctx.fillStyle = color;
+		ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+		var texture = new THREE.Texture(canvas);
+		texture.needsUpdate = true;
+
+		var mat = new THREE.MeshBasicMaterial( { map:texture, transparent:true } );
+		var p = new THREE.Mesh(new THREE.PlaneBufferGeometry(8, 8), mat);
+		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,8,0));
+		return p;
+    },
     addGrid:function(size, div, position){
     	size = size || 200;
     	div = div || 10;
@@ -156,6 +188,7 @@ V3D.View.prototype = {
     	var helper = new THREE.GridHelper( size, div );
 		helper.setColors( this.debugColor2, this.debugColor );
 		helper.position.copy(position);
+		helper.rotation.x = 90 * V3D.ToRad;
 		this.scene.add( helper );
     },
     add : function(obj, target){
@@ -282,7 +315,7 @@ V3D.View.prototype = {
 
 V3D.Navigation = function(root){
 	this.parent = root;
-	this.camPos = { h:90, v:60, distance:400, automove:false, vmax:179.99, vmin:0.01  };
+	this.camPos = { h:90, v:90, distance:400, automove:false, vmax:179.99, vmin:0.01  };
 	this.mouse = { x:0, y:0, ox:0, oy:0, h:0, v:0, mx:0, my:0, down:false, over:false, moving:true, button:0 };
 	this.vsize = { w:this.parent.w, h:this.parent.h};
 	this.center = { x:0, y:0, z:0 };
@@ -295,7 +328,7 @@ V3D.Navigation.prototype = {
     constructor: V3D.Navigation,
 	initCamera : function (h,v,d) {
 	    this.camPos.h = h || 90;
-	    this.camPos.v = v || 60;
+	    this.camPos.v = v || 90;
 	    this.camPos.distance = d || 400;
 	    this.moveCamera();
 	},
