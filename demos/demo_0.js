@@ -1,7 +1,7 @@
-// basic vue 3d 
+tell('basic 3d view');
+
 var v3d = new V3D.View();
 var v = v3d;
-v.initLight();
 renderLoop();
 
 function renderLoop(){
@@ -10,4 +10,3 @@ function renderLoop(){
 }
 
 v.addGrid(200, 20);
-tell('basic 3d view');

@@ -20,7 +20,7 @@ V3D.View = function(h,v,d){
 	this.init(h,v,d);
 	this.initBasic();
 	this.initMaterial();
-	this.initBackground();
+	//this.initBackground();
 }
 
 V3D.View.prototype = {
@@ -208,12 +208,20 @@ V3D.View.prototype = {
     },
 
     newgradTexture : function(c) {
-       // tx.needsUpdate = true;
-        this.mats.bg.map = new THREE.Texture(c);
-        this.mats.bg.map.needsUpdate = true;
-        this.back.material = this.mats.bg
-       // console.log("yoo")
+    	if(this.back){
+    	    this.scene.remove(this.back);
+    	    this.back.material.dispose();
+    	    this.back.geometry.dispose();
+    	}
 
+        var t = new THREE.Texture(c);
+        t.needsUpdate = true;
+        var mat = new THREE.MeshBasicMaterial( {map:t, side:THREE.BackSide, depthWrite: false, fog:false }  );
+        var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.IcosahedronGeometry(1000,2) );
+        this.back = new THREE.Mesh( buffgeoBack, mat);
+        //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*V3D.ToRad));
+        this.scene.add( this.back );
+        this.renderer.autoClear = false;
     },
 
     gradTexture : function(color) {
