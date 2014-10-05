@@ -52,7 +52,7 @@ function init(){
 	C1.width = C1.height = 512;
 	C2 = document.createElement( 'canvas' );
 	C2.width = C2.height = 512;
-	var grad1 = new GRAD.Create(C1, 'linear', {x0:0,y0:0,x1:0,y1:512}, [[1,180,180,180, 255],[0.5,214,214,214,255],[0,250,250,250,255]]);
+	var grad1 = new GRAD.Create(C1, 'linear', {x0:0,y0:0,x1:0,y1:512}, [[1,150,150,150, 255],[0.5,214,214,214,255],[0,250,250,250,255]]);
 	var grad2 = new GRAD.Create(C2, 'linear', {x0:0,y0:0,x1:0,y1:512}, [[1,0,0,0, 255],[0.5,33,35,36,255],[0,60,64,66,255]]);
 
 	var edit = doc.createElement( 'iframe' );
@@ -81,9 +81,6 @@ function init(){
 	};
     window.onresize = resize;
     resize();
-
-
-   
 }
 
 function resize(){
@@ -135,7 +132,6 @@ function switchStyle(){
 		views[0].contentWindow.changeTheme(1);
 		if(codeLoaded)views[1].contentWindow.changeTheme(1);
 		views[1].style.background = '#212324';
-		
 	}
 }
 
@@ -159,7 +155,7 @@ function update(value, isPureSrcipt) {
 	doc.body.appendChild(views[1]);
 	resize();*/
 	//if ( preview.children.length > 0 )preview.removeChild( preview.firstChild );
-	var iframe = views[1]//doc.getElementById( 'preview' );//doc.createElement( 'iframe' );
+	var iframe = views[1];//doc.getElementById( 'preview' );//doc.createElement( 'iframe' );
 	//iframe.style.width = '100%';
 	//iframe.style.height = '100%';//calc(100% - 5px);
 	//iframe.style.border = '0';

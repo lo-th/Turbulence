@@ -47,14 +47,14 @@ V3D.View.prototype = {
         //this.projector = new THREE.Projector();
     	//this.raycaster = new THREE.Raycaster();
     },
-    initBackground:function(){
+   /* initBackground:function(){
     	var buffgeoBack = new THREE.BufferGeometry();
         buffgeoBack.fromGeometry( new THREE.IcosahedronGeometry(1000,2) );
         this.back = new THREE.Mesh( buffgeoBack, this.mats.bg);
         //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*V3D.ToRad));
         this.scene.add( this.back );
         this.renderer.autoClear = false;
-    },
+    },*/
     initLight:function(){
     	if(this.isMobile) return;
     	//this.scene.fog = new THREE.Fog( 0x1d1f20, 100, 600 );
@@ -69,7 +69,7 @@ V3D.View.prototype = {
     initLightShadow:function(){
     	if(this.isMobile) return;
     	this.scene.add( new THREE.AmbientLight( 0x606060 ) );
-	    var light = new THREE.DirectionalLight( 0xffffff , 1);
+	    var light = new THREE.DirectionalLight( 0xffffff, 1);
 	    light.position.set( 300, 1000, 500 );
 	    light.target.position.set( 0, 0, 0 );
 	    light.castShadow = true;
@@ -98,14 +98,19 @@ V3D.View.prototype = {
     },
     initBasicMaterial:function(mats){
     	mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
-    	mats['debug'] = new THREE.MeshBasicMaterial( { color:this.debugColor, wireframe:true, transparent:true, opacity:0, fog: false, depthTest: false, depthWrite: false});
-    	mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
-
+    	mats['debug'] = new THREE.MeshBasicMaterial( { color:this.debugColor, wireframe:true, transparent:true, opacity:0, fog:false, depthTest:false, depthWrite:false});
+    	mats['joint']  = new THREE.LineBasicMaterial( { color:0x00ff00 } );
     },
     initMaterial:function(){
 	    var mats = {};
 	    this.initBasicMaterial(mats);
 	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
+	    mats['c1'] = new THREE.MeshBasicMaterial( { color:0xF964A7, name:'c1' } );
+	    mats['c2'] = new THREE.MeshBasicMaterial( { color:0xFF0073, name:'c2' } );
+	    mats['c3'] = new THREE.MeshBasicMaterial( { color:0x43B8CC, name:'c3' } );
+	    mats['c4'] = new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
+	    mats['c5'] = new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
+
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -122,6 +127,11 @@ V3D.View.prototype = {
     initLightMaterial:function(){
 	    var mats = {};
 	    this.initBasicMaterial(mats);
+	    mats['c1'] = new THREE.MeshLambertMaterial( { color:0xF964A7, name:'c1' } );
+	    mats['c2'] = new THREE.MeshLambertMaterial( { color:0xFF0073, name:'c2' } );
+	    mats['c3'] = new THREE.MeshLambertMaterial( { color:0x43B8CC, name:'c3' } );
+	    mats['c4'] = new THREE.MeshLambertMaterial( { color:0x059BB5, name:'c4' } );
+	    mats['c5'] = new THREE.MeshLambertMaterial( { color:0xD4D1BE, name:'c5' } );
 	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(1), name:'ssph' } );
@@ -215,11 +225,14 @@ V3D.View.prototype = {
     	}
 
         var t = new THREE.Texture(c);
+        //t.wrapS = t.wrapT = THREE.RepeatWrapping;
+        //t.repeat = new THREE.Vector2( 2, 2);
         t.needsUpdate = true;
         var mat = new THREE.MeshBasicMaterial( {map:t, side:THREE.BackSide, depthWrite: false, fog:false }  );
-        var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.IcosahedronGeometry(1000,2) );
+        //var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.IcosahedronGeometry(1000,1) );
+        var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.SphereGeometry(1000,12,10) );
         this.back = new THREE.Mesh( buffgeoBack, mat);
-        //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*V3D.ToRad));
+        //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(90*V3D.ToRad));
         this.scene.add( this.back );
         this.renderer.autoClear = false;
     },
@@ -263,15 +276,13 @@ V3D.View.prototype = {
 
 }
 
-
-
 //----------------------------------
 //  NAVIGATION
 //----------------------------------
 
 V3D.Navigation = function(root){
 	this.parent = root;
-	this.camPos = { h: 90, v: 60, distance: 400, automove: false  };
+	this.camPos = { h:90, v:60, distance:400, automove:false, vmax:179.99, vmin:0.01  };
 	this.mouse = { x:0, y:0, ox:0, oy:0, h:0, v:0, mx:0, my:0, down:false, over:false, moving:true, button:0 };
 	this.vsize = { w:this.parent.w, h:this.parent.h};
 	this.center = { x:0, y:0, z:0 };
@@ -348,6 +359,8 @@ V3D.Navigation.prototype = {
 	        document.body.style.cursor = 'move';
 	        this.camPos.h = ((this.mouse.x - this.mouse.ox) * 0.3) + this.mouse.h;
 	        this.camPos.v = (-(this.mouse.y - this.mouse.oy) * 0.3) + this.mouse.v;
+	        if(this.camPos.v<this.camPos.vmin) this.camPos.v = this.camPos.vmin;
+	        if(this.camPos.v>this.camPos.vmax) this.camPos.v = this.camPos.vmax;
 	        this.moveCamera();
 	    }
 	},
@@ -421,8 +434,6 @@ V3D.Navigation.prototype = {
 	    //self.focus();
 	}
 }
-
-
 
 //----------------------------------
 //  LOADER IMAGE/SEA3D
