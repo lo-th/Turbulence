@@ -16,12 +16,19 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 <script src="../js/libs/three.min.js"></script>
 <script src="../js/libs/sea3d.min.js"></script>
 <script src="../js/libs/Oimo.min.js"></script>
-
 <script src="../js/v3d.js"></script>
-
 <script type="text/javascript" id="topScript"></script>
+</head>
+<body>
+<div id='container'></div>
+<div id='info'>something wrong in the code :(</div>
 <script>
 var C1, C2;
+var info = document.getElementById('info');
+info.innerHTML = "ok";
+function tell(s){
+	info.innerHTML = s;
+}
 function changeTheme(n){
 	if(n==0){
 		document.body.className = '';
@@ -33,9 +40,5 @@ function changeTheme(n){
 	}
 }
 </script>
-</head>
-<body>
-<div id='container'></div>
-<div id='info'>something wrong in the code :(</div>
 </body>
 </html>

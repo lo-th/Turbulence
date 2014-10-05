@@ -75,9 +75,15 @@ function init(){
 
 	var _this = this;
 	views[0].onload = function (e){views[0].contentWindow.setRoot(_this);};
-	views[2].onload = function (e){views[2].contentWindow.setRoot(_this);};
+	views[2].onload = function (e){
+		views[2].contentWindow.setRoot(_this);
+		views[2].contentWindow.StartByOpenFile(0);
+	};
     window.onresize = resize;
     resize();
+
+
+   
 }
 
 function resize(){

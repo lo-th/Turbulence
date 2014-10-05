@@ -14,6 +14,9 @@ V3D.View = function(h,v,d){
 	this.h = window.innerHeight;
 	this.id = 'container';
 
+	this.debugColor = 0x909090;
+	this.debugColor2 = 0x404040;
+
 	this.init(h,v,d);
 	this.initBasic();
 	this.initMaterial();
@@ -93,9 +96,16 @@ V3D.View.prototype = {
 
 	    this.geos = geos;
     },
+    initBasicMaterial:function(mats){
+    	mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
+    	mats['debug'] = new THREE.MeshBasicMaterial( { color:this.debugColor, wireframe:true, transparent:true, opacity:0, fog: false, depthTest: false, depthWrite: false});
+    	mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+
+    },
     initMaterial:function(){
 	    var mats = {};
-	    mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
+	    this.initBasicMaterial(mats);
+	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -105,13 +115,14 @@ V3D.View.prototype = {
 	    mats['static'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(4), name:'static' } );
 	    mats['static2'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(4, 6), name:'static2' } );
 
-	    mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+	    //mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
 	    this.mats = mats;
     },
     initLightMaterial:function(){
 	    var mats = {};
-	    mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
+	    this.initBasicMaterial(mats);
+	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -121,12 +132,21 @@ V3D.View.prototype = {
 	    mats['static'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(4), name:'static' } );
 	    mats['static2'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(4, 6), name:'static2' } );
 
-	    mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+	   // mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
 	    this.mats = mats;
     },
     render : function(){
     	this.renderer.render( this.scene, this.camera );
+    },
+    addGrid:function(size, div, position){
+    	size = size || 200;
+    	div = div || 10;
+    	position = position || new THREE.Vector3();
+    	var helper = new THREE.GridHelper( size, div );
+		helper.setColors( this.debugColor2, this.debugColor );
+		helper.position.copy(position);
+		this.scene.add( helper );
     },
     add : function(obj, target){
     	var type = obj.type || 'box';

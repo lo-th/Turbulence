@@ -310,6 +310,12 @@ function dragend(e){
 	resetModified();
 }
 
+function StartByOpenFile(id){
+	currentFile = id;
+	root.loadFile('demos/'+files[id]);
+    resetIcon();
+}
+
 function openFile(e){
     e.preventDefault();
     var id = e.target.name;
