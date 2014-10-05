@@ -26,6 +26,12 @@ function initObject(){
     var a = new THREE.Mesh(pool.geo('basic_point'), v.mats.c1);
     v.scene.add(a);
 
+    /**/
+
+    var b2 = new THREE.Mesh(pool.edit('basic_pivot', 20), v.mats.c3);
+    v.scene.add(b2);
+    b2.position.set(0,0,-100);
+
     var b = new THREE.Mesh(pool.geo('basic_pivot'), v.mats.c3);
     v.scene.add(b);
     b.position.set(0,0,-50);
