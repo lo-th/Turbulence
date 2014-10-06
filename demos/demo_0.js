@@ -1,4 +1,4 @@
-tell('basic 3d view');
+tell('basic formula');
 
 var v3d = new V3D.View();
 
@@ -39,17 +39,17 @@ pool.load( ['../models/basic.sea'], initObject );
 
 function initObject(){
     // trace object imported list
-    tell(pool.getList());
+    //tell(pool.getList());
     var m, l, t, name;
     for(var i=0; i<points.length; i++){
         // init basic mesh point
         name = points[i];
-        if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c1 );
-        else if(name=='b1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c1 );
-        else if(name=='b3' || name=='o2'|| name=='y1') m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c1 );
-        else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c1 );
-        else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c1 );
-        else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c1 );
+        if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
+        //else if(name=='b1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c1 );
+        else if(name=='b3' || name=='o2'|| name=='y1') m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
+        else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
+        else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
+        else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c6 );
         v.scene.add(m);
         // add label 
         t = v.addLabel(name);
@@ -164,7 +164,7 @@ function runFormule(){
 
     //var b1 = new OIMO.Euler((a1a2 - a1b1*Math.cos(rad_a2a1b1)), (a1b1*Math.sin(rad_a2a1b1)), 0.0, 'XYZ');
     var b1 = new THREE.Vector3((a1a2 - a1b1*Math.cos(rad_a2a1b1)), (a1b1*Math.sin(rad_a2a1b1)), 0.0);
-    meshs.b1.position.set(b1.x*factor, b1.y*factor, 0.0);
+    meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
     //meshs.b1.rotation.z = (-rad_a2a1b1)//(rad_a2y1b1+rad_a1a2y1);
     //
 
@@ -340,7 +340,7 @@ function runFormule(){
         name = points[i];
         labels[name].position.copy(meshs[name].position);
         if(name == 'a1' || name == 'a2') labels[name].position.z = -28;
-        if(name == 'b1') labels[name].position.z = -14;
+        //if(name == 'b1') labels[name].position.z = -14;
     }
 
     // apply new position to each link
@@ -352,7 +352,7 @@ function runFormule(){
         links[name].translateX((scale[i]*factor)*0.5);
         //if(name == 'a1' || name == 'y1' || name == 'o1'|| name == 'b3') links[name].translateZ(-4);
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
-        if(name == 'b1' || name == 'b3' ) links[name].translateZ(-14);
+        if( name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
         if(name == 'a2') links[name].translateZ(-28);
         links[name].scale.x = (scale[i]*factor);

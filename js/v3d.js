@@ -113,6 +113,7 @@ V3D.View.prototype = {
 	    mats['c3'] = new THREE.MeshBasicMaterial( { color:0x43B8CC, name:'c3' } );
 	    mats['c4'] = new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
 	    mats['c5'] = new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
+	    mats['c6'] = new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
 
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
@@ -135,6 +136,7 @@ V3D.View.prototype = {
 	    mats['c3'] = new THREE.MeshLambertMaterial( { color:0x43B8CC, name:'c3' } );
 	    mats['c4'] = new THREE.MeshLambertMaterial( { color:0x059BB5, name:'c4' } );
 	    mats['c5'] = new THREE.MeshLambertMaterial( { color:0xD4D1BE, name:'c5' } );
+	    mats['c6'] = new THREE.MeshLambertMaterial( { map: this.doubleTexture(), name:'c6' } );
 	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
 	    mats['sph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshLambertMaterial( { map: this.basicTexture(1), name:'ssph' } );
@@ -281,6 +283,20 @@ V3D.View.prototype = {
         ct.fillStyle = gradient;
         ct.fillRect(0,0,16,128);
         var tx = new THREE.Texture(c);
+        tx.needsUpdate = true;
+        return tx;
+    },
+    doubleTexture : function(){
+    	var canvas = document.createElement( 'canvas' );
+        canvas.width = canvas.height = 128;
+        var ctx = canvas.getContext( '2d' );
+        ctx.fillStyle = '#F964A7';
+        ctx.fillRect(0, 0, 128, 128);
+        ctx.fillStyle = '#059BB5';
+        ctx.fillRect(0, 0, 64, 128);
+        var tx = new THREE.Texture(canvas);
+        tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+        tx.repeat = new THREE.Vector2(1,1);
         tx.needsUpdate = true;
         return tx;
     },
