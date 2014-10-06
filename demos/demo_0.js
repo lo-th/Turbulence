@@ -27,6 +27,9 @@ v.addGrid(200, 20);
 var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
 var meshs = {};
 var labels = {};
+var links = {};
+var scale = [];
+
 
 // import object pack
 var pool = new SEA3D.Pool();
@@ -41,19 +44,37 @@ function initObject(){
     for(var i=0; i<points.length; i++){
         // init basic mesh point
         name = points[i];
-        m = new THREE.Mesh(pool.geo('basic_point'), v.mats.c1);
+        if(name=='a1' || name=='a2') m = new THREE.Mesh( pool.geo('basic_pointB'), v.mats.c1 );
+        else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c1 );
         v.scene.add(m);
         // add label 
         t = v.addLabel(name);
         v.scene.add(t);
+        // add Link
+        if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c4 );
+        else{ 
+            l = new THREE.Mesh( v.geos.box, v.mats.c3 );
+            l.scale.set(1,2,2);
+        }
+        v.scene.add(l);
 
         if(name=='a1' || name=='a2'){
-             var c = new THREE.Mesh(pool.geo('basic_origin'), v.mats.c5);
+             var c = new THREE.Mesh( pool.geo('basic_origin'), v.mats.c5 );
              t.add(c);
         }
 
         labels[name] = t;
         meshs[name] = m;
+        links[name] = l;
+    }
+
+    // add two extra link
+    for(i=0; i<2; i++){
+        name = 'bx'+ i;
+        var l = new THREE.Mesh( v.geos.box, v.mats.c3 );
+        l.scale.set(1,2,2);
+        v.scene.add(l);
+        links[name] = l;
     }
 
 
@@ -62,9 +83,9 @@ function initObject(){
     //v.scene.add(a);
 
     // test
-    var b2 = new THREE.Mesh(pool.edit('basic_pivot', 20), v.mats.c3);
+    /*var b2 = new THREE.Mesh(pool.edit('basic_pivot', 20), v.mats.c3);
     v.scene.add(b2);
-    b2.position.set(0,-100,0);
+    b2.position.set(0,-100,0);*/
 
     runFormule(0);
 
@@ -100,6 +121,10 @@ function runFormule(){
     var y2y3 = C + Math.sqrt(C);
     var b3o2 = C + Math.sqrt(C);
     var y3y4 = C + Math.sqrt(C);
+    
+    //scale = [a1b1, a1a2,  b1y1, a2y1, a2o1, b2o1, b2y2, y1y2, y2o2, y2y3, y3y4, b3o2, b3y3 ];
+//          ['a1',  'a2', 'b1', 'b2', 'b3', 'y1', 'y2',' y3', 'y4', 'o1', 'o2'];
+    scale = [a1b1, a1a2,  b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2, b2y2, b3y3 ];
 
     // deg_a2a1b1 = - rotation.x*ToDeg;
     // 0 < rotation.x < 2*Math.PI
@@ -311,6 +336,27 @@ function runFormule(){
         name = points[i];
         labels[name].position.copy(meshs[name].position);
     }
+
+    // apply new position to each link
+    var i = points.length, name;
+    while(i--){
+        name = points[i];
+        links[name].position.copy(meshs[name].position);
+        links[name].rotation.copy(meshs[name].rotation);
+        links[name].translateX((scale[i]*factor)*0.5)
+        links[name].scale.x = (scale[i]*factor)
+    }
+    // extra link
+    links.bx0.position.copy(meshs.y2.position);
+    links.bx0.rotation.copy(meshs.y3.rotation);
+    links.bx0.translateX((scale[11]*factor)*0.5)
+    links.bx0.scale.x = scale[11]*factor;
+
+    links.bx1.position.copy(meshs.y3.position);
+    links.bx1.rotation.copy(meshs.y4.rotation);
+    links.bx1.translateX((scale[12]*factor)*0.5)
+    links.bx1.scale.x = scale[12]*factor;
+
 
     inFormulEnable=true;
 }
