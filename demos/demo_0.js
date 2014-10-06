@@ -40,11 +40,15 @@ pool.load( ['../models/basic.sea'], initObject );
 function initObject(){
     // trace object imported list
     tell(pool.getList());
-    var m, name;
+    var m, l, t, name;
     for(var i=0; i<points.length; i++){
         // init basic mesh point
         name = points[i];
-        if(name=='a1' || name=='a2') m = new THREE.Mesh( pool.geo('basic_pointB'), v.mats.c1 );
+        if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c1 );
+        else if(name=='b1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c1 );
+        else if(name=='b3' || name=='o2'|| name=='y1') m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c1 );
+        else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c1 );
+        else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c1 );
         else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c1 );
         v.scene.add(m);
         // add label 
@@ -53,8 +57,7 @@ function initObject(){
         // add Link
         if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c4 );
         else{ 
-            l = new THREE.Mesh( v.geos.box, v.mats.c3 );
-            l.scale.set(1,2,2);
+            l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
         }
         v.scene.add(l);
 
@@ -71,8 +74,9 @@ function initObject(){
     // add two extra link
     for(i=0; i<2; i++){
         name = 'bx'+ i;
-        var l = new THREE.Mesh( v.geos.box, v.mats.c3 );
-        l.scale.set(1,2,2);
+        l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        //var l = new THREE.Mesh( v.geos.box, v.mats.c3 );
+        //l.scale.set(1,4,4);
         v.scene.add(l);
         links[name] = l;
     }
@@ -335,6 +339,8 @@ function runFormule(){
     while(i--){
         name = points[i];
         labels[name].position.copy(meshs[name].position);
+        if(name == 'a1' || name == 'a2') labels[name].position.z = -28;
+        if(name == 'b1') labels[name].position.z = -14;
     }
 
     // apply new position to each link
@@ -343,18 +349,26 @@ function runFormule(){
         name = points[i];
         links[name].position.copy(meshs[name].position);
         links[name].rotation.copy(meshs[name].rotation);
-        links[name].translateX((scale[i]*factor)*0.5)
-        links[name].scale.x = (scale[i]*factor)
+        links[name].translateX((scale[i]*factor)*0.5);
+        //if(name == 'a1' || name == 'y1' || name == 'o1'|| name == 'b3') links[name].translateZ(-4);
+        if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
+        if(name == 'b1' || name == 'b3' ) links[name].translateZ(-14);
+        if(name == 'a1') links[name].translateZ(-21);
+        if(name == 'a2') links[name].translateZ(-28);
+        links[name].scale.x = (scale[i]*factor);
     }
     // extra link
     links.bx0.position.copy(meshs.y2.position);
     links.bx0.rotation.copy(meshs.y3.rotation);
-    links.bx0.translateX((scale[11]*factor)*0.5)
+    links.bx0.translateX((scale[11]*factor)*0.5);
+    links.bx0.translateZ(-7);
     links.bx0.scale.x = scale[11]*factor;
+
 
     links.bx1.position.copy(meshs.y3.position);
     links.bx1.rotation.copy(meshs.y4.rotation);
-    links.bx1.translateX((scale[12]*factor)*0.5)
+    links.bx1.translateX((scale[12]*factor)*0.5);
+    //links.bx1.translateZ(-10);
     links.bx1.scale.x = scale[12]*factor;
 
 

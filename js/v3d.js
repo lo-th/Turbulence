@@ -16,6 +16,9 @@ V3D.View = function(h,v,d){
 
 	this.debugColor = 0x909090;
 	this.debugColor2 = 0x404040;
+	this.debugColor3 = 0x404040;
+	this.debugColor4 = 0x606060;
+	this.grid = null;
 
 	this.init(h,v,d);
 	this.initBasic();
@@ -162,14 +165,6 @@ V3D.View.prototype = {
 		ctx.font = 'normal '+size+'pt Consolas';
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
-
-		/*var gradient=ctx.createLinearGradient(0,0,0,canvas.height);
-		gradient.addColorStop("0","white");
-		gradient.addColorStop("1.0","yellow");
-
-		ctx.strokeStyle = gradient;
-		ctx.lineWidth=3;
-		ctx.strokeText(text, canvas.width / 2, canvas.height / 2);*/
 		ctx.fillStyle = color;
 		ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
@@ -178,7 +173,7 @@ V3D.View.prototype = {
 
 		var mat = new THREE.MeshBasicMaterial( { map:texture, transparent:true } );
 		var p = new THREE.Mesh(new THREE.PlaneBufferGeometry(8, 8), mat);
-		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,8,0));
+		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,10,0));
 		return p;
     },
     addGrid:function(size, div, position){
@@ -190,6 +185,7 @@ V3D.View.prototype = {
 		helper.position.copy(position);
 		helper.rotation.x = 90 * V3D.ToRad;
 		this.scene.add( helper );
+		this.grid = helper;
     },
     add : function(obj, target){
     	var type = obj.type || 'box';
@@ -250,7 +246,7 @@ V3D.View.prototype = {
 		return material;
     },
 
-    newgradTexture : function(c) {
+    newgradTexture : function(c, n) {
     	if(this.back){
     	    this.scene.remove(this.back);
     	    this.back.material.dispose();
@@ -268,6 +264,11 @@ V3D.View.prototype = {
         //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(90*V3D.ToRad));
         this.scene.add( this.back );
         this.renderer.autoClear = false;
+
+        if(this.grid){
+        	if(n==0) this.grid.setColors(this.debugColor2, this.debugColor);
+        	else this.grid.setColors(this.debugColor4, this.debugColor3);
+        };
     },
 
     gradTexture : function(color) {
