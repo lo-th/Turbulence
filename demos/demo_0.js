@@ -9,12 +9,25 @@ var rotation = new THREE.Euler(0,0,0);
 
 var v = v3d;
 v.initLight();
+
+// test particle
+var pp = new V3D.Particle(v);
+//pp.addV(100,100, 0)
+//pp.addV(150,100, 0)
+// formule points
+var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
+var meshs = {};
+var labels = {};
+var links = {};
+var scale = [];
+
 renderLoop();
 
 function renderLoop(){
     if(inFormulEnable){
         rotation.z+=0.03;
         runFormule();
+        
     }
     v.render();
     requestAnimationFrame( renderLoop );
@@ -23,12 +36,10 @@ function renderLoop(){
 // add basic grid
 v.addGrid(200, 20);
 
-// formule points
-var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
-var meshs = {};
-var labels = {};
-var links = {};
-var scale = [];
+
+
+
+
 
 
 // import object pack
@@ -45,8 +56,8 @@ function initObject(){
         // init basic mesh point
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
-        //else if(name=='b1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c1 );
-        else if(name=='b3' || name=='o2'|| name=='y1') m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
+        else if(name=='y1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
+        else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
         else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c6 );
@@ -91,7 +102,7 @@ function initObject(){
     v.scene.add(b2);
     b2.position.set(0,-100,0);*/
 
-    runFormule(0);
+    runFormule();
 
 }
 
@@ -370,6 +381,10 @@ function runFormule(){
     links.bx1.translateX((scale[12]*factor)*0.5);
     //links.bx1.translateZ(-10);
     links.bx1.scale.x = scale[12]*factor;
+
+
+    //if(rotation.z<(2*Math.PI))
+        //if(pp)pp.addV(Math.round(meshs.y4.position.x),Math.round(meshs.y4.position.y),0);
 
 
     inFormulEnable=true;

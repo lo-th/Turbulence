@@ -14,8 +14,8 @@ V3D.View = function(h,v,d){
 	this.h = window.innerHeight;
 	this.id = 'container';
 
-	this.debugColor = 0x909090;
-	this.debugColor2 = 0x404040;
+	this.debugColor = 0xB0B0B0;
+	this.debugColor2 = 0x909090;
 	this.debugColor3 = 0x404040;
 	this.debugColor4 = 0x606060;
 	this.grid = null;
@@ -186,6 +186,7 @@ V3D.View.prototype = {
 		helper.setColors( this.debugColor2, this.debugColor );
 		helper.position.copy(position);
 		helper.rotation.x = 90 * V3D.ToRad;
+		helper.position.z = -7;
 		this.scene.add( helper );
 		this.grid = helper;
     },
@@ -485,6 +486,39 @@ V3D.Navigation.prototype = {
 	}
 }
 
+V3D.Particle = function(root){
+	this.geometry = new THREE.Geometry();
+	this.material = new THREE.PointCloudMaterial( { size:10, color: 0x000000} )
+	this.particles = new THREE.PointCloud( this.geometry, this.material );
+	/*var PI2 = Math.PI * 2;
+	this.material = new THREE.SpriteCanvasMaterial( {
+		color: 0x000000,
+		program: function ( context ) {
+			context.beginPath();
+			context.arc( 0, 0, 0.5, 0, PI2, true );
+			context.fill();
+		}
+	} );
+*/
+	root.scene.add( this.particles );
+}
+V3D.Particle.prototype = {
+    constructor: V3D.Particle,
+	addV : function (x,y,z) {
+		//console.log(x,y,z)
+		var v = new THREE.Vector3(x,y,z);
+		//var l = this.particles.geometry.vertices.length;
+		//var v = new THREE.vertices;
+		this.particles.geometry.vertices.push( v );
+		this.particles.geometry.colors.push( 0x000000 );
+		//this.particles.material = this.material ;
+		this.particles.geometry.dynamic = true;
+		this.particles.geometry.verticesNeedUpdate = true;
+		this.particles.geometry.elementsNeedUpdate = true;
+		this.particles.geometry.mergeVertices()
+		//console.log(this.particles.geometry.vertices.length)
+	}
+}
 //----------------------------------
 //  LOADER IMAGE/SEA3D
 //----------------------------------

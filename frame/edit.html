@@ -91,7 +91,7 @@ function init() {
 		clearTimeout( interval );
 		if(mode == 'htmlmixed'){
 			var value = editor.getValue();
-			console.log(value)
+			//console.log(value)
 			if ( validate( value )) interval = setTimeout( root.update, 500 , value);
 		} else {
 			//save()
