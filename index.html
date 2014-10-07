@@ -25,7 +25,7 @@ body.night {background-color: #212324;  font: normal 12px Consolas;}
 </head>
 <body>
 <script>
-
+var startDemo = 1;
 var numLesson = 4;
 
 var doc = document;
@@ -44,6 +44,9 @@ var topy = 0;
 var currentLesson = -1;
 var C1, C2;
 var isFirst = false;
+
+var tmpTest;
+var nview = 0
 
 window.onload = init;
 
@@ -74,13 +77,22 @@ function init(){
 	views[2] = menu;
 
 	var _this = this;
-	views[0].onload = function (e){views[0].contentWindow.setRoot(_this);};
-	views[2].onload = function (e){
-		views[2].contentWindow.setRoot(_this, 0);
-		//views[2].contentWindow.StartByOpenFile(0);
-	};
+	
+	views[0].onload = function (e){ views[0].contentWindow.setRoot(_this); nview++; };
+	views[2].onload = function (e){ views[2].contentWindow.setRoot(_this, 0); nview++; };
     window.onresize = resize;
     resize();
+
+    tmpTest = setInterval(testload, 10);
+}
+
+function testload(){
+	
+	if(nview == 2){
+		clearInterval(tmpTest);
+		views[2].contentWindow.startByOpenFile(startDemo);
+		//setTimeout(views[2].contentWindow.startByOpenFile, 100, startDemo);
+	}
 }
 
 function resize(){

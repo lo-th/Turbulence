@@ -52,11 +52,7 @@ body.night {
 <script>
 var startByDemo = -1;
 var root = null;
-function setRoot(r, n){ 
-	root=r; 
-	startByDemo = n || 0;
-	setTimeout(StartByOpenFile, 100);
-}
+function setRoot(r){ root=r; }
 
 
 //---------------------------------------------
@@ -315,13 +311,11 @@ function dragend(e){
 	resetModified();
 }
 
-function StartByOpenFile(){
-	//console.log('yooo', startByDemo)
-	if(startByDemo >= 0 ){
-		currentFile = startByDemo;
-		root.loadFile('demos/'+files[currentFile]);
-	    resetIcon();
-	}
+function startByOpenFile(n){
+	startByDemo = n || 0;
+	currentFile = startByDemo;
+	root.loadFile('demos/'+files[currentFile]);
+    resetIcon();
 }
 
 function openFile(e){
@@ -345,8 +339,13 @@ function resetIcon(plus){
 	    }
 	    else child[0].style.border ='1px solid rgba(0,0,0,0)';
 	    if(plus){
-	    	if(i==inModif)child[2].src = iconImgModif;
-	    	else child[2].src = iconImg;
+	    	if(i==inModif){
+	    		child[1].style.color = colorModif;
+	    		child[2].src = iconImgModif;
+	    	}else{
+	    		child[1].style.color = colorSelect;
+	    	    child[2].src = iconImg;
+	    	}
 	    }
 	}
 }

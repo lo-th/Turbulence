@@ -27,7 +27,6 @@ function renderLoop(){
     if(inFormulEnable){
         rotation.z+=0.03;
         runFormule();
-        
     }
     v.render();
     requestAnimationFrame( renderLoop );

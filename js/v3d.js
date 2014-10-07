@@ -236,7 +236,7 @@ V3D.View.prototype = {
     initKeyboard:function(){
     	this.nav.bindKeys();
     },
-    point:function(size){
+    /*point:function(size){
     	size = size || 2;
     	var p = new THREE.Object3D();
     	var geo = new THREE.Geometry();
@@ -251,7 +251,7 @@ V3D.View.prototype = {
 		p.add(p2);
 		this.scene.add(p);
 		return p;
-    },
+    },*/
 
 
 
@@ -503,37 +503,68 @@ V3D.Navigation.prototype = {
 	}
 }
 
-V3D.Particle = function(root){
+V3D.Particle = function(root, n){
 	this.geometry = new THREE.Geometry();
-	this.material = new THREE.PointCloudMaterial( { size:4, color: 0xF964A7} )
+	this.material = new THREE.PointCloudMaterial( { size:4, sizeAttenuation: true, map:this.makeSprite(), transparent: true} )
 	this.particles = new THREE.PointCloud( this.geometry, this.material );
-	/*var PI2 = Math.PI * 2;
-	this.material = new THREE.SpriteCanvasMaterial( {
-		color: 0x000000,
-		program: function ( context ) {
-			context.beginPath();
-			context.arc( 0, 0, 0.5, 0, PI2, true );
-			context.fill();
-		}
-	} );
-*/
+	this.particles.sortParticles = true;
+	n=n||0;
+	for(var i=0; i<n; i++){
+		this.addV();
+	}
 	root.scene.add( this.particles );
 }
 V3D.Particle.prototype = {
     constructor: V3D.Particle,
+    makeSprite:function(){
+    	var canvas = document.createElement('canvas');
+    	canvas.width=canvas.height=32;
+
+	    var context = canvas.getContext('2d');
+	    var centerX = canvas.width / 2;
+	    var centerY = canvas.height / 2;
+	    var radius = 16;
+
+	    var grd=context.createRadialGradient(centerX-6,centerY-3,1,centerX,centerY,radius);
+	    grd.addColorStop(0,"#F9B0D1");
+	    grd.addColorStop(1,"#F964A7");
+
+	    context.beginPath();
+	    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+	    context.fillStyle = grd;//'#F964A7';
+	    context.fill();
+	    /*context.lineWidth = 1;
+	    context.strokeStyle = '#003300';
+	    context.stroke();*/
+	    var tx = new THREE.Texture(canvas);
+        //tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+        //tx.repeat = new THREE.Vector2( 1, 1);
+        tx.needsUpdate = true;
+        return tx;
+    },
 	addV : function (x,y,z) {
 		//console.log(x,y,z)
-		var v = new THREE.Vector3(x,y,z);
+		var v = new THREE.Vector3(x||0,y||0,z||0);
 		//var l = this.particles.geometry.vertices.length;
 		//var v = new THREE.vertices;
 		this.particles.geometry.vertices.push( v );
-		this.particles.geometry.colors.push( 0x000000 );
+		//this.particles.geometry.colors.push( 0x000000 );
 		//this.particles.material = this.material ;
-		this.particles.geometry.dynamic = true;
-		this.particles.geometry.verticesNeedUpdate = true;
+		//this.particles.geometry.dynamic = true;
+		//this.particles.geometry.verticesNeedUpdate = true;
 		//this.particles.geometry.elementsNeedUpdate = true;
 		//this.particles.geometry.mergeVertices()
 		//console.log(this.particles.geometry.vertices.length)
+	},
+	move : function(n, x, y, z){
+		if(this.geometry.vertices[n]){
+			this.geometry.vertices[n].x = x || 0;
+			this.geometry.vertices[n].y = y || 0;
+			this.geometry.vertices[n].z = z || 0;
+		}
+	},
+	update : function(){
+		this.geometry.verticesNeedUpdate = true;
 	}
 }
 //----------------------------------
