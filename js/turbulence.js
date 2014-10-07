@@ -11,41 +11,47 @@ Turbulence.Formula = function(){
 	this.rotation = 0;
 
 	this.points = {};
-	this.sizes = {};
 	this.angles = {};
-
+	this.sizes = {};
+	
 	// point definition
 	var names = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
 	for(var i=0; i<names.length; i++){
 		this.points[names[i]] = new Turbulence.V3()
-	};
-	// size definition   static : sizes.length - 4
-	names = ['a1b1','a1a2','b1y1','b2o1','b3o2','a2y1','y1y2','y2y3','y3y4','a2o1','y2o2','b2y2','b3y3','a1o1','a2b1','y2o1','y3o2'];
-	for(var i=0; i<names.length; i++){
-		this.sizes[names[i]] = 0;
 	};
 	// angle definition in radian
 	names = ['a1a2b1','a1a2b1','y1a2b1','y1a2o1','b1y1y2','y2y1o1','b2y2o1','y1y2o1','y2b2o1','y1y2o2','b2y2y3','y3y2o2','b3y3o2','y2y3o2','y3b3o2','b3y3y4'];
 	for(var i=0; i<names.length; i++){
 		this.angles[names[i]] = 0;
 	};
-
-	var A = 1.0;
-	var s = this.sizes;
-	// static size
-	s.a1b1 = A * 0.5;
-	s.a2o1 = s.a2y1 = s.b1y1 = A;
-	s.a1o1 = (A - s.a1b1);
-	s.a1a2 = Math.sqrt(Math.pow(s.a1o1,2) + Math.pow(s.a2o1,2));
-	var B = (Math.pow(s.a2y1,2) + Math.pow(s.a2o1,2));
-	s.y1o1 = s.b2y2 = Math.sqrt(B);
-	var C = B;
-	s.y2o2 = s.b3y3 = Math.sqrt(C);
-	s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = C + Math.sqrt(C);
+	// size definition   static : sizes.length - 4
+	names = ['a1b1','a1a2','b1y1','b2o1','b3o2','a2y1','y1y2','y2y3','y3y4','a2o1','y2o2','b2y2','b3y3','a1o1','a2b1','y2o1','y3o2'];
+	for(var i=0; i<names.length; i++){
+		this.sizes[names[i]] = 0;
+	};
+	
+	this.init();
+	//this.init(0.01, 2, 270);
+	//this.init(0.01, 2, 130);
 }
 
 Turbulence.Formula.prototype = {
     constructor: Turbulence.Formula,
+    init:function(A,C,R){
+    	this.R = R*Turbulence.ToRad || Turbulence.Pi;// default 180
+		this.A = A || 1.0;
+		var s = this.sizes;
+		// static size
+		s.a1b1 = this.A * 0.5;
+		s.a2o1 = s.a2y1 = s.b1y1 = this.A;
+		s.a1o1 = (this.A - s.a1b1);
+		s.a1a2 = Math.sqrt(Math.pow(s.a1o1,2) + Math.pow(s.a2o1,2));
+		this.B = (Math.pow(s.a2y1,2) + Math.pow(s.a2o1,2));
+		s.y1o1 = s.b2y2 = Math.sqrt(this.B);
+		this.C = C || this.B;
+		s.y2o2 = s.b3y3 = Math.sqrt(this.C);
+		s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = this.C + Math.sqrt(this.C);
+    },
     run:function(){
     	var p = this.points;
     	var s = this.sizes;
@@ -119,7 +125,7 @@ Turbulence.Formula.prototype = {
     	r.y3b3o2 = Math.acos( ((p.y3.x - p.b3.x)*(p.o2.x - p.b3.x) + (p.y3.y - p.b3.y)*(p.o2.y - p.b3.y)) / (Math.sqrt(Math.pow((p.y3.x - p.b3.x),2) + Math.pow((p.y3.y - p.b3.y),2)) * Math.sqrt(Math.pow((p.o2.x - p.b3.x),2) + Math.pow((p.o2.y - p.b3.y),2)) ) );
 
     	// y4
-    	r.b3y3y4 = Turbulence.Pi;// 180;
+    	r.b3y3y4 = this.R; 
     	p.y4.x = (Math.cos(-r.b3y3y4)*(p.b3.x - p.y3.x) - Math.sin(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.x;
     	p.y4.y = (Math.sin(-r.b3y3y4)*(p.b3.x - p.y3.x) + Math.cos(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.y;
     }
