@@ -33,15 +33,15 @@ Turbulence.Formula = function(){
 	var A = 1.0;
 	var s = this.sizes;
 	// static size
-    s.a1b1 = A * 0.5;
-    s.a2o1 = s.a2y1 = s.b1y1 = A;
-    s.a1o1 = (A - s.a1b1);
-    s.a1a2 = Math.sqrt(Math.pow(s.a1o1,2) + Math.pow(s.a2o1,2));
-    var B = (Math.pow(s.a2y1,2) + Math.pow(s.a2o1,2));
-    s.y1o1 = s.b2y2 = Math.sqrt(B);
-    var C = B;
-    s.y2o2 = s.b3y3 = Math.sqrt(C);
-    s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = C + Math.sqrt(C);
+	s.a1b1 = A * 0.5;
+	s.a2o1 = s.a2y1 = s.b1y1 = A;
+	s.a1o1 = (A - s.a1b1);
+	s.a1a2 = Math.sqrt(Math.pow(s.a1o1,2) + Math.pow(s.a2o1,2));
+	var B = (Math.pow(s.a2y1,2) + Math.pow(s.a2o1,2));
+	s.y1o1 = s.b2y2 = Math.sqrt(B);
+	var C = B;
+	s.y2o2 = s.b3y3 = Math.sqrt(C);
+	s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = C + Math.sqrt(C);
 }
 
 Turbulence.Formula.prototype = {
@@ -125,8 +125,7 @@ Turbulence.Formula.prototype = {
     }
 }
 
-
-
+// simple Vector 3d
 Turbulence.V3 = function(x,y,z){
 	this.x = x || 0;
 	this.y = y || 0;
@@ -136,7 +135,7 @@ Turbulence.V3.prototype = {
     constructor: Turbulence.V3,
     set:function(x,y,z){
     	this.x = x || 0;
-	    this.y = y || 0;
-	    this.z = z || 0;
+    	this.y = y || 0;
+    	this.z = z || 0;
     }
 }
