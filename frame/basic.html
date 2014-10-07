@@ -17,6 +17,7 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 <script src="../js/libs/sea3d.min.js"></script>
 <script src="../js/libs/Oimo.min.js"></script>
 <script src="../js/v3d.js"></script>
+<script src="../js/turbulence.js"></script>
 <script type="text/javascript" id="topScript"></script>
 </head>
 <body>
@@ -34,7 +35,7 @@ function changeTheme(n){
 		document.body.className = '';
 		if(v3d)v3d.newgradTexture(C1, n);
 	}
-	else{ 
+	else{
 		document.body.className = 'night';
 		if(v3d)v3d.newgradTexture(C2, n);
 	}

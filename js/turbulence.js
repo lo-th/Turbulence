@@ -13,9 +13,10 @@ Turbulence.Formula = function(){
 	this.points = {};
 	this.angles = {};
 	this.sizes = {};
+	this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
 	
 	// point definition
-	var names = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
+	var names = this.pNames;
 	for(var i=0; i<names.length; i++){
 		this.points[names[i]] = new Turbulence.V3()
 	};
@@ -64,12 +65,12 @@ Turbulence.Formula.prototype = {
     	// all to zero
 
     	// a1
-    	p.a1.x = s.a1a2
+    	p.a1.x = s.a1a2;
 
     	// b1
     	r.a1a2b1 = Math.asin(s.a1b1*Math.sin(r.a2a1b1) / s.a2b1);
-    	p.b1.x = (a1a2 - a1b1*Math.cos(r.a2a1b1));
-    	p.b1.y = (a1b1*Math.sin(r.a2a1b1));
+    	p.b1.x = (s.a1a2 - s.a1b1*Math.cos(r.a2a1b1));
+    	p.b1.y = (s.a1b1*Math.sin(r.a2a1b1));
 
     	// y1
     	r.y1a2b1 = Math.acos((Math.pow(s.a2b1,2) + Math.pow(s.a2y1,2) - Math.pow(s.b1y1,2)) / (2*s.a2b1*s.a2y1));

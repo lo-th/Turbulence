@@ -103,6 +103,7 @@ V3D.View.prototype = {
     	mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
     	mats['debug'] = new THREE.MeshBasicMaterial( { color:this.debugColor, wireframe:true, transparent:true, opacity:0, fog:false, depthTest:false, depthWrite:false});
     	mats['joint']  = new THREE.LineBasicMaterial( { color:0x00ff00 } );
+    	mats['point']  = new THREE.LineBasicMaterial( { color:0xF964A7 } );
     },
     initMaterial:function(){
 	    var mats = {};
@@ -234,6 +235,22 @@ V3D.View.prototype = {
     },
     initKeyboard:function(){
     	this.nav.bindKeys();
+    },
+    point:function(size){
+    	size = size || 2;
+    	var p = new THREE.Object3D();
+    	var geo = new THREE.Geometry();
+		geo.vertices.push( new THREE.Vector3( -size, 0, 0 ) );
+		geo.vertices.push( new THREE.Vector3( size, 0, 0 ) );
+		var p1 = new THREE.Line( geo, this.mats.point, THREE.LinePieces );
+		geo = new THREE.Geometry();
+		geo.vertices.push( new THREE.Vector3( 0, -size, 0 ) );
+		geo.vertices.push( new THREE.Vector3( 0, size, 0 ) );
+		var p2 = new THREE.Line( geo, this.mats.point, THREE.LinePieces );
+		p.add(p1);
+		p.add(p2);
+		this.scene.add(p);
+		return p;
     },
 
 

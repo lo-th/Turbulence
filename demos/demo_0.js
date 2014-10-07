@@ -37,11 +37,6 @@ function renderLoop(){
 v.addGrid(200, 20);
 
 
-
-
-
-
-
 // import object pack
 var pool = new SEA3D.Pool();
 pool.load( ['../models/basic.sea'], initObject );
@@ -227,8 +222,6 @@ function runFormule(){
     meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
 
 
-
-
     // ROTATION
     meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
 
@@ -243,7 +236,6 @@ function runFormule(){
     meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
     meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1+rad_b2y2y3)
     meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
-
 
 
     // apply new position to each label

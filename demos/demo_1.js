@@ -1,80 +1,52 @@
+tell('basic formula class');
 
-//--------------------------------
-//   1 - RIGIDBODYS _ Body
-//--------------------------------
-
-// create oimo world contains all rigidBodys and joint.
-var world = new OIMO.World();
-
-// three.js view with geometrys and materials ../js/v3d.js
 var v3d = new V3D.View();
-v3d.initLight();
+var v = v3d;
+// add basic grid
+v.addGrid(200, 20);
 
-// Array to keep reference of rigidbody
-var bodys = [];
-// Array to keep reference of three mesh
-var meshs = [];
-
-// OIMO.Body is the main class of rigidbody
-// it use object to define propriety 
-var obj = {};
-// the world where object is /!\ important
-obj.world = world;
-// the type of body : box sphere or (cylinder in rev)
-obj.type = 'box';
-// the start position
-obj.pos = [0,200,0];
-// the rotation in degree
-obj.rot = [0,45,0];
-// the size
-obj.size = [100,100,50];
-// is dynamic or static 
-obj.move = true;
-// the physics config
-obj.config = [
-    1, // The density of the shape.
-    0.4, // The coefficient of friction of the shape.
-    0.2, // The coefficient of restitution of the shape.
-    1, // The bits of the collision groups to which the shape belongs.
-    0xffffffff // The bits of the collision groups with which the shape collides.
-];
-// you can choose unique name for each rigidbody
-obj.name = 'myName';
-
-
-// finaly add body 
-bodys[0] = new OIMO.Body(obj);
-// add Three display mesh
-meshs[0] = v3d.add(obj);
-
-
-
-//add simple static ground
-obj = { size:[400, 40, 390], pos:[0,-20,0], world:world, flat:true }
-new OIMO.Body(obj);
-v3d.add(obj);
-
-
-// start loops
-setInterval(oimoLoop, 1000/60);
+var fs = [];
 renderLoop();
 
-/* three.js render loop */
-function renderLoop()
-{
-    requestAnimationFrame( renderLoop );
-    v3d.render();
+// basic class 
+var formula = function(pz, r, label){
+    label = label || false;
+    this.mul = 10;
+    this.pz = pz || 0;
+    // init formula class
+    this.f = new Turbulence.Formula();
+    // the start rotation
+    this.f.rotation = r || 0;
+    this.points = [];
+    // add each formula point to 3d view
+    for(var i = 0; i<this.f.pNames.length; i++){
+        this.points[i] = v.point();
+        if(label) this.points[i].add(v.addLabel(this.f.pNames[i]));
+    }
 }
 
-/* oimo loop */
-function oimoLoop() 
-{  
-    world.step();// update world
+formula.prototype = {
+    run:function(){
+        this.f.rotation += 0.03;
+        this.f.run();
+        var p;
+        for(var i = 0; i<this.f.pNames.length; i++){
+            p = this.f.points[this.f.pNames[i]];
+            this.points[i].position.set(p.x*this.mul, p.y*this.mul, this.pz);
+        }
+    }
+}
 
-    // get rigidbody position and rotation and apply to mesh 
-    meshs[0].position.copy(bodys[0].getPosition());
-    meshs[0].quaternion.copy(bodys[0].getQuaternion());
+// add 60 formule test
+for(var i = 0; i<60; i++){
+    if(i==0)fs[i] = new formula(30-(i*10), i*0.104, true);
+    else fs[i] = new formula(30-(i*10), i*0.05);
+}
 
-    // oimo stat display
-    document.getElementById("info").innerHTML = world.performance.show();
+function renderLoop(){
+    for(var i = 0; i<fs.length; i++){
+        fs[i].run();
+    }
+    v.render();
+    requestAnimationFrame( renderLoop );
 }
