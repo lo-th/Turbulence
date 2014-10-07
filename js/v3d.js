@@ -505,7 +505,7 @@ V3D.Navigation.prototype = {
 
 V3D.Particle = function(root){
 	this.geometry = new THREE.Geometry();
-	this.material = new THREE.PointCloudMaterial( { size:10, color: 0x000000} )
+	this.material = new THREE.PointCloudMaterial( { size:4, color: 0xF964A7} )
 	this.particles = new THREE.PointCloud( this.geometry, this.material );
 	/*var PI2 = Math.PI * 2;
 	this.material = new THREE.SpriteCanvasMaterial( {
@@ -531,8 +531,8 @@ V3D.Particle.prototype = {
 		//this.particles.material = this.material ;
 		this.particles.geometry.dynamic = true;
 		this.particles.geometry.verticesNeedUpdate = true;
-		this.particles.geometry.elementsNeedUpdate = true;
-		this.particles.geometry.mergeVertices()
+		//this.particles.geometry.elementsNeedUpdate = true;
+		//this.particles.geometry.mergeVertices()
 		//console.log(this.particles.geometry.vertices.length)
 	}
 }
