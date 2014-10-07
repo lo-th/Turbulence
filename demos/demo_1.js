@@ -1,9 +1,9 @@
 tell('basic formula class');
 
-var v3d = new V3D.View();
+var v3d = new V3D.View(90,90,200);
 var v = v3d;
 // add basic grid
-v.addGrid(200, 20);
+v.addGrid(120, 20);
 
 var fs = [];
 renderLoop();
@@ -23,7 +23,7 @@ var formula = function(pz, r, label){
     for(var i = 0; i<this.f.pNames.length; i++){
         //this.o.addV(0,0,0);
         if(label){ 
-            this.labels[i] = v.addLabel(this.f.pNames[i]);
+            this.labels[i] = v.addLabel(this.f.pNames[i], 5);
             v.scene.add(this.labels[i]);
         }
     }

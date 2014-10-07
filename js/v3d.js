@@ -157,7 +157,7 @@ V3D.View.prototype = {
     },
     addLabel:function(text, size, color){
     	if(!color) color = "#F964A7";
-		if(!size) size = 36;
+		if(!size) size = 10;
 
 		var canvas = document.createElement("canvas");
 
@@ -165,18 +165,18 @@ V3D.View.prototype = {
 		canvas.width = 20*3;
 		canvas.height = 20*3;
 		var ctx = canvas.getContext("2d");
-		ctx.font = 'normal '+size+'pt Consolas';
+		ctx.font = 'normal 36pt Consolas';
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = color;
-		ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+		ctx.fillText(text,canvas.width*0.5, canvas.height*0.5);
 
 		var texture = new THREE.Texture(canvas);
 		texture.needsUpdate = true;
 
-		var mat = new THREE.MeshBasicMaterial( { map:texture, transparent:true } );
-		var p = new THREE.Mesh(new THREE.PlaneBufferGeometry(8, 8), mat);
-		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,10,0));
+		var mat = new THREE.MeshBasicMaterial( { map:texture, transparent:true, depthWrite:false  } );
+		var p = new THREE.Mesh(new THREE.PlaneBufferGeometry(size, size), mat);
+		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,size,Math.random()));
 		return p;
     },
     addGrid:function(size, div, position){

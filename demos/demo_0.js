@@ -11,7 +11,10 @@ var v = v3d;
 v.initLight();
 
 // test particle
-var pp = new V3D.Particle(v);
+var ppmax = Math.round((2*Math.PI)/0.03);
+var ppn = 0;
+var pp = new V3D.Particle(v, ppmax);
+
 //pp.addV(100,100, 0)
 //pp.addV(150,100, 0)
 // formule points
@@ -92,7 +95,7 @@ function initObject(){
 function runFormule(){
     var factor = 20;
     
-
+    var R = 180;
     var A = 1.0;
 
     var a1b1 = A * 0.5;
@@ -212,7 +215,7 @@ function runFormule(){
     var rad_y3b3o2 = Math.acos( ((y3.x - b3.x)*(o2.x - b3.x) + (y3.y - b3.y)*(o2.y - b3.y)) / (Math.sqrt(Math.pow((y3.x - b3.x),2) + Math.pow((y3.y - b3.y),2)) * Math.sqrt(Math.pow((o2.x - b3.x),2) + Math.pow((o2.y - b3.y),2)) ) );
 
     // y4 //
-    var rad_b3y3y4 = Math.PI;
+    var rad_b3y3y4 = R*ToRad;
 
     var y3y4_X = (Math.cos(-rad_b3y3y4)*(b3.x - y3.x) - Math.sin(-rad_b3y3y4)*(b3.y - y3.y)) * y3y4 / b3y3 + y3.x;
     var y3y4_Y = (Math.sin(-rad_b3y3y4)*(b3.x - y3.x) + Math.cos(-rad_b3y3y4)*(b3.y - y3.y)) * y3y4 / b3y3 + y3.y;
@@ -268,13 +271,17 @@ function runFormule(){
     links.bx0.scale.x = scale[11]*factor;
 
 
-    links.bx1.position.copy(meshs.y3.position);
-    links.bx1.rotation.copy(meshs.y4.rotation);
-    links.bx1.translateX((scale[12]*factor)*0.5);
+    //links.bx1.position.copy(meshs.y3.position);
+    links.bx1.position.copy(meshs.b3.position);
+    links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;//-Math.PI;
+    //links.bx1.rotation.copy(meshs.y4.rotation);
+    links.bx1.translateX(((scale[12]*factor)*0.5));
     //links.bx1.translateZ(-10);
     links.bx1.scale.x = scale[12]*factor;
 
-
+    pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
+    ppn++;
+    if(ppn==ppmax) ppn = 0;
     //if(rotation.z<(2*Math.PI))
         //if(pp)pp.addV(Math.round(meshs.y4.position.x),Math.round(meshs.y4.position.y),0);
 
