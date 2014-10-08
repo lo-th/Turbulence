@@ -503,7 +503,7 @@ V3D.Navigation.prototype = {
 	}
 }
 
-V3D.Particle = function(root, n){
+V3D.Particle = function(obj, n){
 	this.geometry = new THREE.Geometry();
 	this.material = new THREE.PointCloudMaterial( { size:4, sizeAttenuation: true, map:this.makeSprite(), transparent: true} )
 	this.particles = new THREE.PointCloud( this.geometry, this.material );
@@ -512,7 +512,7 @@ V3D.Particle = function(root, n){
 	for(var i=0; i<n; i++){
 		this.addV();
 	}
-	root.scene.add( this.particles );
+	obj.add( this.particles );
 }
 V3D.Particle.prototype = {
     constructor: V3D.Particle,

@@ -18,7 +18,7 @@ var formula = function(pz, r, label){
     // the start rotation
     this.f.rotation = r || 0;
     this.labels = [];
-    this.o = new V3D.Particle(v, this.f.pNames.length);
+    this.o = new V3D.Particle(v.scene, this.f.pNames.length);
     // add each formula point to 3d view
     for(var i = 0; i<this.f.pNames.length; i++){
         //this.o.addV(0,0,0);

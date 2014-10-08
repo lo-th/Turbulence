@@ -13,7 +13,7 @@ v.initLight();
 // test particle
 var ppmax = Math.round((2*Math.PI)/0.03);
 var ppn = 0;
-var pp = new V3D.Particle(v, ppmax);
+var pp = new V3D.Particle(v.scene, ppmax);
 
 //pp.addV(100,100, 0)
 //pp.addV(150,100, 0)

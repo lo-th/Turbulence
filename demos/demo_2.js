@@ -1,122 +1,89 @@
+tell('physics spider');
 
-//--------------------------------
-//   2 - JOINTS _ Link
-//--------------------------------
+var v3d = new V3D.View(90,90,200);
+var v = v3d;
+// add basic grid
+v.addGrid(120, 20);
 
 // create oimo world contains all rigidBodys and joint.
 var world = new OIMO.World();
+world.gravity = new OIMO.Vec3(0, -9.8, 0);
 
-// three.js view with geometrys and materials ../js/v3d.js
-var v3d = new V3D.View();
-v3d.initLight();
+//add static ground
+var ground  = new OIMO.Body({size:[400, 40, 390], pos:[0,-20,0], world:world});
 
-// Array to keep reference of rigidbody
-var bodys = [];
-// Array to keep reference of joint
-var joints = [];
-// Array to keep reference of three mesh
-var meshs = [];
-// Array to keep reference of three joint
-var lines = [];
-
-
-// create first static body
-var obj = { size:[40, 100, 40], pos:[0,200,0], world:world, name:'base', move:true }
-bodys[0] = new OIMO.Body(obj);
-meshs[0] = v3d.add(obj);
-// create second dynamique body
-obj = { size:[100, 100, 100], pos:[60,200,200], world:world, name:'moving', move:true }
-bodys[1] = new OIMO.Body(obj);
-meshs[1] = v3d.add(obj);
-
-
-// OIMO.Link is the main class of joint
-// it use object to define propriety
-obj = {};
-// the world where joint is /!\ important
-obj.world = world;
-// the type of joint
-// jointHinge : allows only for relative rotation of rigid bodies along the axis.
-// jointDistance : limits the distance between two anchor points on rigidBody.
-// jointPrisme : allows only for relative translation of rigid bodies along the axis.
-// jointSlide : allows for relative translation and relative rotation between two rigid bodies along the axis.
-// jointBall : limits relative translation on two anchor points on rigidBody.
-// jointWheel : rotation between two rigid bodies along two axes and translation for the suspension.
-// (note: rev version have jointBall, jointDistance, jointHinge, jointHinge2)
-obj.type = 'jointDistance';
-// the first rigidbody can be name or body reference
-obj.body1 = 'base';
-// the second rigidbody can be name or body reference
-obj.body2 = 'moving';
-// if body1 and body2 keep collision between them
-obj.collision = true;
-// the position of the first point relative to body1 can be static or dynamic
-obj.pos1 = [0,-50,0];
-// the position of the second point relative to body2 can be static or dynamic
-obj.pos2 = [0,50,0];
-// the first axis limite XYZ 1:active 0:inactive
-obj.axe1 = [1,0,0];
-// the second axis limite XYZ 1:active 0:inactive
-obj.axe2 = [1,0,0];
-// min max distance for jointDistance or angles in degree for jointHinge
-obj.min = 45;
-obj.max = 200;
-
-// extra propriety 
-// Limit for jointWheel and Spring
-// defined by array [lowerLimit,upperLimit]
-obj.limite = null;
-// Spring for JointDistance, JointHinge, jointWheel
-// defined by array [frequency,dampingRatio]
-obj.spring = [8, 0.2];
-// motor for JointDistance, JointHinge, jointWheel
-// defined by array [motorSpeed,maxMotorForce]
-obj.motor = null;
-
-
-
-// you can choose unique name for each joints
-obj.name = 'myName';
-
-// finaly add joint 
-joints[0] = new OIMO.Link(obj);
-// add Three display line
-lines[0] = v3d.add(obj);
-
-
-// start loops
-setInterval(oimoLoop, 1000/60);
+var fs = [];
 renderLoop();
 
-/* three.js render loop */
-function renderLoop()
-{
-    requestAnimationFrame( renderLoop );
-    v3d.render();
+// i create the main object
+var obj = {type:'sphere', size:[10, 10, 10], pos:[0,0,0], move:true, world:world}
+var spider = v.add(obj);//new THREE.Object3D();
+v.scene.add(spider);
+var meshs = [];
+
+
+// basic class 
+var formula = function(pz, r, label){
+    this.mesh = new THREE.Object3D();
+    spider.add(this.mesh);
+    label = label || false;
+    this.mul = 1//10;
+    this.pz = pz || 0;
+    // init formula class
+    this.f = new Turbulence.Formula();
+    // the start rotation
+    this.f.rotation = r || 0;
+    this.labels = [];
+    this.o = new V3D.Particle(this.mesh, this.f.pNames.length);
+    // add each formula point to 3d view
+    for(var i = 0; i<this.f.pNames.length; i++){
+        //this.o.addV(0,0,0);
+        if(label){ 
+            this.labels[i] = v.addLabel(this.f.pNames[i], 5);
+            v.scene.add(this.labels[i]);
+        }
+    }
 }
-var s = 0;
-/* oimo loop */
-function oimoLoop() 
-{  
-    world.step();// update world
-	if(meshs[0].position.x<40 && s==0) {meshs[0].position.x++; }
-	else s=1;
-	if(meshs[0].position.x>-40 && s==1) {meshs[0].position.x--; }
-	else s=0;
-	
-	bodys[0].setPosition(meshs[0].position);
-	bodys[0].setQuaternion(meshs[0].quaternion);
 
-    // get rigidbody position and rotation and apply to mesh 
-    meshs[1].position.copy(bodys[1].getPosition());
-    meshs[1].quaternion.copy(bodys[1].getQuaternion());
+formula.prototype = {
+    run:function(){
+        this.f.rotation += 0.03;
+        this.f.run();
+        var p;
+        for(var i = 0; i<this.f.pNames.length; i++){
+            p = this.f.points[this.f.pNames[i]];
+            this.o.move(i, p.x*this.mul, p.y*this.mul, this.pz);
+            if(this.labels.length>0){
+                this.labels[i].position.set(p.x*this.mul, p.y*this.mul, this.pz)
+            }
+        }
+        this.o.update();
+    },
+    getEndPoint:function(){
+        var m = this.mesh.matrixWorld.clone();
+        var m2 = new THREE.Matrix4();
+        m2.makeTranslation(this.f.points.y4.x,this.f.points.y4.y,0); 
+        m.multiply( m2 );
+        var p = new THREE.Vector3().setFromMatrixPosition( m );
+        return p;
+    }
+}
 
-    // get joint point position and apply to three line
-    var pos = joints[0].getPosition();
-    lines[0].geometry.vertices[0].copy( pos[0] );
-    lines[0].geometry.vertices[1].copy( pos[1] );
-    lines[0].geometry.verticesNeedUpdate = true;
+// add 200 formule test
+for(var i = 0; i<8; i++){
+    if(i==0 || i==2 || i==4 || i==6)fs[i] = new formula(0, Math.PI);
+    else fs[i] = new formula(0, 0);
+    fs[i].mesh.rotation.set(0,(45*i)*V3D.ToRad,75*V3D.ToRad);
 
-    // oimo stat display
-    document.getElementById("info").innerHTML = world.performance.show();
+    var obj = {type:'sphere', size:[6, 6, 6], pos:[0,0,0], move:true, world:world}
+    meshs[i] = v.add(obj);
+}
+
+function renderLoop(){
+    for(var i = 0; i<fs.length; i++){
+        fs[i].run();
+        meshs[i].position.copy(fs[i].getEndPoint())
+    }
+    v.render();
+    requestAnimationFrame( renderLoop );
 }
