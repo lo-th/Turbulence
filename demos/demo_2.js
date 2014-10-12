@@ -8,16 +8,19 @@ v.addGrid(120, 20);
 // create oimo world contains all rigidBodys and joint.
 var world = new OIMO.World();
 world.gravity = new OIMO.Vec3(0, -9.8, 0);
+var bodys = [];
+world.worldscale(10);
 
 //add static ground
-var ground  = new OIMO.Body({size:[400, 40, 390], pos:[0,-20,0], world:world});
-
+var ground  = new OIMO.Body({size:[10000, 200, 10000], pos:[0,-300,0], world:world});
+v.add({size:[10000, 200, 10000], pos:[0,-300,0], world:world})
 var fs = [];
 renderLoop();
 
 // i create the main object
-var obj = {type:'sphere', size:[10, 10, 10], pos:[0,0,0], move:true, world:world}
-var spider = v.add(obj);//new THREE.Object3D();
+var obj = {type:'sphere', size:[40, 40, 40], pos:[0,0,0], move:true, world:world}
+var spider = new THREE.Object3D();//v.add(obj);//
+var spiderPhy = new OIMO.Body(obj);
 v.scene.add(spider);
 var meshs = [];
 
@@ -27,7 +30,7 @@ var formula = function(pz, r, label){
     this.mesh = new THREE.Object3D();
     spider.add(this.mesh);
     label = label || false;
-    this.mul = 1//10;
+    this.mul = 10;
     this.pz = pz || 0;
     // init formula class
     this.f = new Turbulence.Formula();
@@ -62,10 +65,11 @@ formula.prototype = {
     getEndPoint:function(){
         var m = this.mesh.matrixWorld.clone();
         var m2 = new THREE.Matrix4();
-        m2.makeTranslation(this.f.points.y4.x,this.f.points.y4.y,0); 
+        m2.makeTranslation(this.f.points.y4.x*this.mul,this.f.points.y4.y*this.mul,0); 
         m.multiply( m2 );
         var p = new THREE.Vector3().setFromMatrixPosition( m );
-        return p;
+        var q = new THREE.Quaternion().setFromRotationMatrix( m );
+        return [p,q];
     }
 }
 
@@ -75,15 +79,37 @@ for(var i = 0; i<8; i++){
     else fs[i] = new formula(0, 0);
     fs[i].mesh.rotation.set(0,(45*i)*V3D.ToRad,75*V3D.ToRad);
 
-    var obj = {type:'sphere', size:[6, 6, 6], pos:[0,0,0], move:true, world:world}
+    var obj = {type:'box', size:[60,20,20], pos:[0,0,0], move:true, world:world}
     meshs[i] = v.add(obj);
+    bodys[i] = new OIMO.Body(obj);
 }
 
 function renderLoop(){
     for(var i = 0; i<fs.length; i++){
         fs[i].run();
-        meshs[i].position.copy(fs[i].getEndPoint())
+        var tt = fs[i].getEndPoint();
+        meshs[i].position.copy(tt[0])
+        meshs[i].quaternion.copy(tt[1])
     }
     v.render();
     requestAnimationFrame( renderLoop );
 }
+
+/* oimo loop */
+function oimoLoop() 
+{  
+    world.step();
+   spider.position.copy(spiderPhy.getPosition());
+    spider.quaternion.copy(spiderPhy.getQuaternion());
+    var i = bodys.length;
+    var body, mesh;
+    while (i--){
+        body = bodys[i];
+        mesh = meshs[i];
+        body.setPosition(mesh.position);
+        body.setQuaternion(mesh.quaternion);
+    }
+     
+}
+
+setInterval(oimoLoop, 1000/60);

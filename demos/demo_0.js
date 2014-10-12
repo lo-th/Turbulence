@@ -8,7 +8,7 @@ var inFormulEnable = false;
 var rotation = new THREE.Euler(0,0,0);
 
 var v = v3d;
-v.initLight();
+
 
 // test particle
 var ppmax = Math.round((2*Math.PI)/0.03);
@@ -23,6 +23,10 @@ var meshs = {};
 var labels = {};
 var links = {};
 var scale = [];
+
+var hidePoints = ['a1', 'b1', 'b2', 'y1']
+
+var type = 0;
 
 renderLoop();
 
@@ -64,9 +68,8 @@ function initObject(){
         v.scene.add(t);
         // add Link
         if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c4 );
-        else{ 
-            l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
-        }
+        else l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        
         v.scene.add(l);
 
         if(name=='a1' || name=='a2'){
@@ -83,13 +86,39 @@ function initObject(){
     for(i=0; i<2; i++){
         name = 'bx'+ i;
         l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
-        //var l = new THREE.Mesh( v.geos.box, v.mats.c3 );
-        //l.scale.set(1,4,4);
         v.scene.add(l);
         links[name] = l;
     }
 
+    setType(0)
     runFormule();
+}
+
+function setType(n){
+    type = n;
+    if(type == 1 ){
+        var i = hidePoints.length, name;
+        while(i--){
+            name = hidePoints[i];
+            meshs[name].visible = false;
+            labels[name].visible = false;
+            links[name].visible = false;
+        }
+        links.a2.visible = false;
+        links.o1.visible = false;
+        links.bx0.visible = false;
+    }else{
+        var i = hidePoints.length, name;
+        while(i--){
+            name = hidePoints[i];
+            meshs[name].visible = true;
+            labels[name].visible = true;
+            links[name].visible = true;
+        }
+        links.a2.visible = true;
+        links.o1.visible = true;
+        links.bx0.visible = true;
+    }
 }
 
 function runFormule(){
@@ -97,6 +126,7 @@ function runFormule(){
     
     var R = 180;
     var A = 1.0;
+    if(type == 1) A = 0.01;
 
     var a1b1 = A * 0.5;
 
@@ -113,6 +143,7 @@ function runFormule(){
     var b2y2 = Math.sqrt(B);
 
     var C = B;
+    if(type == 1) C = 2;
 
     var y2o2 = Math.sqrt(C);
     var b3y3 = Math.sqrt(C);
@@ -223,6 +254,27 @@ function runFormule(){
     var y4 = new THREE.Vector3(y3y4_X, y3y4_Y, 0.0);
     meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
 
+    // o4 // target
+    var o4 = new THREE.Vector3(y4.x, y4.y, 5.0);
+    
+
+    // two target vectors :: a-> is y4y3, b-> is y4o4
+    var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
+    var b = new THREE.Vector3((o4.x-y4.x), (o4.y-y4.y), (o4.z-y4.z));
+
+    // start of the inner product (the calculation of the angle of rotation)
+    // calculation by ourselves (for analysis)
+    var rad_y3y4o4 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
+    // var rad_y3y4o4 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
+
+    // start of the cross vectors (the calculation of the normal vector or axis of rotation)
+    // calculation by ourselves (for analysis)
+    var nor_y3y4o4 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
+    // var nor_y3y4o4 = new THREE.Vector3().crossVectors(a, b).normalize();
+
+    var q = new THREE.Quaternion().setFromAxisAngle(nor_y3y4o4, rad_y3y4o4);
+    meshs.y4.rotation.setFromQuaternion(q);
+
 
     // ROTATION
     meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
@@ -237,7 +289,7 @@ function runFormule(){
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
     meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1+rad_b2y2y3)
-    meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+    //meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
 
 
     // apply new position to each label
@@ -253,12 +305,19 @@ function runFormule(){
     var i = points.length, name;
     while(i--){
         name = points[i];
-        links[name].position.copy(meshs[name].position);
-        links[name].rotation.copy(meshs[name].rotation);
-        links[name].translateX((scale[i]*factor)*0.5);
+        if(name !== 'y4'){
+            links[name].position.copy(meshs[name].position);
+            links[name].rotation.copy(meshs[name].rotation);
+            links[name].translateX((scale[i]*factor)*0.5);
+        }else{
+            links[name].position.copy(meshs.y3.position);
+            links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
+            links[name].translateX((scale[i]*factor)*0.5);
+            //links[name].rotation.copy(meshs.y3.rotation);
+        }
         //if(name == 'a1' || name == 'y1' || name == 'o1'|| name == 'b3') links[name].translateZ(-4);
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
-        if( name == 'b3' ) links[name].translateZ(-14);
+        if(name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
         if(name == 'a2') links[name].translateZ(-28);
         links[name].scale.x = (scale[i]*factor);

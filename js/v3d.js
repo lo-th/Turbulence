@@ -106,15 +106,16 @@ V3D.View.prototype = {
     	mats['point']  = new THREE.LineBasicMaterial( { color:0xF964A7 } );
     },
     initMaterial:function(){
+    	var img = THREE.ImageUtils.loadTexture( '../images/env.jpg' );
 	    var mats = {};
 	    this.initBasicMaterial(mats);
 	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
-	    mats['c1'] = new THREE.MeshBasicMaterial( { color:0xF964A7, name:'c1' } );
-	    mats['c2'] = new THREE.MeshBasicMaterial( { color:0xFF0073, name:'c2' } );
-	    mats['c3'] = new THREE.MeshBasicMaterial( { color:0x43B8CC, name:'c3' } );
-	    mats['c4'] = new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
-	    mats['c5'] = new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
-	    mats['c6'] = new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
+	    mats['c1'] = new V3D.Shader(img, 0xF964A7);//THREE.MeshBasicMaterial( { color:0xF964A7, name:'c1' } );
+	    mats['c2'] = new V3D.Shader(img, 0xFF0073);//new THREE.MeshBasicMaterial( { color:0xFF0073, name:'c2' } );
+	    mats['c3'] = new V3D.Shader(img, 0x43B8CC);//new THREE.MeshBasicMaterial( { color:0x43B8CC, name:'c3' } );
+	    mats['c4'] = new V3D.Shader(img, 0x059BB5);//new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
+	    mats['c5'] = new V3D.Shader(img, 0xD4D1BE);//new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
+	    mats['c6'] = new V3D.Shader(img, 0xD4D1BE, this.doubleTexture());//new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
 
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
@@ -567,6 +568,97 @@ V3D.Particle.prototype = {
 		this.geometry.verticesNeedUpdate = true;
 	}
 }
+
+//----------------------------------
+//  SHADER
+//----------------------------------
+
+V3D.Shader = function(img, c, bitmap){
+    var shader, image;
+    if(typeof img == 'string' || img instanceof String) image = THREE.ImageUtils.loadTexture( img );
+    else image = img;
+    var color = new THREE.Color( c || 0x00ff00 );
+    var shader = V3D.Sph1;
+    if(bitmap) shader = V3D.Sph11;
+    var material = new THREE.ShaderMaterial({
+        uniforms: { 
+	        mat: {type: 't', value: null},
+	        color: {type: 'c', value: null},
+	        mat1: {type: 't', value: null},
+	    },
+        vertexShader: shader.vs,
+        fragmentShader: shader.fs,
+        shading: THREE.SmoothShading       
+    });
+    material.uniforms.mat.value = image;
+    if(bitmap) material.uniforms.mat1.value = bitmap;
+    material.uniforms.color.value = color;
+    return material;
+};
+
+V3D.Sph1={
+    attributes:{},
+    uniforms:{ 
+    	mat: {type: 't', value: null},
+    	mat2: {type: 't', value: null},
+        color: {type: 'c', value: null}
+    },
+    fs:[
+        'uniform sampler2D mat;',
+        'uniform vec3 color;',
+        'varying vec2 vN;',
+        'void main() {',
+            'vec3 base = texture2D( mat, vN ).rgb;',
+            'base *= color;',
+            'gl_FragColor = vec4( base, 1. );',
+        '}'
+    ].join("\n"),
+    vs:[
+        'varying vec2 vN;',
+        'void main() {',
+            'vec3 e = normalize( vec3( modelViewMatrix * vec4( position, 1.0 ) ) );',
+            'vec3 n = normalize( normalMatrix * normal );',
+            'vec3 r = reflect( e, n );',
+            'float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );',
+            'vN = r.xy / m + .5;',
+            'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
+        '}'
+    ].join("\n")
+};
+
+V3D.Sph11={
+    attributes:{},
+    uniforms:{ 
+    	mat: {type: 't', value: null},
+    	mat1: {type: 't', value: null},
+        color: {type: 'c', value: null}
+    },
+    fs:[
+        'uniform sampler2D mat;',
+        'uniform sampler2D mat1;',
+        'varying vec2 vN;',
+        'varying vec2 vU;',
+        'void main() {',
+            'vec3 base = texture2D( mat, vN ).rgb;',
+            'vec3 base1 = texture2D( mat1, vU ).rgb;',
+            'base *= base1;',
+            'gl_FragColor = vec4( base, 1. );',
+        '}'
+    ].join("\n"),
+    vs:[
+        'varying vec2 vN;',
+        'varying vec2 vU;',
+        'void main() {',
+            'vec3 e = normalize( vec3( modelViewMatrix * vec4( position, 1.0 ) ) );',
+            'vec3 n = normalize( normalMatrix * normal );',
+            'vec3 r = reflect( e, n );',
+            'float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );',
+            'vN = r.xy / m + .5;',
+            'vU = uv;',
+            'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
+        '}'
+    ].join("\n")
+};
 //----------------------------------
 //  LOADER IMAGE/SEA3D
 //----------------------------------
