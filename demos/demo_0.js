@@ -24,6 +24,7 @@ var labels = {};
 var links = {};
 var scale = [];
 var pivot = null;
+var target = null;
 
 var hidePoints = ['a1', 'b1', 'b2', 'y1']
 
@@ -62,7 +63,7 @@ function initObject(){
         else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
-        else m = new THREE.Mesh( pool.geo('basic_point'), v.mats.c6 );
+        else m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 );
         v.scene.add(m);
         // add label 
         t = v.addLabel(name);
@@ -93,6 +94,9 @@ function initObject(){
     // add extra pivot
     pivot = new THREE.Mesh( pool.geo('basic_pivot'), v.mats.c6 );
     v.scene.add(pivot);
+    // add extra target
+    target = new THREE.Mesh( pool.geo('basic_point6'), v.mats.c1 );
+    v.scene.add(target);
 
     setType(0)
     runFormule();
@@ -259,7 +263,9 @@ function runFormule(){
     meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
 
     // o4 // target
-    var o4 = new THREE.Vector3(y4.x, y4.y, 5.0);
+    var o4 = new THREE.Vector3(y4.x, y4.y, -1.0);
+
+    target.position.set(o4.x*factor, o4.y*factor, o4.z*factor);
     
 
     // two target vectors :: a-> is y4y3, b-> is y4o4
@@ -351,7 +357,8 @@ function runFormule(){
     //links.bx1.translateZ(-10);
     links.bx1.scale.x = scale[12]*factor;
 
-    pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
+    //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
+    pp.move(ppn, target.position.x, target.position.y, target.position.z);
     ppn++;
     if(ppn==ppmax) ppn = 0;
     //if(rotation.z<(2*Math.PI))
