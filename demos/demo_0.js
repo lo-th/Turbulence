@@ -295,7 +295,7 @@ function runFormule(){
 
         }else{
             links[name].position.copy(meshs.y3.position);
-            links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
+            links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2 + ((180-R)*ToRad);
             links[name].translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
@@ -307,7 +307,7 @@ function runFormule(){
     // pivot position
     pivot.position.copy(meshs.y3.position);
     //pivot.rotation.copy(meshs.y3.rotation);
-    pivot.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
+    pivot.rotation.z = links.y4.rotation.z;
     pivot.translateX((scale[8]*factor));
 
     // extra link
