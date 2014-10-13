@@ -23,6 +23,7 @@ var meshs = {};
 var labels = {};
 var links = {};
 var scale = [];
+var pivot = null;
 
 var hidePoints = ['a1', 'b1', 'b2', 'y1']
 
@@ -89,6 +90,9 @@ function initObject(){
         v.scene.add(l);
         links[name] = l;
     }
+    // add extra pivot
+    pivot = new THREE.Mesh( pool.geo('basic_pivot'), v.mats.c6 );
+    v.scene.add(pivot);
 
     setType(0)
     runFormule();
@@ -310,10 +314,12 @@ function runFormule(){
             links[name].position.copy(meshs[name].position);
             links[name].rotation.copy(meshs[name].rotation);
             links[name].translateX((scale[i]*factor)*0.5);
+
         }else{
             links[name].position.copy(meshs.y3.position);
             links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
             links[name].translateX((scale[i]*factor)*0.5);
+            //console.log(i);
             //links[name].rotation.copy(meshs.y3.rotation);
         }
         //if(name == 'a1' || name == 'y1' || name == 'o1'|| name == 'b3') links[name].translateZ(-4);
@@ -323,6 +329,12 @@ function runFormule(){
         if(name == 'a2') links[name].translateZ(-28);
         links[name].scale.x = (scale[i]*factor);
     }
+    // pivot position
+    pivot.position.copy(meshs.y3.position);
+    //pivot.rotation.copy(meshs.y3.rotation);
+    pivot.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
+    pivot.translateX((scale[8]*factor));
+
     // extra link
     links.bx0.position.copy(meshs.y2.position);
     links.bx0.rotation.copy(meshs.y3.rotation);

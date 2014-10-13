@@ -31,7 +31,7 @@ V3D.View.prototype = {
     init:function(h,v,d){
     	this.clock = new THREE.Clock();
 
-    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:false});
+    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true});
     	this.renderer.setSize( this.w, this.h );
     	this.renderer.setClearColor( 0x1d1f20, 1 );
     	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 2000 );
