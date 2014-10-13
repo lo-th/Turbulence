@@ -44,10 +44,11 @@ function renderLoop(){
 // add basic grid
 v.addGrid(200, 20);
 
-
 // import object pack
 var pool = new SEA3D.Pool();
 pool.load( ['../models/basic.sea'], initObject );
+
+var b = new UI.Button('type 0', setType);
 
 
 
@@ -75,8 +76,8 @@ function initObject(){
         v.scene.add(l);
 
         if(name=='a1' || name=='a2'){
-             var c = new THREE.Mesh( pool.geo('basic_origin'), v.mats.c5 );
-             t.add(c);
+            var c = new THREE.Mesh( pool.geo('basic_origin'), v.mats.c5 );
+            t.add(c);
         }
 
         labels[name] = t;
@@ -98,35 +99,8 @@ function initObject(){
     target = new THREE.Mesh( pool.geo('basic_point6'), v.mats.c1 );
     v.scene.add(target);
 
-    setType(0)
+    //setType(0);
     runFormule();
-}
-
-function setType(n){
-    type = n;
-    if(type == 1 ){
-        var i = hidePoints.length, name;
-        while(i--){
-            name = hidePoints[i];
-            meshs[name].visible = false;
-            labels[name].visible = false;
-            links[name].visible = false;
-        }
-        links.a2.visible = false;
-        links.o1.visible = false;
-        links.bx0.visible = false;
-    }else{
-        var i = hidePoints.length, name;
-        while(i--){
-            name = hidePoints[i];
-            meshs[name].visible = true;
-            labels[name].visible = true;
-            links[name].visible = true;
-        }
-        links.a2.visible = true;
-        links.o1.visible = true;
-        links.bx0.visible = true;
-    }
 }
 
 function runFormule(){
@@ -267,7 +241,6 @@ function runFormule(){
 
     target.position.set(o4.x*factor, o4.y*factor, o4.z*factor);
     
-
     // two target vectors :: a-> is y4y3, b-> is y4o4
     var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
     var b = new THREE.Vector3((o4.x-y4.x), (o4.y-y4.y), (o4.z-y4.z));
@@ -309,7 +282,6 @@ function runFormule(){
         name = points[i];
         labels[name].position.copy(meshs[name].position);
         if(name == 'a1' || name == 'a2') labels[name].position.z = -28;
-        //if(name == 'b1') labels[name].position.z = -14;
     }
 
     // apply new position to each link
@@ -325,10 +297,7 @@ function runFormule(){
             links[name].position.copy(meshs.y3.position);
             links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
             links[name].translateX((scale[i]*factor)*0.5);
-            //console.log(i);
-            //links[name].rotation.copy(meshs.y3.rotation);
         }
-        //if(name == 'a1' || name == 'y1' || name == 'o1'|| name == 'b3') links[name].translateZ(-4);
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
@@ -348,13 +317,9 @@ function runFormule(){
     links.bx0.translateZ(-7);
     links.bx0.scale.x = scale[11]*factor;
 
-
-    //links.bx1.position.copy(meshs.y3.position);
     links.bx1.position.copy(meshs.b3.position);
-    links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;//-Math.PI;
-    //links.bx1.rotation.copy(meshs.y4.rotation);
+    links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
     links.bx1.translateX(((scale[12]*factor)*0.5));
-    //links.bx1.translateZ(-10);
     links.bx1.scale.x = scale[12]*factor;
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
@@ -366,4 +331,34 @@ function runFormule(){
 
 
     inFormulEnable=true;
+}
+
+function setType(){
+    if(type == 0) type = 1;
+    else type = 0;
+    if(type == 1 ){
+        var i = hidePoints.length, name;
+        while(i--){
+            name = hidePoints[i];
+            meshs[name].visible = false;
+            labels[name].visible = false;
+            links[name].visible = false;
+        }
+        links.a2.visible = false;
+        links.o1.visible = false;
+        links.bx0.visible = false;
+        b.text('type 1');
+    }else{
+        var i = hidePoints.length, name;
+        while(i--){
+            name = hidePoints[i];
+            meshs[name].visible = true;
+            labels[name].visible = true;
+            links[name].visible = true;
+        }
+        links.a2.visible = true;
+        links.o1.visible = true;
+        links.bx0.visible = true;
+        b.text('type 0');
+    }
 }
