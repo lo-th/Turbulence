@@ -34,8 +34,8 @@ renderLoop();
 
 function renderLoop(){
     if(inFormulEnable){
-        rotation.z+=0.03;
-        c.set(rotation.z*ToDeg);
+        rotation.z-=0.03;
+        c.set(-rotation.z*ToDeg);
         runFormule();
     }
     v.render();
