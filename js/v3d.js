@@ -31,7 +31,7 @@ V3D.View.prototype = {
     init:function(h,v,d){
     	this.clock = new THREE.Clock();
 
-    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:false});
+    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true});
     	this.renderer.setSize( this.w, this.h );
     	this.renderer.setClearColor( 0x1d1f20, 1 );
     	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 2000 );
@@ -341,7 +341,19 @@ V3D.View.prototype = {
         tx.repeat = new THREE.Vector2( r || 1, r || 1);
         tx.needsUpdate = true;
         return tx;
-    }
+    },
+    unwrapDegrees : function (r) {
+		r = r % 360;
+		if (r > 180) r -= 360;
+		if (r < -180) r += 360;
+		return r;
+	},
+    unDegrees : function (r) {
+    	r = (r*V3D.ToDeg).toFixed(0)*1;
+		r = r % 360;
+		if (r > 360) r -= 360;
+		return r;
+	}
 
 }
 

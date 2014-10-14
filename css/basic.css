@@ -12,3 +12,6 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 
 #clock{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; border-radius:60px; border:1px solid #2b2e41; }
 #clock.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; border-radius:60px; border:1px solid #D6D6D6;}
+
+#deco{ background-color: #2b2e41; }
+#deco.night{ background-color: #D6D6D6; }
