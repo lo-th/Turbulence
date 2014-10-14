@@ -3,19 +3,7 @@
 <title>Oimo.js Basic</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="../css/consolas.css">
-<style>
-* {  margin: 0; padding: 0; border: 0;}
-html{overflow:hidden; width:100%; height:100%;}
-body{ background-color: #D6D6D6; overflow: hidden; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 10px;}
-body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 10px; }
-#button{ background-color: #D6D6D6; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; border-radius:20px; border:1px solid #2b2e41; }
-#button.night{ background-color: #212324; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; border-radius:20px; border:1px solid #D6D6D6;}
-#button:hover{ background-color: #F964A7; color:#FFFFFF;  }
-#button.night:hover{ background-color: #059BB5; color:#FFFFFF;  }
-#info{ pointer-events:none; position: absolute; left:10px; top:10px; width: 200px; height: 200px; }
-#container{ position: absolute; left:0; top:0; width:100%; height:100%; }
-#container canvas { position: absolute; left:0; top:0; width:100%; height:100%; border: 0 none;}
-</style>
+<link rel="stylesheet" href="../css/basic.css">
 <script src="../js/libs/tween.min.js"></script>
 <script src="../js/libs/three.min.js"></script>
 <script src="../js/libs/sea3d.min.js"></script>
@@ -38,14 +26,11 @@ function tell(s){
 function changeTheme(n){
 	var cc = ''
 	if(n==0){
-		document.className = '';
-		//document.getElementById('button').className = '';
+		//document.className = '';
 		if(v3d)v3d.newgradTexture(C1, n);
 	}else{
-		document.className = 'night';
+		//document.className = 'night';
 		cc = 'night';
-		
-		//document.getElementById('button').className = 'night';
 		if(v3d)v3d.newgradTexture(C2, n);
 	}
 

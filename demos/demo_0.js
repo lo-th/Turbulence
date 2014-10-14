@@ -35,6 +35,7 @@ renderLoop();
 function renderLoop(){
     if(inFormulEnable){
         rotation.z+=0.03;
+        c.set(rotation.z*ToDeg);
         runFormule();
     }
     v.render();
@@ -49,7 +50,7 @@ var pool = new SEA3D.Pool();
 pool.load( ['../models/basic.sea'], initObject );
 
 var b = new UI.Button('type 0', setType);
-
+var c = new UI.Clock();
 
 
 function initObject(){
