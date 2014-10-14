@@ -180,15 +180,15 @@ V3D.View.prototype = {
 		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,size,Math.random()));
 		return p;
     },
-    addGrid:function(size, div, position){
+    addGrid:function(size, div, pos){
     	size = size || 200;
     	div = div || 10;
-    	position = position || new THREE.Vector3();
+    	pos = pos || [0,0,0];
     	var helper = new THREE.GridHelper( size, div );
 		helper.setColors( this.debugColor2, this.debugColor );
-		helper.position.copy(position);
+		helper.position.set(pos[0],pos[1],pos[2]);
 		helper.rotation.x = 90 * V3D.ToRad;
-		helper.position.z = -7;
+		//helper.position.z = -7;
 		this.scene.add( helper );
 		this.grid = helper;
     },

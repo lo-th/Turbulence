@@ -42,7 +42,7 @@ function renderLoop(){
 }
 
 // add basic grid
-v.addGrid(200, 20);
+v.addGrid(200, 20, [0,0,-30]);
 
 // import object pack
 var pool = new SEA3D.Pool();
@@ -237,7 +237,7 @@ function runFormule(){
     meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
 
     // o4 // target
-    var o4 = new THREE.Vector3(y4.x, y4.y, -1.0);
+    var o4 = new THREE.Vector3(y4.x, y4.y, -1.5);
 
     target.position.set(o4.x*factor, o4.y*factor, o4.z*factor);
     
