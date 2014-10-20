@@ -15,8 +15,6 @@ var ppmax = Math.round((2*Math.PI)/0.03);
 var ppn = 0;
 var pp = new V3D.Particle(v.scene, ppmax);
 
-//pp.addV(100,100, 0)
-//pp.addV(150,100, 0)
 // formule points
 var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
 var meshs = {};
@@ -29,6 +27,10 @@ var target = null;
 var hidePoints = ['a1', 'b1', 'b2', 'y1']
 
 var type = 0;
+
+var b = new UI.Button('type 0', setType);
+// add clock
+var c = new UI.Clock();
 
 renderLoop();
 
@@ -49,8 +51,7 @@ v.addGrid(200, 20, [0,0,-30]);
 var pool = new SEA3D.Pool();
 pool.load( ['../models/basic.sea'], initObject );
 
-var b = new UI.Button('type 0', setType);
-var c = new UI.Clock();
+
 
 
 function initObject(){

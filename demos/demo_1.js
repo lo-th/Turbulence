@@ -4,6 +4,8 @@ var v3d = new V3D.View(90,90,200);
 var v = v3d;
 // add basic grid
 v.addGrid(120, 20);
+// add clock
+var c = new UI.Clock();
 
 var fs = [];
 renderLoop();
@@ -53,6 +55,7 @@ for(var i = 0; i<200; i++){
 
 function renderLoop(){
     for(var i = 0; i<fs.length; i++){
+        if(i==0) c.set(v.unDegrees(fs[i].f.rotation));
         fs[i].run();
     }
     v.render();
