@@ -14,6 +14,7 @@ function initObject(){
 	
 	var mat = new THREE.MeshLambertMaterial( { color:0xffffff, skinning:true,morphTargets:true } );
 	var mat2 = new THREE.MeshLambertMaterial( { color:0xff33ff, skinning:true } );
+	var mat0 = new THREE.MeshLambertMaterial( { color:0xff3333 } );
 
 	for(var i=0;i<2;i++){
 
@@ -42,14 +43,75 @@ function initObject(){
 		body.animations[1].play( 0, 'idle' );
 		body.animations[1].weight = 1;
 
+		var head, eye, palm, pelvis;
+
 		v3d.scene.add(beetle);
 
-		beetles[i] = beetle;
-		if(i==0) beetles[i].position.set(100,0,0);
+
+
+		
+		if(i==0){
+			//console.log(body.geometry.bones.length);
+
+		    beetle.position.set(100,0,0);
+		    head = pool.getMesh('beetle_b_head').clone();
+		    eye = pool.getMesh('beetle_b_eye').clone();
+		    palm = pool.getMesh('beetle_b_palm').clone();
+
+		    pelvis = pool.getMesh('beetle_b_pelvis').clone();
+
+		    head.material = mat0;
+		    eye.material = mat0;
+			palm.material = mat0;
+		}
 		else {
-			beetles[i].position.set(-100,0,0);
+			beetle.position.set(-100,0,0);
+			head = pool.getMesh('beetle_a_head').clone();
+			eye = pool.getMesh('beetle_a_eye').clone();
+		    palm = pool.getMesh('beetle_a_palm').clone();
+
+		    pelvis = pool.getMesh('beetle_a_pelvis').clone();
+
+			head.material = mat0;
+			eye.material = mat0;
+			palm.material = mat0;
+
 			foot.setWeight("big", 1);
 		}
+
+		head.position.set(0,0,0);
+		head.rotation.set(0,0,0);
+
+		eye.position.set(0,0,0);
+		eye.rotation.set(0,0,0);
+
+		palm.position.set(0,0,0);
+		palm.rotation.set(0,0,0);
+
+		pelvis.position.set(0,0,0);
+		pelvis.rotation.set(0,0,0);
+
+		for(var k = 0; k< pelvis.children.length; k++){
+			//pelvis.children[k].rotation.set(0,20*v3d.ToRad,0);
+			pelvis.children[k].material = mat0;
+		}
+
+		for(var j=0; j<body.skeleton.bones.length; j++){
+		    	var bone = body.skeleton.bones[j]
+				var name = bone.name;
+				//console.log(name);
+				if(name =='BeetleHead2' ){ 
+					bone.add(head);
+					bone.add(eye);
+					bone.add(palm);
+				}
+				if(name=='BeetlePelvis'){
+					bone.add(pelvis);
+				}
+			}
+		//head.scale.set(size,size,-size);
+		//beetle.add(head);
+		beetles[i] = beetle;
 
 	};
 
