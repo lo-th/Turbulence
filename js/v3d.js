@@ -117,6 +117,13 @@ V3D.View.prototype = {
 	    mats['c5'] = new V3D.Shader(img, 0xD4D1BE);//new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
 	    mats['c6'] = new V3D.Shader(img, 0xD4D1BE, this.doubleTexture());//new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
 
+	    mats['b0'] = new V3D.Shader(img, 0x606060, null, true, true);
+	    mats['b1'] = new V3D.Shader(img, 0x606060, null, true, false);
+	    mats['b2'] = new V3D.Shader(img, 0x606060, null, false, false);
+	    mats['bc1'] = new V3D.Shader(img, 0x60FF60, null, false, false);
+	    mats['bc2'] = new V3D.Shader(img, 0xFF6060, null, false, false);
+	    mats['beye'] = new V3D.Shader(img, 0x333333, null, false, false );
+
 	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
 	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
 	    mats['box'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(2), name:'box' } );
@@ -585,60 +592,146 @@ V3D.Particle.prototype = {
 //  SHADER
 //----------------------------------
 
-V3D.Shader = function(img, c, bitmap){
+V3D.Shader = function(img, c, bitmap, anim, morph, shad){
+	shad = shad || "smooth";
+	var shading = THREE.SmoothShading;
+	if(shad == 'flat') shading = THREE.FlatShading;
+
     var shader, image;
     if(typeof img == 'string' || img instanceof String) image = THREE.ImageUtils.loadTexture( img );
     else image = img;
     var color = new THREE.Color( c || 0x00ff00 );
-    var shader = V3D.Sph1;
-    if(bitmap) shader = V3D.Sph11;
+    var shader = V3D.Spherical;
+
+    var uniforms = THREE.UniformsUtils.merge( [
+		shader.uniforms,
+		THREE.UniformsLib[ "common" ],
+		//THREE.UniformsLib[ "fog" ],
+		//THREE.UniformsLib[ "shadowmap" ]
+	]);
+    
+
     var material = new THREE.ShaderMaterial({
-        uniforms: { 
-	        mat: {type: 't', value: null},
-	        color: {type: 'c', value: null},
-	        mat1: {type: 't', value: null},
-	    },
+        uniforms: uniforms,
         vertexShader: shader.vs,
         fragmentShader: shader.fs,
-        shading: THREE.SmoothShading       
+        shading: shading,
+        skinning : anim || false,
+        morphTargets : morph || false
     });
+
+    //material.skinning =  anim || false;
+    //material.morphTargets =  morph || false;
+
+
+
     material.uniforms.mat.value = image;
-    if(bitmap) material.uniforms.mat1.value = bitmap;
+    if(bitmap){
+        material.uniforms.map.value = bitmap;
+        material.uniforms.useMap.value = 1.0;
+    }
     material.uniforms.color.value = color;
     return material;
 };
 
-V3D.Sph1={
+V3D.Spherical = {
     attributes:{},
     uniforms:{ 
     	mat: {type: 't', value: null},
-    	mat2: {type: 't', value: null},
-        color: {type: 'c', value: null}
+    	map: {type: 't', value: null},
+        color: {type: 'c', value: null},
+        useMap: {type: 'f', value: 0},
     },
     fs:[
+        'uniform vec3 diffuse;',
+		'uniform float opacity;',
+		'uniform float useMap;',
         'uniform sampler2D mat;',
+        'uniform sampler2D map;',
         'uniform vec3 color;',
         'varying vec2 vN;',
+        'varying vec2 vU;',
+        //THREE.ShaderChunk[ "color_pars_fragment" ],
+        //THREE.ShaderChunk[ "map_pars_fragment" ],
+		THREE.ShaderChunk[ "lightmap_pars_fragment" ],
+		//THREE.ShaderChunk[ "envmap_pars_fragment" ],
+		//THREE.ShaderChunk[ "fog_pars_fragment" ],
+		//THREE.ShaderChunk[ "shadowmap_pars_fragment" ],
+		//THREE.ShaderChunk[ "specularmap_pars_fragment" ],
+
+
         'void main() {',
             'vec3 base = texture2D( mat, vN ).rgb;',
-            'base *= color;',
-            'gl_FragColor = vec4( base, 1. );',
+            'if(useMap == 1.){',
+            	'vec3 mapping = texture2D( map, vU ).rgb;',
+                'base *= mapping;',
+            '} else {',
+                'base *= color;',
+            '}',
+
+            'gl_FragColor = vec4( base, opacity );',
+
+            //THREE.ShaderChunk[ "map_fragment" ],
+			//THREE.ShaderChunk[ "alphatest_fragment" ],
+			//THREE.ShaderChunk[ "specularmap_fragment" ],
+			THREE.ShaderChunk[ "lightmap_fragment" ],
+			//THREE.ShaderChunk[ "color_fragment" ],
+			//THREE.ShaderChunk[ "envmap_fragment" ],
+			//THREE.ShaderChunk[ "shadowmap_fragment" ],
+
+			//THREE.ShaderChunk[ "linear_to_gamma_fragment" ],
+
+			//THREE.ShaderChunk[ "fog_fragment" ],
         '}'
     ].join("\n"),
     vs:[
+        THREE.ShaderChunk[ "map_pars_vertex" ],
+		THREE.ShaderChunk[ "lightmap_pars_vertex" ],
+		//THREE.ShaderChunk[ "envmap_pars_vertex" ],
+		//THREE.ShaderChunk[ "color_pars_vertex" ],
+		THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+		THREE.ShaderChunk[ "skinning_pars_vertex" ],
+		//THREE.ShaderChunk[ "shadowmap_pars_vertex" ],
+
         'varying vec2 vN;',
+        'varying vec2 vU;',
+
         'void main() {',
-            'vec3 e = normalize( vec3( modelViewMatrix * vec4( position, 1.0 ) ) );',
+            THREE.ShaderChunk[ "map_vertex" ],
+            THREE.ShaderChunk[ "lightmap_vertex" ],
+			//THREE.ShaderChunk[ "color_vertex" ],
+			THREE.ShaderChunk[ "skinbase_vertex" ],
+
+			//"#ifdef USE_ENVMAP",
+
+			//THREE.ShaderChunk[ "morphnormal_vertex" ],
+			//THREE.ShaderChunk[ "skinnormal_vertex" ],
+			//THREE.ShaderChunk[ "defaultnormal_vertex" ],
+
+			//"#endif",
+
+            THREE.ShaderChunk[ "morphtarget_vertex" ],
+            THREE.ShaderChunk[ "skinning_vertex" ],
+            THREE.ShaderChunk[ "default_vertex" ],
+           
+			THREE.ShaderChunk[ "worldpos_vertex" ],
+			//THREE.ShaderChunk[ "envmap_vertex" ],
+			//THREE.ShaderChunk[ "shadowmap_vertex" ],
+
+            //'vec3 e = normalize( vec3( modelViewMatrix * vec4( position, 1.0 ) ) );',
+            'vec3 e = normalize( vec3( mvPosition ) );',
             'vec3 n = normalize( normalMatrix * normal );',
             'vec3 r = reflect( e, n );',
             'float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );',
             'vN = r.xy / m + .5;',
-            'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
+            'vU = uv;',
+            //'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
+            'gl_Position = projectionMatrix * mvPosition;',
         '}'
     ].join("\n")
 };
 
-V3D.Sph11={
+/*V3D.Sph11={
     attributes:{},
     uniforms:{ 
     	mat: {type: 't', value: null},
@@ -658,9 +751,18 @@ V3D.Sph11={
         '}'
     ].join("\n"),
     vs:[
+        THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+		THREE.ShaderChunk[ "skinning_pars_vertex" ],
+		THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
         'varying vec2 vN;',
         'varying vec2 vU;',
         'void main() {',
+            THREE.ShaderChunk[ "skinbase_vertex" ],
+            THREE.ShaderChunk[ "morphtarget_vertex" ],
+			THREE.ShaderChunk[ "skinning_vertex" ],
+			THREE.ShaderChunk[ "default_vertex" ],
+			THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+			THREE.ShaderChunk[ "worldpos_vertex" ],
             'vec3 e = normalize( vec3( modelViewMatrix * vec4( position, 1.0 ) ) );',
             'vec3 n = normalize( normalMatrix * normal );',
             'vec3 r = reflect( e, n );',
@@ -670,7 +772,7 @@ V3D.Sph11={
             'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
         '}'
     ].join("\n")
-};
+};*/
 //----------------------------------
 //  LOADER IMAGE/SEA3D
 //----------------------------------
