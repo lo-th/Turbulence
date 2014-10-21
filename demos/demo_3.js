@@ -9,36 +9,49 @@ pool.load( ['../models/beetle.sea'], initObject );
 
 function initObject(){
 	tell(pool.getList());
-	beetles[0] = new THREE.Object3D();
-	var mat = new THREE.MeshLambertMaterial( { color:0xffffff, skinning:true,morphTargets:true } )
-	var mat2 = new THREE.MeshLambertMaterial( { color:0xff33ff, skinning:true } )
-	var body = pool.getMesh('beetle_body')//new THREE.SkinnedMesh(pool.geo('beetle_body'), mat);
-	var foot = pool.getMesh('beetle_foot')//new THREE.SkinnedMesh(pool.geo('beetle_foot'), mat2);
-	foot.material = mat;
-	body.material = mat2;
-	foot.position.set(0,0,0);
-	body.position.set(0,0,0);
 
-	foot.scale.set(1,1,-1);
-	body.scale.set(1,1,-1);
+	var size = 0.25;
+	
+	var mat = new THREE.MeshLambertMaterial( { color:0xffffff, skinning:true,morphTargets:true } );
+	var mat2 = new THREE.MeshLambertMaterial( { color:0xff33ff, skinning:true } );
 
-	beetles[0].add(body);
-	beetles[0].add(foot);
+	for(var i=0;i<2;i++){
 
-	foot.animations[0].weight = 0;
-	foot.animations[2].weight = 0;
-	body.animations[0].weight = 0;
-	body.animations[2].weight = 0;
+		var beetle = new THREE.Object3D();
+		var body = pool.getMesh('beetle_body').clone();
+		var foot = pool.getMesh('beetle_foot').clone();
+		foot.material = mat;
+		body.material = mat2;
+		foot.position.set(0,0,0);
+		body.position.set(0,0,0);
 
-	foot.animations[1].play( 0, 'idle' );
-	foot.animations[1].weight = 1;
+		foot.scale.set(size,size,-size);
+		body.scale.set(size,size,-size);
 
-	body.animations[1].play( 0, 'idle' );
-	body.animations[1].weight = 1;
+		beetle.add(body);
+		beetle.add(foot);
 
-	v3d.scene.add(beetles[0]);
+		foot.animations[0].weight = 0;
+		foot.animations[2].weight = 0;
+		body.animations[0].weight = 0;
+		body.animations[2].weight = 0;
 
-	console.log(body.animations.length)
+		foot.animations[1].play( 0, 'idle' );
+		foot.animations[1].weight = 1;
+
+		body.animations[1].play( 0, 'idle' );
+		body.animations[1].weight = 1;
+
+		v3d.scene.add(beetle);
+
+		beetles[i] = beetle;
+		if(i==0) beetles[i].position.set(100,0,0);
+		else {
+			beetles[i].position.set(-100,0,0);
+			foot.setWeight("big", 1);
+		}
+
+	};
 
 
 
