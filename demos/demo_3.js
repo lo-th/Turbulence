@@ -184,8 +184,15 @@ function easing (n, base, newW){
 
 function weightAnim (n, base){
 	if(anims[n]=='fly'){
+		parts[n][0].animations[2].timeScale = 1;
+		parts[n][1].animations[2].timeScale = 1;
 		parts[n][0].animations[2].play(0);
 		parts[n][1].animations[2].play(0);
+	} else if(anims[n]=='idle'){
+		parts[n][0].animations[2].timeScale = -1;
+		parts[n][1].animations[2].timeScale = -1;
+		parts[n][0].animations[2].play( parts[n][0].animations[2].currentTime );
+		parts[n][1].animations[2].play( parts[n][1].animations[2].currentTime );
 	}
 
 	parts[n][0].animations[0].weight = base.idle;
