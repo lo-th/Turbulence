@@ -134,7 +134,7 @@ V3D.View.prototype = {
 	    mats['static2'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(4, 6), name:'static2' } );
 
 	    //mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
-
+	    this.img = img;
 	    this.mats = mats;
     },
     initLightMaterial:function(){

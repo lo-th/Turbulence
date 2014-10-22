@@ -22,7 +22,11 @@ var b2 = new UI.Button('idle', switchAnim2);
 
 // import object pack
 var pool = new SEA3D.Pool();
-pool.load( ['../models/beetle.sea'], initObject );
+pool.loadImages(['../images/beetle_a.jpg'], loadObject);
+
+function loadObject(){
+	pool.load( ['../models/beetle.sea'], initObject );
+}
 
 function initObject(){
 	tell(pool.getList());
@@ -32,7 +36,12 @@ function initObject(){
 	var mat = v.mats.b0;
 	var mat2 = v.mats.b1;
 	var matC1 = v.mats.bc1;
-	var matC2 = v.mats.bc2;
+	var tx = pool.getTexture('beetle_a');
+	tx.repeat.set( 1, 1 ); 
+    tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+    tx.needsUpdate = true;
+
+	var matC2 = new V3D.Shader(v.img, 0xFF6060, tx, false, false);//v.mats.bc2;
 	var matEye = v.mats.beye;
 	var matPalm = v.mats.b2;
 
