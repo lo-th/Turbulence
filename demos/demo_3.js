@@ -36,12 +36,8 @@ function initObject(){
 	var mat = v.mats.b0;
 	var mat2 = v.mats.b1;
 	var matC1 = v.mats.bc1;
-	var tx = pool.getTexture('beetle_a');
-	tx.repeat.set( 1, 1 ); 
-    tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
-    tx.needsUpdate = true;
 
-	var matC2 = new V3D.Shader(v.img, 0xFF6060, tx, false, false);//v.mats.bc2;
+	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a'), false, false);//v.mats.bc2;0xf55b08
 	var matEye = v.mats.beye;
 	var matPalm = v.mats.b2;
 

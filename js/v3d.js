@@ -115,7 +115,7 @@ V3D.View.prototype = {
 	    mats['c3'] = new V3D.Shader(img, 0x43B8CC);//new THREE.MeshBasicMaterial( { color:0x43B8CC, name:'c3' } );
 	    mats['c4'] = new V3D.Shader(img, 0x059BB5);//new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
 	    mats['c5'] = new V3D.Shader(img, 0xD4D1BE);//new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
-	    mats['c6'] = new V3D.Shader(img, 0xD4D1BE, this.doubleTexture());//new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
+	    mats['c6'] = new V3D.Shader(img, 0xFFFFFF, this.doubleTexture());//new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
 
 	    mats['b0'] = new V3D.Shader(img, 0x606060, null, true, true);
 	    mats['b1'] = new V3D.Shader(img, 0x606060, null, true, false);
@@ -665,9 +665,10 @@ V3D.Spherical = {
             'if(useMap == 1.){',
             	'vec3 mapping = texture2D( map, vU ).rgb;',
                 'base *= mapping;',
-            '} else {',
-                'base *= color;',
             '}',
+            //'} else {',
+                'base *= color;',
+            //'}',
 
             'gl_FragColor = vec4( base, opacity );',
 
