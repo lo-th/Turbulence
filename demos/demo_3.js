@@ -22,7 +22,7 @@ var b2 = new UI.Button('idle', switchAnim2);
 
 // import object pack
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/beetle_a.jpg'], loadObject);
+pool.loadImages(['../images/beetle_a.jpg', '../images/body.jpg'], loadObject);
 
 function loadObject(){
 	pool.load( ['../models/beetle.sea'], initObject );
@@ -37,17 +37,21 @@ function initObject(){
 	var mat2 = v.mats.b1;
 	var matC1 = v.mats.bc1;
 
-	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a'), false, false);//v.mats.bc2;0xf55b08
+	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a'), false, false);
+	var matBody1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), true, false);
+	var matBody2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), true, true);
+	var matBody3 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), false, false);
 	var matEye = v.mats.beye;
 	var matPalm = v.mats.b2;
+	var matcc = new V3D.Shader(v.img, 0x059BB5);
 
 	for(var i=0;i<2;i++){
 
 		var beetle = new THREE.Object3D();
 		var body = pool.getMesh('beetle_body').clone();
 		var foot = pool.getMesh('beetle_foot').clone();
-		foot.material = mat;
-		body.material = mat2;
+		foot.material = matBody2;
+		body.material = matBody1;
 		foot.position.set(0,0,0);
 		body.position.set(0,0,0);
 
@@ -75,7 +79,9 @@ function initObject(){
 		body.animations[2].weight = 0;
 		body.animations[2].loop = false;
 
-		var head, eye, palm, pelvis;
+		var head, eye, palm, pelvis, chassis;
+		chassis = pool.getMesh('beetle_chassis').clone();
+		chassis.material = matcc;
 
 		v3d.scene.add(beetle);
 
@@ -87,9 +93,11 @@ function initObject(){
 
 		    pelvis = pool.getMesh('beetle_b_pelvis').clone();
 
+
 		    head.material = matC1;
 			pelvis.children[0].material = matC1;
 		    pelvis.children[1].material = matC1;
+		    wings[i] = [pelvis.children[1], pelvis.children[0]];
 		}
 		else {
 			beetle.position.set(-100,0,0);
@@ -104,10 +112,11 @@ function initObject(){
 		    pelvis.children[1].material = matC2;
 
 			foot.setWeight("big", 1);
+			wings[i] = [pelvis.children[0], pelvis.children[1]];
 		}
 
 		eye.material = matEye;
-		palm.material = matPalm;
+		palm.material = matBody3;
 
 		head.position.set(0,0,0);
 		head.rotation.set(0,0,0);
@@ -121,8 +130,8 @@ function initObject(){
 		pelvis.position.set(0,0,0);
 		pelvis.rotation.set(0,0,0);
 
-
-		;
+		chassis.position.set(0,0,0);
+		chassis.rotation.set(0,0,0);
 
 		for(var j=0; j<body.skeleton.bones.length; j++){
 		    	var bone = body.skeleton.bones[j]
@@ -135,10 +144,11 @@ function initObject(){
 				}
 				if(name=='BeetlePelvis'){
 					bone.add(pelvis);
+					bone.add(chassis);
 				}
 			}
 		beetles[i] = beetle;
-		wings[i] = [pelvis.children[0], pelvis.children[1]]
+		
 		parts[i] = [body, foot];
 
 
