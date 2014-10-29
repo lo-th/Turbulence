@@ -131,11 +131,19 @@ function runFormule(){
 
     var y2o2 = Math.sqrt(C);
     var b3y3 = Math.sqrt(C);
+
+    var y3o3 = Math.sqrt(C);
+    var b4y4 = Math.sqrt(C);
+    var y4o4 = Math.sqrt(C);
+
     var y1y2 = C + Math.sqrt(C);
     var b2o1 = C + Math.sqrt(C);
     var y2y3 = C + Math.sqrt(C);
     var b3o2 = C + Math.sqrt(C);
     var y3y4 = C + Math.sqrt(C);
+    
+    var b4o3 = C + Math.sqrt(C);
+    var y4y5 = Math.sqrt(C);
     
     scale = [a1b1, a1a2,  b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2, b2y2, b3y3 ];
 
