@@ -1,46 +1,40 @@
 
 var v3d = new V3D.View();
 var v = v3d;
-//v3d.initLight();
+renderLoop();
+
 var beetles = [];
 var wings = [];
 var parts = [];
 
 var tweens = [];
-var anims  = ['idle', 'idle']
+var anims  = ['idle', 'idle'];
 
 var b1set = { idle:1, walk:0, fly:0, w1:180, w2:0 };
 var b2set = { idle:1, walk:0, fly:0, w1:180, w2:0 };
 
-//var b1Anim = 'idle';
-//var b2Anim = 'idle';
-
 var b1 = new UI.Button('idle', switchAnim1, 110);
 var b2 = new UI.Button('idle', switchAnim2);
 
-
-
 // import object pack
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/beetle_a.jpg', '../images/body.jpg'], loadObject);
+pool.loadImages(['../images/beetle_a.jpg', '../images/beetle_b.jpg', '../images/body.jpg'], loadObject);
 
 function loadObject(){
 	pool.load( ['../models/beetle.sea'], initObject );
 }
 
 function initObject(){
-	tell(pool.getList());
+	//tell(pool.getList());
 
 	var size = 0.25;
-	
-	var mat = v.mats.b0;
-	var mat2 = v.mats.b1;
-	var matC1 = v.mats.bc1;
 
-	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a'), false, false);
-	var matBody1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), true, false);
-	var matBody2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), true, true);
-	var matBody3 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body'), false, false);
+	// define shader
+	var matC1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_b', true), false, false);
+	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a', true), false, false);
+	var matBody1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), true, false);
+	var matBody2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), true, true);
+	var matBody3 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), false, false);
 	var matEye = v.mats.beye;
 	var matPalm = v.mats.b2;
 	var matcc = new V3D.Shader(v.img, 0x059BB5);
@@ -60,8 +54,6 @@ function initObject(){
 
 		beetle.add(body);
 		beetle.add(foot);
-
-		
 
 		foot.animations[0].play(0);
 		foot.animations[1].play(0);
@@ -136,7 +128,6 @@ function initObject(){
 		for(var j=0; j<body.skeleton.bones.length; j++){
 		    	var bone = body.skeleton.bones[j]
 				var name = bone.name;
-				//console.log(name);
 				if(name =='BeetleHead2' ){ 
 					bone.add(head);
 					bone.add(eye);
@@ -148,13 +139,8 @@ function initObject(){
 				}
 			}
 		beetles[i] = beetle;
-		
 		parts[i] = [body, foot];
-
-
-	};
-
-	renderLoop();
+	}
 }
 
 function switchAnim1(){
@@ -223,8 +209,7 @@ function weightAnim (n, base){
 }
 
 /* three.js render loop */
-function renderLoop()
-{
+function renderLoop(){
     TWEEN.update();
     var delta = v3d.clock.getDelta();
     THREE.AnimationHandler.update( delta );
