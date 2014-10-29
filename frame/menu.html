@@ -54,6 +54,45 @@ var startByDemo = -1;
 var root = null;
 function setRoot(r){ root=r; }
 
+function initBasicMenu(startDemo){
+	pushFile("demo_"+startDemo+'.js', '#cccc00');
+	// pop demo at start
+	for(var i=0; i < 5; i++){
+		testFile("demo_"+i+'.js')
+		testFile("demo_"+i+'_c.js')
+		//if(testFile("demo_"+i+'.js')) pushFile("demo_"+i+'.js', '#cccc00');
+	}
+
+
+
+	startByOpenFile(startDemo);
+}
+
+function startByOpenFile(n){
+	startByDemo = n || 0;
+	currentFile = startByDemo;
+	root.loadFile('demos/'+files[currentFile]);
+    resetIcon();
+}
+
+function testFile(name){
+	var existe = false;
+	var xhr;// = new XMLHttpRequest()
+    if (window.XMLHttpRequest) xhr = new XMLHttpRequest();// Mozilla/Safari
+    else if (window.ActiveXObject) xhr = new ActiveXObject("Microsoft.XMLHTTP");// IE
+
+	xhr.onerror = function () { xhr.abort(); };
+	xhr.onreadystatechange = function() {
+		if(this.readyState == 2) pushFile(name, '#cccc00');
+		if(this.readyState == 4) xhr.abort();
+	}
+
+	//console['error'] = function () {};
+
+
+	xhr.open('GET', "../demos/"+name, true);
+	xhr.send(null);
+}
 
 //---------------------------------------------
 //  BUTTON
@@ -182,19 +221,6 @@ zone.ondrop = function (e) {
             addFile(e.dataTransfer.files[i]);
         }
     }
-  //  var i =  l;
-    //console.log(l)
-  /*  while(i--){
-        var entry = e.dataTransfer.items[i].webkitGetAsEntry();
-        if (entry.isFile) {
-            addFile(e.dataTransfer.files[i]);
-      //... // do whatever you want
-    } else if (entry.isDirectory) {
-     // ... // do whatever you want
-    }
-    }*/
-    //r.readAsText(f);
-    //return false;
 };
 
 function addFile(file){
@@ -223,13 +249,13 @@ function addFile(file){
     reader.readAsDataURL(file);
 }
 
+
+
 function pushFile(name){
 	// don't add if same file
 	var i = files.length;
-	while(i--){
-		if(name == files[i]) return;
-	}
-    //console.log(o.t);
+	while(i--){ if(name == files[i]) return; }
+
     var id = icons.length;
     var ic = document.createElement('div');
     ic.style.cssText = 'display:block; width:180px; height:30px; background-color:rgba(0,0,0,0); cursor:pointer; pointer-events:auto;';
@@ -248,7 +274,7 @@ function pushFile(name){
     //o.drag = false;
     ic.name = id;
     //ic.onmousedown = openFile;//selected;
-    ic.onclick = openFile;//selected;
+    ic.onclick = openFile;
     ic.ondblclick = openFile;
     //ic.onmousemove = moveicon;
     ic.onmouseover = iconOver;
@@ -262,10 +288,7 @@ function pushFile(name){
     files[id]=name;
 }
 
-// pop demo at start
-for(var i=0; i< 4; i++){
-	pushFile("demo_"+i+'.js', '#cccc00');
-}
+
 
 
 function iconOver(e){
@@ -304,24 +327,18 @@ function addIconLink(blob, name, type){
 
 function dragstart(e){
 	var id = e.target.name;
-	//console.log("drag" + id);
 	if (e.target.classList.contains('dragout') && currentLink!==null) { e.dataTransfer.setData('DownloadURL', currentLink.dataset.downloadurl ); }
 }
+
 function dragend(e){
 	resetModified();
 }
 
-function startByOpenFile(n){
-	startByDemo = n || 0;
-	currentFile = startByDemo;
-	root.loadFile('demos/'+files[currentFile]);
-    resetIcon();
-}
+
 
 function openFile(e){
     e.preventDefault();
     var id = e.target.name;
-    
     if(currentFile!==id){
     	resetModified();
         currentFile = id;
@@ -329,6 +346,7 @@ function openFile(e){
     	resetIcon();
     }
 }
+
 function resetIcon(plus){
 	var i = icons.length, child;
 	while(i--){
@@ -360,6 +378,7 @@ function modified(){
 	child[2].src = iconImgModif;
 	root.callSave();
 }
+
 function resetModified(){
 	inModif = -1;
 	var i = icons.length, child;

@@ -79,7 +79,7 @@ function init(){
 	var _this = this;
 	
 	views[0].onload = function (e){ views[0].contentWindow.setRoot(_this); nview++; };
-	views[2].onload = function (e){ views[2].contentWindow.setRoot(_this, 0); nview++; };
+	views[2].onload = function (e){ views[2].contentWindow.setRoot(_this, 0);  nview++; };
     window.onresize = resize;
     resize();
 
@@ -87,10 +87,10 @@ function init(){
 }
 
 function testload(){
-	
 	if(nview == 2){
 		clearInterval(tmpTest);
-		views[2].contentWindow.startByOpenFile(startDemo);
+		views[2].contentWindow.initBasicMenu(startDemo);
+		//views[2].contentWindow.startByOpenFile(startDemo);
 		//setTimeout(views[2].contentWindow.startByOpenFile, 100, startDemo);
 	}
 }
