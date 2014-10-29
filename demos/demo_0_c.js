@@ -16,7 +16,7 @@ var ppn = 0;
 var pp = new V3D.Particle(v.scene, ppmax);
 
 // formule points
-var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2'];
+var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2',      'o3','o4','b4','y5'];
 var meshs = {};
 var labels = {};
 var links = {};
@@ -24,7 +24,7 @@ var scale = [];
 var pivot = null;
 var target = null;
 
-var hidePoints = ['a1', 'b1', 'b2', 'y1']
+var hidePoints = ['a1', 'b1', 'b2', 'y1'];
 
 var type = 0;
 
@@ -144,8 +144,8 @@ function runFormule(){
     
     var b4o3 = C + Math.sqrt(C);
     var y4y5 = Math.sqrt(C);
-    
-    scale = [a1b1, a1a2,  b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2, b2y2, b3y3 ];
+//          ['a1','a2' ,'b1' ,'b2' ,'b3' ,'y1' ,'y2' ,'y3' ,'y4' ,'o1' ,'o2' ,        'o3' ,'o4' ,'b4' ,'y5' ];
+    scale = [a1b1, a1a2, b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2,    y3o3, y4o4, b4o3, y4y5       ];
 
 
     var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
@@ -153,24 +153,20 @@ function runFormule(){
 
     // a2 //
     var a2 = new THREE.Vector3(0.0, 0.0, 0.0);
-    meshs.a2.position.set(0.0, 0.0, 0.0);
 
     // a1 //
     var a1 = new THREE.Vector3(a1a2, 0.0, 0.0);
-    meshs.a1.position.set(a1.x*factor, 0.0, 0.0);
 
     // b1 //
     var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
     var b1 = new THREE.Vector3((a1a2 - a1b1*Math.cos(rad_a2a1b1)), (a1b1*Math.sin(rad_a2a1b1)), 0.0);
-    meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
-
+   
     // y1 //
     var rad_y1a2b1 = Math.acos((Math.pow(a2b1,2) + Math.pow(a2y1,2) - Math.pow(b1y1,2)) / (2*a2b1*a2y1));
     var a2y1_X = (Math.cos(rad_y1a2b1)*(b1.x - a2.x) - Math.sin(rad_y1a2b1)*(b1.y - a2.x) ) * a2y1 / a2b1 + a2.x;
     var a2y1_Y = (Math.sin(rad_y1a2b1)*(b1.x - a2.x) + Math.cos(rad_y1a2b1)*(b1.y - a2.x) ) * a2y1 / a2b1 + a2.x;
 
     var y1 = new THREE.Vector3(a2y1_X, a2y1_Y, 0.0);
-    meshs.y1.position.set(y1.x*factor, y1.y*factor, 0.0);
 
     // for object rotation
     var rad_a1a2y1 = rad_y1a2b1 + rad_a1a2b1;
@@ -182,7 +178,6 @@ function runFormule(){
     var a2o1_Y = (Math.sin(-rad_y1a2o1)*y1.x + Math.cos(-rad_y1a2o1)*y1.y) * a2o1 / a2y1;
 
     var o1 = new THREE.Vector3(a2o1_X, a2o1_Y, 0.0);
-    meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
 
     // y2 //
     var rad_b1y1y2 = 135*ToRad;
@@ -190,7 +185,6 @@ function runFormule(){
     var y1y2_Y = (Math.sin(-rad_b1y1y2)*(b1.x - y1.x) + Math.cos(-rad_b1y1y2)*(b1.y - y1.y)) * y1y2 / b1y1 + y1.y;
 
     var y2 = new THREE.Vector3(y1y2_X, y1y2_Y, 0.0);
-    meshs.y2.position.set(y2.x*factor, y2.y*factor, 0.0);
 
     // b2 //
     var rad_y2y1o1 = Math.acos(((y2.x - y1.x)*(o1.x - y1.x) + (y2.y - y1.y)*(o1.y - y1.y))/(y1y2 * y1o1));
@@ -201,7 +195,6 @@ function runFormule(){
     var b2y2_Y = (Math.sin(-rad_b2y2o1)*(o1.x - y2.x) + Math.cos(-rad_b2y2o1)*(o1.y - y2.y) ) * b2y2 / y2o1  + y2.y;
 
     var b2 = new THREE.Vector3(b2y2_X, b2y2_Y, 0.0);
-    meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
 
     // for object rotation
     var rad_y1y2o1 = Math.acos( ((y1.x - y2.x)*(o1.x - y2.x) + (y1.y - y2.y)*(o1.y - y2.y)) / (Math.sqrt(Math.pow((y1.x - y2.x),2) + Math.pow((y1.y - y2.y),2)) * Math.sqrt(Math.pow((o1.x - y2.x),2) + Math.pow((o1.y - y2.y),2)) ) );
@@ -213,7 +206,6 @@ function runFormule(){
     var y2o2_Y = (Math.sin(-rad_y1y2o2)*(y1.x - y2.x) + Math.cos(-rad_y1y2o2)*(y1.y - y2.y)) * y2o2 / y1y2 + y2.y;
 
     var o2 = new THREE.Vector3(y2o2_X, y2o2_Y, 0.0);
-    meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
 
     // y3 //
     var rad_b2y2y3 = Math.PI;
@@ -221,7 +213,6 @@ function runFormule(){
     var y2y3_Y = (Math.sin(-rad_b2y2y3)*(b2.x - y2.x) + Math.cos(-rad_b2y2y3)*(b2.y - y2.y)) * y2y3 / b2y2 + y2.y;
 
     var y3 = new THREE.Vector3(y2y3_X, y2y3_Y, 0.0);
-    meshs.y3.position.set(y3.x*factor, y3.y*factor, 0.0);
             
     // b3 //
     var rad_y3y2o2 = Math.acos(((y3.x - y2.x)*(o2.x - y2.x) + (y3.y - y2.y)*(o2.y - y2.y))/(y2y3 * y2o2));
@@ -230,8 +221,7 @@ function runFormule(){
     var b3y3_X = (Math.cos(rad_b3y3o2)*(o2.x - y3.x) - Math.sin(rad_b3y3o2)*(o2.y - y3.y) ) * b3y3 / y3o2  + y3.x;
     var b3y3_Y = (Math.sin(rad_b3y3o2)*(o2.x - y3.x) + Math.cos(rad_b3y3o2)*(o2.y - y3.y) ) * b3y3 / y3o2  + y3.y;
 
-    var b3 = new THREE.Vector3(b3y3_X, b3y3_Y, 0.0);
-    meshs.b3.position.set(b3.x*factor, b3.y*factor, 0.0);    
+    var b3 = new THREE.Vector3(b3y3_X, b3y3_Y, 0.0);   
 
     // for object rotation
     var rad_y2y3o2 = Math.acos( ((y2.x - y3.x)*(o2.x - y3.x) + (y2.y - y3.y)*(o2.y - y3.y)) / (Math.sqrt(Math.pow((y2.x - y3.x),2) + Math.pow((y2.y - y3.y),2)) * Math.sqrt(Math.pow((o2.x - y3.x),2) + Math.pow((o2.y - y3.y),2)) ) );
@@ -244,7 +234,53 @@ function runFormule(){
     var y3y4_Y = (Math.sin(-rad_b3y3y4)*(b3.x - y3.x) + Math.cos(-rad_b3y3y4)*(b3.y - y3.y)) * y3y4 / b3y3 + y3.y;
 
     var y4 = new THREE.Vector3(y3y4_X, y3y4_Y, 0.0);
-    meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
+
+    //------------------------- new joint extend
+
+    // o3 //
+    var rad_y2y3o3 = Math.PI;//180
+    var y3o3_X = (Math.cos(-rad_y2y3o3)*(y2.x - y3.x) - Math.sin(-rad_y2y3o3)*(y2.y - y3.y)) * y3o3 / y2y3 + y3.x;
+    var y3o3_Y = (Math.sin(-rad_y2y3o3)*(y2.x - y3.x) + Math.cos(-rad_y2y3o3)*(y2.y - y3.y)) * y3o3 / y2y3 + y3.y;
+    var o3 = new THREE.Vector3(y3o3_X, y3o3_Y, 0.0);
+
+    // b4 //
+    var rad_y4y3o3 = Math.acos(((y4.x - y3.x)*(o3.x - y3.x) + (y4.y - y3.y)*(o3.y - y3.y))/(y3y4 * y3o3));
+    var deg_y4y3o3 = rad_y4y3o3*180/Math.PI;
+  
+    var y4o3 = Math.sqrt((Math.pow(y3y4,2)) - 2*y3y4*y3o3*Math.cos(rad_y4y3o3) + (Math.pow(y3o3,2)));
+
+    var rad_b4y4o3 = Math.acos((Math.pow(y4o3,2) + Math.pow(b4y4,2) - Math.pow(b4o3,2)) / (2*y4o3*b4y4));
+    var deg_b4y4o3 = rad_b4y4o3*180/Math.PI;
+        
+    var b4y4_X = (Math.cos(-rad_b4y4o3)*(o3.x - y4.x) - Math.sin(-rad_b4y4o3)*(o3.y - y4.y) ) * b4y4 / y4o3  + y4.x;
+    var b4y4_Y = (Math.sin(-rad_b4y4o3)*(o3.x - y4.x) + Math.cos(-rad_b4y4o3)*(o3.y - y4.y) ) * b4y4 / y4o3  + y4.y;
+       
+    var b4 = new THREE.Vector3(b4y4_X, b4y4_Y, 0.0);
+
+    // object rotation
+    var rad_y3y4o3 = Math.acos( ((y3.x - y4.x)*(o3.x - y4.x) + (y3.y - y4.y)*(o3.y - y4.y)) / (Math.sqrt(Math.pow((y3.x - y4.x),2) + Math.pow((y3.y - y4.y),2)) * Math.sqrt(Math.pow((o3.x - y4.x),2) + Math.pow((o3.y - y4.y),2))) );
+    var rad_y4b4o3 = Math.acos( ((y4.x - b4.x)*(o3.x - b4.x) + (y4.y - b4.y)*(o3.y - b4.y)) / (Math.sqrt(Math.pow((y4.x - b4.x),2) + Math.pow((y4.y - b4.y),2)) * Math.sqrt(Math.pow((o3.x - b4.x),2) + Math.pow((o3.y - b4.y),2))) );
+
+    // o4 //
+    var rad_y3y4o4 = Math.PI;//180
+
+    var y4o4_X = (Math.cos(-rad_y3y4o4)*(y3.x - y4.x) - Math.sin(-rad_y3y4o4)*(y3.y - y4.y)) * y4o4 / y3y4 + y4.x;
+    var y4o4_Y = (Math.sin(-rad_y3y4o4)*(y3.x - y4.x) + Math.cos(-rad_y3y4o4)*(y3.y - y4.y)) * y4o4 / y3y4 + y4.y;
+
+    var o4 = new THREE.Vector3(y4o4_X, y4o4_Y, 0.0);
+        
+    // y5 //
+    var deg_b4y4y5 = 105;
+    var rad_b4y4y5 = deg_b4y4y5/180*Math.PI;
+
+    var y4y5_X = (Math.cos(-rad_b4y4y5)*(b4.x - y4.x) - Math.sin(-rad_b4y4y5)*(b4.y - y4.y)) * y4y5 / b4y4 + y4.x;
+    var y4y5_Y = (Math.sin(-rad_b4y4y5)*(b4.x - y4.x) + Math.cos(-rad_b4y4y5)*(b4.y - y4.y)) * y4y5 / b4y4 + y4.y;
+
+    var y5 = new THREE.Vector3(y4y5_X, y4y5_Y, 0.0);
+
+    //-------------------------
+
+
 
     // w1 // target
     var w1 = new THREE.Vector3(y4.x, y4.y, -1.5);
@@ -269,21 +305,49 @@ function runFormule(){
     meshs.y4.rotation.setFromQuaternion(q);
 
 
-    // ROTATION
+    // _____ POSITION _____
+    
+    meshs.a1.position.set(a1.x*factor, 0.0, 0.0);
+    meshs.a2.position.set(0.0, 0.0, 0.0);
+
+    meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
+    meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
+    meshs.b3.position.set(b3.x*factor, b3.y*factor, 0.0);
+    meshs.b4.position.set(b4.x*factor, b4.y*factor, 0.0);
+
+    meshs.y1.position.set(y1.x*factor, y1.y*factor, 0.0);
+    meshs.y2.position.set(y2.x*factor, y2.y*factor, 0.0);
+    meshs.y3.position.set(y3.x*factor, y3.y*factor, 0.0);
+    meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
+    meshs.y5.position.set(y5.x*factor, y5.y*factor, 0.0);
+
+    meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
+    meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
+    meshs.o3.position.set(o3.x*factor, o3.y*factor, 0.0);
+    meshs.o4.position.set(o4.x*factor, o4.y*factor, 0.0);
+
+
+
+    // _____ ROTATION _____
+
     meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
 
     meshs.b1.rotation.z = (rad_a2y1b1+rad_a1a2y1);
     meshs.b2.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_y2b2o1)
-    meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2)
+    meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2);
+    //meshs.b4.rotation.z = ??
 
     meshs.o1.rotation.z = (-rad_y1a2o1+rad_a1a2y1)+Math.PI;
     meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2+rad_y1y2o2)+Math.PI;
+    //meshs.o3.rotation.z = ??
+    //meshs.o4.rotation.z = ??
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
     meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1+rad_b2y2y3)
     //meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
     meshs.y4.rotation.z = meshs.y4.rotation.z+(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+    //meshs.y5.rotation.z = ??
 
 
     // apply new position to each label
@@ -298,6 +362,7 @@ function runFormule(){
     var i = points.length, name;
     while(i--){
         name = points[i];
+
         if(name !== 'y4'){
             links[name].position.copy(meshs[name].position);
             links[name].rotation.copy(meshs[name].rotation);
@@ -320,17 +385,20 @@ function runFormule(){
     pivot.rotation.z = links.y4.rotation.z;
     pivot.translateX((scale[8]*factor));
 
-    // extra link
+    // extra link b2y2
+    var b2y2_scale = b2y2*factor;
     links.bx0.position.copy(meshs.y2.position);
     links.bx0.rotation.copy(meshs.y3.rotation);
-    links.bx0.translateX((scale[11]*factor)*0.5);
+    links.bx0.translateX((b2y2_scale)*0.5);
     links.bx0.translateZ(-7);
-    links.bx0.scale.x = scale[11]*factor;
+    links.bx0.scale.x = b2y2_scale;
 
+    // extra link b3y3
+    var b3y3_scale = b3y3*factor;
     links.bx1.position.copy(meshs.b3.position);
     links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
-    links.bx1.translateX(((scale[12]*factor)*0.5));
-    links.bx1.scale.x = scale[12]*factor;
+    links.bx1.translateX(((b3y3_scale)*0.5));
+    links.bx1.scale.x = b3y3_scale;
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
     pp.move(ppn, target.position.x, target.position.y, target.position.z);
