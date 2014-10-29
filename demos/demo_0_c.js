@@ -62,7 +62,7 @@ function initObject(){
         // init basic mesh point
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
-        else if(name=='y1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
+        else if(name=='y1' || name=='o3') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
         else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
@@ -313,7 +313,7 @@ function runFormule(){
     meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
     meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
     meshs.b3.position.set(b3.x*factor, b3.y*factor, 0.0);
-    meshs.b4.position.set(b4.x*factor, b4.y*factor, 0.0);
+    meshs.b4.position.set(b4.x*factor, b4.y*factor, -7);
 
     meshs.y1.position.set(y1.x*factor, y1.y*factor, 0.0);
     meshs.y2.position.set(y2.x*factor, y2.y*factor, 0.0);
@@ -335,19 +335,21 @@ function runFormule(){
     meshs.b1.rotation.z = (rad_a2y1b1+rad_a1a2y1);
     meshs.b2.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_y2b2o1)
     meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2);
-    //meshs.b4.rotation.z = ??
+    
+    meshs.b4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_y4b4o3)-Math.PI;//(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3)-Math.PI;
 
     meshs.o1.rotation.z = (-rad_y1a2o1+rad_a1a2y1)+Math.PI;
     meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2+rad_y1y2o2)+Math.PI;
-    //meshs.o3.rotation.z = ??
-    //meshs.o4.rotation.z = ??
+    
+    meshs.o3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o3)//-Math.PI;
+    meshs.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4)+Math.PI;;
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
     meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1+rad_b2y2y3)
     //meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
     meshs.y4.rotation.z = meshs.y4.rotation.z+(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
-    //meshs.y5.rotation.z = ??
+    meshs.y5.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_b4y4y5)-Math.PI;
 
 
     // apply new position to each label
@@ -367,13 +369,12 @@ function runFormule(){
             links[name].position.copy(meshs[name].position);
             links[name].rotation.copy(meshs[name].rotation);
             links[name].translateX((scale[i]*factor)*0.5);
-
         }else{
             links[name].position.copy(meshs.y3.position);
             links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2 + ((180-R)*ToRad);
             links[name].translateX((scale[i]*factor)*0.5);
         }
-        if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
+        if(name == 'y3'|| name == 'o1' || name == 'y1'|| name == 'o3'|| name == 'b4') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
         if(name == 'a2') links[name].translateZ(-28);
