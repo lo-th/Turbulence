@@ -361,7 +361,7 @@ function runFormule(){
         if(name == 'a2') links[name].translateZ(-28);
         links[name].scale.x = (scale[i]*factor);
     }
-    // pivot position
+    // y4 pivot position
     pivot.position.copy(meshs.y4.position);
     pivot.rotation.z = links.y4.rotation.z;
 
