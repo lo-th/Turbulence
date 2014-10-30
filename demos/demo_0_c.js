@@ -49,7 +49,7 @@ v.addGrid(200, 20, [0,0,-30]);
 
 // import object pack
 var pool = new SEA3D.Pool();
-pool.load( ['../models/basic.sea'], initObject );
+pool.load( ['../models/basic.sea'], initObject, 'buffer' );
 
 
 
@@ -382,9 +382,9 @@ function runFormule(){
         if(name == 'a2') links[name].translateZ(-28);
         links[name].scale.x = (scale[i]*factor);
     }
-    // pivot position
+    // y4 pivot position
     pivot.position.copy(meshs.y4.position);
-    pivot.rotation.z = links.y4.rotation.z+Math.PI;
+    pivot.rotation.z = links.y4.rotation.z;
 
     // extra link b2y2
     var b2y2_scale = b2y2*factor;

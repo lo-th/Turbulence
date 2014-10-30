@@ -49,7 +49,7 @@ v.addGrid(200, 20, [0,0,-30]);
 
 // import object pack
 var pool = new SEA3D.Pool();
-pool.load( ['../models/basic.sea'], initObject );
+pool.load( ['../models/basic.sea'], initObject, 'buffer' );
 
 
 
@@ -351,9 +351,9 @@ function runFormule(){
             links[name].translateX((scale[i]*factor)*0.5);
 
         }else{
-            links[name].position.copy(meshs.y3.position);
-            links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2 + ((180-R)*ToRad);
-            links[name].translateX((scale[i]*factor)*0.5);
+            links.y4.position.copy(meshs.y4.position);
+            links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+            links.y4.translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
@@ -362,10 +362,8 @@ function runFormule(){
         links[name].scale.x = (scale[i]*factor);
     }
     // pivot position
-    pivot.position.copy(meshs.y3.position);
-    //pivot.rotation.copy(meshs.y3.rotation);
+    pivot.position.copy(meshs.y4.position);
     pivot.rotation.z = links.y4.rotation.z;
-    pivot.translateX((scale[8]*factor));
 
     // extra link
     links.bx0.position.copy(meshs.y2.position);
