@@ -62,7 +62,7 @@ function initObject(){
         // init basic mesh point
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
-        else if(name=='y1' || name=='o3') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
+        else if(name=='y1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
         else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
@@ -324,7 +324,7 @@ function runFormule(){
 
     meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
     meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
-    meshs.o3.position.set(o3.x*factor, o3.y*factor, 0.0);
+    meshs.o3.position.set(o3.x*factor, o3.y*factor, -7);
     meshs.o4.position.set(o4.x*factor, o4.y*factor, 0.0);
 
 
@@ -374,7 +374,7 @@ function runFormule(){
             links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2 + ((180-R)*ToRad);
             links[name].translateX((scale[i]*factor)*0.5);
         }
-        if(name == 'y3'|| name == 'o1' || name == 'y1'|| name == 'o3'|| name == 'b4') links[name].translateZ(-7);
+        if(name == 'y3'|| name == 'o1' || name == 'y1'||  name == 'b4') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
         if(name == 'a2') links[name].translateZ(-28);
