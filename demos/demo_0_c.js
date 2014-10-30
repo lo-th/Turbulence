@@ -339,7 +339,7 @@ function runFormule(){
     meshs.b4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_y4b4o3)-Math.PI;//(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3)-Math.PI;
 
     meshs.o1.rotation.z = (-rad_y1a2o1+rad_a1a2y1)+Math.PI;
-    meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2+rad_y1y2o2)+Math.PI;
+    meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o2)+Math.PI;
     
     meshs.o3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o3)//-Math.PI;
     meshs.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4)+Math.PI;

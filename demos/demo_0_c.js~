@@ -66,6 +66,7 @@ function initObject(){
         else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
+        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 ); 
         else m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 );
         v.scene.add(m);
         // add label 
@@ -87,8 +88,8 @@ function initObject(){
         links[name] = l;
     }
 
-    // add two extra link
-    for(i=0; i<2; i++){
+    // add tree extra link
+    for(i=0; i<3; i++){
         name = 'bx'+ i;
         l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
         v.scene.add(l);
@@ -245,12 +246,12 @@ function runFormule(){
 
     // b4 //
     var rad_y4y3o3 = Math.acos(((y4.x - y3.x)*(o3.x - y3.x) + (y4.y - y3.y)*(o3.y - y3.y))/(y3y4 * y3o3));
-    var deg_y4y3o3 = rad_y4y3o3*180/Math.PI;
+    //var deg_y4y3o3 = rad_y4y3o3*180/Math.PI;
   
     var y4o3 = Math.sqrt((Math.pow(y3y4,2)) - 2*y3y4*y3o3*Math.cos(rad_y4y3o3) + (Math.pow(y3o3,2)));
 
     var rad_b4y4o3 = Math.acos((Math.pow(y4o3,2) + Math.pow(b4y4,2) - Math.pow(b4o3,2)) / (2*y4o3*b4y4));
-    var deg_b4y4o3 = rad_b4y4o3*180/Math.PI;
+    //var deg_b4y4o3 = rad_b4y4o3*180/Math.PI;
         
     var b4y4_X = (Math.cos(-rad_b4y4o3)*(o3.x - y4.x) - Math.sin(-rad_b4y4o3)*(o3.y - y4.y) ) * b4y4 / y4o3  + y4.x;
     var b4y4_Y = (Math.sin(-rad_b4y4o3)*(o3.x - y4.x) + Math.cos(-rad_b4y4o3)*(o3.y - y4.y) ) * b4y4 / y4o3  + y4.y;
@@ -319,7 +320,7 @@ function runFormule(){
     meshs.y2.position.set(y2.x*factor, y2.y*factor, 0.0);
     meshs.y3.position.set(y3.x*factor, y3.y*factor, 0.0);
     meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
-    meshs.y5.position.set(y5.x*factor, y5.y*factor, 0.0);
+    meshs.y5.position.set(y5.x*factor, y5.y*factor, -7);
 
     meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
     meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
@@ -334,19 +335,18 @@ function runFormule(){
 
     meshs.b1.rotation.z = (rad_a2y1b1+rad_a1a2y1);
     meshs.b2.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_y2b2o1)
-    meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2);
-    
+    meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2);   
     meshs.b4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_y4b4o3)-Math.PI;//(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3)-Math.PI;
 
     meshs.o1.rotation.z = (-rad_y1a2o1+rad_a1a2y1)+Math.PI;
     meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2+rad_y1y2o2)+Math.PI;
     
     meshs.o3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o3)//-Math.PI;
-    meshs.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4)+Math.PI;;
+    meshs.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4)+Math.PI;
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
-    meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1+rad_b2y2y3)
+    meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3)
     //meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
     meshs.y4.rotation.z = meshs.y4.rotation.z+(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
     meshs.y5.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_b4y4y5)-Math.PI;
@@ -400,6 +400,13 @@ function runFormule(){
     links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
     links.bx1.translateX(((b3y3_scale)*0.5));
     links.bx1.scale.x = b3y3_scale;
+
+    // extra link b4y4
+    var b4y4_scale = b4y4*factor;
+    links.bx2.position.copy(meshs.b4.position);
+    links.bx2.rotation.z = meshs.b4.rotation.z+rad_y4b4o3;
+    links.bx2.translateX(((b4y4_scale)*0.5));
+    links.bx2.scale.x = b4y4_scale;
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
     pp.move(ppn, target.position.x, target.position.y, target.position.z);
