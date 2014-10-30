@@ -327,7 +327,7 @@ function runFormule(){
     meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
     meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
     meshs.o3.position.set(o3.x*factor, o3.y*factor, -7);
-    meshs.o4.position.set(o4.x*factor, o4.y*factor, 0.0);
+    meshs.o4.position.set(o4.x*factor, o4.y*factor, -14);
 
 
 
@@ -410,6 +410,10 @@ function runFormule(){
     links.bx2.rotation.z = meshs.b4.rotation.z+rad_y4b4o3;
     links.bx2.translateX(((b4y4_scale)*0.5));
     links.bx2.scale.x = b4y4_scale;
+
+    // extra rotation
+    links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+    links.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4);
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
     pp.move(ppn, target.position.x, target.position.y, target.position.z);
