@@ -116,6 +116,7 @@ V3D.View.prototype = {
 	    mats['c4'] = new V3D.Shader(img, 0x059BB5);//new THREE.MeshBasicMaterial( { color:0x059BB5, name:'c4' } );
 	    mats['c5'] = new V3D.Shader(img, 0xD4D1BE);//new THREE.MeshBasicMaterial( { color:0xD4D1BE, name:'c5' } );
 	    mats['c6'] = new V3D.Shader(img, 0xFFFFFF, this.doubleTexture());//new THREE.MeshBasicMaterial( { map: this.doubleTexture(), name:'c6' } );
+	    mats['c7'] = new V3D.Shader(img, 0xFFFFFF, this.doubleTexture('#07DAFF', '#059BB5'));
 
 	    mats['b0'] = new V3D.Shader(img, 0x606060, null, true, true);
 	    mats['b1'] = new V3D.Shader(img, 0x606060, null, true, false);
@@ -312,13 +313,16 @@ V3D.View.prototype = {
         tx.needsUpdate = true;
         return tx;
     },
-    doubleTexture : function(){
+    doubleTexture : function(c1, c2){
+    	c1 = c1 || '#F964A7';
+    	c2 = c2 || '#059BB5';
+    	
     	var canvas = document.createElement( 'canvas' );
         canvas.width = canvas.height = 128;
         var ctx = canvas.getContext( '2d' );
-        ctx.fillStyle = '#F964A7';
+        ctx.fillStyle = c1;
         ctx.fillRect(0, 0, 128, 128);
-        ctx.fillStyle = '#059BB5';
+        ctx.fillStyle = c2;
         ctx.fillRect(0, 0, 64, 128);
         var tx = new THREE.Texture(canvas);
         tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
