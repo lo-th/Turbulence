@@ -231,7 +231,7 @@ function runFormule(){
     var rad_y3b3o2 = Math.acos( ((y3.x - b3.x)*(o2.x - b3.x) + (y3.y - b3.y)*(o2.y - b3.y)) / (Math.sqrt(Math.pow((y3.x - b3.x),2) + Math.pow((y3.y - b3.y),2)) * Math.sqrt(Math.pow((o2.x - b3.x),2) + Math.pow((o2.y - b3.y),2)) ) );
 
     // y4 //
-    var rad_b3y3y4 = R*ToRad;
+    var rad_b3y3y4 = R*ToRad*150/180//R*ToRad;
 
     var y3y4_X = (Math.cos(-rad_b3y3y4)*(b3.x - y3.x) - Math.sin(-rad_b3y3y4)*(b3.y - y3.y)) * y3y4 / b3y3 + y3.x;
     var y3y4_Y = (Math.sin(-rad_b3y3y4)*(b3.x - y3.x) + Math.cos(-rad_b3y3y4)*(b3.y - y3.y)) * y3y4 / b3y3 + y3.y;
@@ -372,9 +372,9 @@ function runFormule(){
             links[name].rotation.copy(meshs[name].rotation);
             links[name].translateX((scale[i]*factor)*0.5);
         }else{
-            links[name].position.copy(meshs.y3.position);
-            links[name].rotation.z = meshs.b3.rotation.z - rad_y3y2o2 + ((180-R)*ToRad);
-            links[name].translateX((scale[i]*factor)*0.5);
+        	links.y4.position.copy(meshs.y4.position);
+			links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+            links.y4.translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1'||  name == 'b4') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
@@ -383,10 +383,8 @@ function runFormule(){
         links[name].scale.x = (scale[i]*factor);
     }
     // pivot position
-    pivot.position.copy(meshs.y3.position);
-    //pivot.rotation.copy(meshs.y3.rotation);
-    pivot.rotation.z = links.y4.rotation.z;
-    pivot.translateX((scale[8]*factor));
+    pivot.position.copy(meshs.y4.position);
+    pivot.rotation.z = links.y4.rotation.z+Math.PI;
 
     // extra link b2y2
     var b2y2_scale = b2y2*factor;
@@ -412,7 +410,6 @@ function runFormule(){
     links.bx2.scale.x = b4y4_scale;
 
     // extra rotation
-    links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
     links.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4);
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
