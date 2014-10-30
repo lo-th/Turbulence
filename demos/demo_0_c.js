@@ -62,10 +62,10 @@ function initObject(){
         // init basic mesh point
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
-        else if(name=='y1') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
-        else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
+        else if(name=='y1'|| name=='y2') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
+        else if(name=='b3' || name=='o2'|| name=='b2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
-        else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
+        else if(name=='a2' ) m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
         else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo('basic_point7'), v.mats.c6 ); 
         else m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 );
         v.scene.add(m);
@@ -209,7 +209,7 @@ function runFormule(){
     var o2 = new THREE.Vector3(y2o2_X, y2o2_Y, 0.0);
 
     // y3 //
-    var rad_b2y2y3 = Math.PI;
+    var rad_b2y2y3 = Math.PI*190/180;//Math.PI;
     var y2y3_X = (Math.cos(-rad_b2y2y3)*(b2.x - y2.x) - Math.sin(-rad_b2y2y3)*(b2.y - y2.y)) * y2y3 / b2y2 + y2.x;
     var y2y3_Y = (Math.sin(-rad_b2y2y3)*(b2.x - y2.x) + Math.cos(-rad_b2y2y3)*(b2.y - y2.y)) * y2y3 / b2y2 + y2.y;
 
@@ -389,9 +389,9 @@ function runFormule(){
     // extra link b2y2
     var b2y2_scale = b2y2*factor;
     links.bx0.position.copy(meshs.y2.position);
-    links.bx0.rotation.copy(meshs.y3.rotation);
+    links.bx0.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1);
     links.bx0.translateX((b2y2_scale)*0.5);
-    links.bx0.translateZ(-7);
+    links.bx0.translateZ(-14);
     links.bx0.scale.x = b2y2_scale;
 
     // extra link b3y3
