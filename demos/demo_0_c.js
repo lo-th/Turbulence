@@ -66,7 +66,7 @@ function initObject(){
         else if(name=='b3' || name=='o2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
         else if(name=='a2') m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
-        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 ); 
+        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo('basic_point7'), v.mats.c6 ); 
         else m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 );
         v.scene.add(m);
         // add label 
