@@ -83,8 +83,10 @@ Turbulence.Formula.prototype = {
         var a = this.rot;
         var w = this.ta;
 
-    	r.a2a1b1 = Math.PI- Math.atan(s.a2o1/s.a1o1)- this.rotation;
+    	r.a2a1b1 = Math.PI- Math.atan(s.a2o1/s.a1o1) - this.rotation;
     	s.a2b1 = Math.sqrt((Math.pow(s.a1a2,2)) - 2*s.a1a2*s.a1b1*Math.cos(r.a2a1b1) + (Math.pow(s.a1b1,2)));
+
+        var tmp = new Turbulence.Cross();
 
     	// a2
     	// all to zero
@@ -99,10 +101,14 @@ Turbulence.Formula.prototype = {
 
     	// y1
     	r.y1a2b1 = Math.acos((Math.pow(s.a2b1,2) + Math.pow(s.a2y1,2) - Math.pow(s.b1y1,2)) / (2*s.a2b1*s.a2y1));
-    	p.y1.x = (Math.cos(r.y1a2b1)*( p.b1.x - p.a2.x ) - Math.sin(r.y1a2b1)*( p.b1.y -  p.a2.x ) ) * s.a2y1 / s.a2b1 +  p.a2.x;
-    	p.y1.y = (Math.sin(r.y1a2b1)*( p.b1.x - p.a2.x ) + Math.cos(r.y1a2b1)*( p.b1.y -  p.a2.x ) ) * s.a2y1 / s.a2b1 +  p.a2.x;
 
-    	// for object rotation
+    	//p.y1.x = (Math.cos(r.y1a2b1)*( p.b1.x - p.a2.x ) - Math.sin(r.y1a2b1)*( p.b1.y - p.a2.x ) ) * s.a2y1 / s.a2b1 +  p.a2.x;
+    	//p.y1.y = (Math.sin(r.y1a2b1)*( p.b1.x - p.a2.x ) + Math.cos(r.y1a2b1)*( p.b1.y - p.a2.x ) ) * s.a2y1 / s.a2b1 +  p.a2.x;
+        tmp.set( p.b1 , p.a2 );
+        p.y1.x = (Math.cos(r.y1a2b1) * tmp.x - Math.sin(r.y1a2b1) * tmp.y ) * s.a2y1 / s.a2b1 +  p.a2.x;
+        p.y1.y = (Math.sin(r.y1a2b1) * tmp.x + Math.cos(r.y1a2b1) * tmp.y ) * s.a2y1 / s.a2b1 +  p.a2.x;
+
+    	// --- for object rotation
     	r.a1a2y1 = r.y1a2b1 + r.a1a2b1;
     	r.a2y1b1 = Math.acos( ((p.a2.x - p.y1.x)*(p.b1.x - p.y1.x) + (p.a2.y - p.y1.y)*(p.b1.y - p.y1.y)) / (Math.sqrt(Math.pow((p.a2.x - p.y1.x),2) + Math.pow((p.a2.y - p.y1.y),2)) * Math.sqrt(Math.pow((p.b1.x - p.y1.x),2) + Math.pow((p.b1.y - p.y1.y),2)) ) );
 
@@ -113,80 +119,112 @@ Turbulence.Formula.prototype = {
 
     	// y2
     	r.b1y1y2 = 135*Turbulence.ToRad;
-    	p.y2.x = (Math.cos(-r.b1y1y2)*( p.b1.x - p.y1.x) - Math.sin(-r.b1y1y2)*(p.b1.y - p.y1.y)) * s.y1y2 / s.b1y1 + p.y1.x;
-    	p.y2.y = (Math.sin(-r.b1y1y2)*( p.b1.x - p.y1.x) + Math.cos(-r.b1y1y2)*(p.b1.y - p.y1.y)) * s.y1y2 / s.b1y1 + p.y1.y;
+    	//p.y2.x = (Math.cos(-r.b1y1y2)*( p.b1.x - p.y1.x ) - Math.sin(-r.b1y1y2)*(p.b1.y - p.y1.y )) * s.y1y2 / s.b1y1 + p.y1.x;
+    	//p.y2.y = (Math.sin(-r.b1y1y2)*( p.b1.x - p.y1.x ) + Math.cos(-r.b1y1y2)*(p.b1.y - p.y1.y )) * s.y1y2 / s.b1y1 + p.y1.y;
+        tmp.set( p.b1 , p.y1 );
+        p.y2.x = (Math.cos(-r.b1y1y2) * tmp.x - Math.sin(-r.b1y1y2) * tmp.y ) * s.y1y2 / s.b1y1 + p.y1.x;
+        p.y2.y = (Math.sin(-r.b1y1y2) * tmp.x + Math.cos(-r.b1y1y2) * tmp.y ) * s.y1y2 / s.b1y1 + p.y1.y;
 
     	// b2
     	r.y2y1o1 = Math.acos(((p.y2.x - p.y1.x)*(p.o1.x - p.y1.x) + (p.y2.y - p.y1.y)*(p.o1.y - p.y1.y))/(s.y1y2 * s.y1o1));
     	s.y2o1 = Math.sqrt((Math.pow(s.y1y2,2)) - 2*s.y1y2*s.y1o1*Math.cos(r.y2y1o1) + (Math.pow(s.y1o1,2)));
     	r.b2y2o1 = Math.acos((Math.pow(s.y2o1,2) + Math.pow(s.b2y2,2) - Math.pow(s.b2o1,2)) / (2*s.y2o1*s.b2y2));
 
-    	p.b2.x = (Math.cos(-r.b2y2o1)*(p.o1.x - p.y2.x) - Math.sin(-r.b2y2o1)*(p.o1.y - p.y2.y) ) * s.b2y2 / s.y2o1  + p.y2.x;
-    	p.b2.y = (Math.sin(-r.b2y2o1)*(p.o1.x - p.y2.x) + Math.cos(-r.b2y2o1)*(p.o1.y - p.y2.y) ) * s.b2y2 / s.y2o1  + p.y2.y;
+    	//p.b2.x = (Math.cos(-r.b2y2o1)*(p.o1.x - p.y2.x) - Math.sin(-r.b2y2o1)*(p.o1.y - p.y2.y) ) * s.b2y2 / s.y2o1  + p.y2.x;
+    	//p.b2.y = (Math.sin(-r.b2y2o1)*(p.o1.x - p.y2.x) + Math.cos(-r.b2y2o1)*(p.o1.y - p.y2.y) ) * s.b2y2 / s.y2o1  + p.y2.y;
+        tmp.set( p.o1 , p.y2 );
+        p.b2.x = (Math.cos(-r.b2y2o1) * tmp.x - Math.sin(-r.b2y2o1) * tmp.y ) * s.b2y2 / s.y2o1  + p.y2.x;
+        p.b2.y = (Math.sin(-r.b2y2o1) * tmp.x + Math.cos(-r.b2y2o1) * tmp.y ) * s.b2y2 / s.y2o1  + p.y2.y;
 
-    	// for object rotation
-    	r.y1y2o1 = Math.acos( ((p.y1.x - p.y2.x)*(p.o1.x - p.y2.x) + (p.y1.y - p.y2.y)*(p.o1.y - p.y2.y)) / (Math.sqrt(Math.pow((p.y1.x - p.y2.x),2) + Math.pow((p.y1.y - p.y2.y),2)) * Math.sqrt(Math.pow((p.o1.x - p.y2.x),2) + Math.pow((p.o1.y - p.y2.y),2)) ) );
-    	r.y2b2o1 = Math.acos( ((p.y2.x - p.b2.x)*(p.o1.x - p.b2.x) + (p.y2.y - p.b2.y)*(p.o1.y - p.b2.y)) / (Math.sqrt(Math.pow((p.y2.x - p.b2.x),2) + Math.pow((p.y2.y - p.b2.y),2)) * Math.sqrt(Math.pow((p.o1.x - p.b2.x),2) + Math.pow((p.o1.y - p.b2.y),2)) ) );
+    	// --- for object rotation
+    	//r.y1y2o1 = Math.acos( ((p.y1.x - p.y2.x)*(p.o1.x - p.y2.x) + (p.y1.y - p.y2.y)*(p.o1.y - p.y2.y)) / (Math.sqrt(Math.pow((p.y1.x - p.y2.x),2) + Math.pow((p.y1.y - p.y2.y),2)) * Math.sqrt(Math.pow((p.o1.x - p.y2.x),2) + Math.pow((p.o1.y - p.y2.y),2)) ) );
+    	r.y1y2o1 = Math.acos( ((p.y1.x - p.y2.x)*tmp.x + (p.y1.y - p.y2.y)*tmp.y ) / (Math.sqrt(Math.pow((p.y1.x - p.y2.x),2) + Math.pow((p.y1.y - p.y2.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2)) ) );
+        r.y2b2o1 = Math.acos( ((p.y2.x - p.b2.x)*(p.o1.x - p.b2.x) + (p.y2.y - p.b2.y)*(p.o1.y - p.b2.y)) / (Math.sqrt(Math.pow((p.y2.x - p.b2.x),2) + Math.pow((p.y2.y - p.b2.y),2)) * Math.sqrt(Math.pow((p.o1.x - p.b2.x),2) + Math.pow((p.o1.y - p.b2.y),2)) ) );
+
 
     	// o2
     	r.y1y2o2 = pi;// 180
-    	p.o2.x = (Math.cos(-r.y1y2o2)*(p.y1.x - p.y2.x) - Math.sin(-r.y1y2o2)*(p.y1.y - p.y2.y)) * s.y2o2 / s.y1y2 + p.y2.x;
-    	p.o2.y = (Math.sin(-r.y1y2o2)*(p.y1.x - p.y2.x) + Math.cos(-r.y1y2o2)*(p.y1.y - p.y2.y)) * s.y2o2 / s.y1y2 + p.y2.y;
+    	//p.o2.x = (Math.cos(-r.y1y2o2)*(p.y1.x - p.y2.x) - Math.sin(-r.y1y2o2)*(p.y1.y - p.y2.y)) * s.y2o2 / s.y1y2 + p.y2.x;
+    	//p.o2.y = (Math.sin(-r.y1y2o2)*(p.y1.x - p.y2.x) + Math.cos(-r.y1y2o2)*(p.y1.y - p.y2.y)) * s.y2o2 / s.y1y2 + p.y2.y;
+        tmp.set( p.y1 , p.y2 );
+        p.o2.x = (Math.cos(-r.y1y2o2) * tmp.x - Math.sin(-r.y1y2o2) * tmp.y ) * s.y2o2 / s.y1y2 + p.y2.x;
+        p.o2.y = (Math.sin(-r.y1y2o2) * tmp.x + Math.cos(-r.y1y2o2) * tmp.y ) * s.y2o2 / s.y1y2 + p.y2.y;
 
     	// y3
     	r.b2y2y3 = pi;// 180
-    	p.y3.x = (Math.cos(-r.b2y2y3)*(p.b2.x - p.y2.x) - Math.sin(-r.b2y2y3)*(p.b2.y - p.y2.y)) * s.y2y3 / s.b2y2 + p.y2.x;
-    	p.y3.y = (Math.sin(-r.b2y2y3)*(p.b2.x - p.y2.x) + Math.cos(-r.b2y2y3)*(p.b2.y - p.y2.y)) * s.y2y3 / s.b2y2 + p.y2.y;
+    	//p.y3.x = (Math.cos(-r.b2y2y3)*(p.b2.x - p.y2.x) - Math.sin(-r.b2y2y3)*(p.b2.y - p.y2.y)) * s.y2y3 / s.b2y2 + p.y2.x;
+    	//p.y3.y = (Math.sin(-r.b2y2y3)*(p.b2.x - p.y2.x) + Math.cos(-r.b2y2y3)*(p.b2.y - p.y2.y)) * s.y2y3 / s.b2y2 + p.y2.y;
+        tmp.set( p.b2 , p.y2 );
+        p.y3.x = (Math.cos(-r.b2y2y3) * tmp.x - Math.sin(-r.b2y2y3) * tmp.y) * s.y2y3 / s.b2y2 + p.y2.x;
+        p.y3.y = (Math.sin(-r.b2y2y3) * tmp.x + Math.cos(-r.b2y2y3) * tmp.y) * s.y2y3 / s.b2y2 + p.y2.y;
 
     	// b3
     	r.y3y2o2 = Math.acos(((p.y3.x - p.y2.x)*(p.o2.x - p.y2.x) + (p.y3.y - p.y2.y)*(p.o2.y - p.y2.y))/(s.y2y3 * s.y2o2));
     	s.y3o2 = Math.sqrt((Math.pow(s.y2y3,2)) - 2*s.y2y3*s.y2o2*Math.cos(r.y3y2o2) + (Math.pow(s.y2o2,2)));
     	r.b3y3o2 = Math.acos((Math.pow(s.y3o2,2) + Math.pow(s.b3y3,2) - Math.pow(s.b3o2,2)) / (2*s.y3o2*s.b3y3));
 
-    	p.b3.x = (Math.cos(r.b3y3o2)*(p.o2.x - p.y3.x) - Math.sin(r.b3y3o2)*(p.o2.y - p.y3.y) ) * s.b3y3 / s.y3o2  + p.y3.x;
-    	p.b3.y = (Math.sin(r.b3y3o2)*(p.o2.x - p.y3.x) + Math.cos(r.b3y3o2)*(p.o2.y - p.y3.y) ) * s.b3y3 / s.y3o2  + p.y3.y;
+    	//p.b3.x = (Math.cos(r.b3y3o2)*(p.o2.x - p.y3.x) - Math.sin(r.b3y3o2)*(p.o2.y - p.y3.y) ) * s.b3y3 / s.y3o2  + p.y3.x;
+    	//p.b3.y = (Math.sin(r.b3y3o2)*(p.o2.x - p.y3.x) + Math.cos(r.b3y3o2)*(p.o2.y - p.y3.y) ) * s.b3y3 / s.y3o2  + p.y3.y;
+        tmp.set( p.o2 , p.y3 );
+        p.b3.x = (Math.cos(r.b3y3o2) * tmp.x - Math.sin(r.b3y3o2) * tmp.y ) * s.b3y3 / s.y3o2  + p.y3.x;
+        p.b3.y = (Math.sin(r.b3y3o2) * tmp.x + Math.cos(r.b3y3o2) * tmp.y ) * s.b3y3 / s.y3o2  + p.y3.y;
 
-    	// for object rotation
-    	r.y2y3o2 = Math.acos( ((p.y2.x - p.y3.x)*(p.o2.x - p.y3.x) + (p.y2.y - p.y3.y)*(p.o2.y - p.y3.y)) / (Math.sqrt(Math.pow((p.y2.x - p.y3.x),2) + Math.pow((p.y2.y - p.y3.y),2)) * Math.sqrt(Math.pow((p.o2.x - p.y3.x),2) + Math.pow((p.o2.y - p.y3.y),2)) ) );
+    	// --- for object rotation
+    	//r.y2y3o2 = Math.acos( ((p.y2.x - p.y3.x)*(p.o2.x - p.y3.x) + (p.y2.y - p.y3.y)*(p.o2.y - p.y3.y)) / (Math.sqrt(Math.pow((p.y2.x - p.y3.x),2) + Math.pow((p.y2.y - p.y3.y),2)) * Math.sqrt(Math.pow((p.o2.x - p.y3.x),2) + Math.pow((p.o2.y - p.y3.y),2)) ) );
+        r.y2y3o2 = Math.acos( ((p.y2.x - p.y3.x)*tmp.x + (p.y2.y - p.y3.y)*tmp.y) / (Math.sqrt(Math.pow((p.y2.x - p.y3.x),2) + Math.pow((p.y2.y - p.y3.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2)) ) );
     	r.y3b3o2 = Math.acos( ((p.y3.x - p.b3.x)*(p.o2.x - p.b3.x) + (p.y3.y - p.b3.y)*(p.o2.y - p.b3.y)) / (Math.sqrt(Math.pow((p.y3.x - p.b3.x),2) + Math.pow((p.y3.y - p.b3.y),2)) * Math.sqrt(Math.pow((p.o2.x - p.b3.x),2) + Math.pow((p.o2.y - p.b3.y),2)) ) );
 
     	// y4
     	r.b3y3y4 = this.R; 
-    	p.y4.x = (Math.cos(-r.b3y3y4)*(p.b3.x - p.y3.x) - Math.sin(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.x;
-    	p.y4.y = (Math.sin(-r.b3y3y4)*(p.b3.x - p.y3.x) + Math.cos(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.y;
+    	//p.y4.x = (Math.cos(-r.b3y3y4)*(p.b3.x - p.y3.x) - Math.sin(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.x;
+    	//p.y4.y = (Math.sin(-r.b3y3y4)*(p.b3.x - p.y3.x) + Math.cos(-r.b3y3y4)*(p.b3.y - p.y3.y)) * s.y3y4 / s.b3y3 + p.y3.y;
+        tmp.set( p.b3 , p.y3 );
+        p.y4.x = (Math.cos(-r.b3y3y4) * tmp.x - Math.sin(-r.b3y3y4) * tmp.y ) * s.y3y4 / s.b3y3 + p.y3.x;
+        p.y4.y = (Math.sin(-r.b3y3y4) * tmp.x + Math.cos(-r.b3y3y4) * tmp.y ) * s.y3y4 / s.b3y3 + p.y3.y;
 
         //----------------------------------------
 
         // o3
         r.y2y3o3 = pi;// 180
-        p.o3.x = (Math.cos(-r.y2y3o3)*(p.y2.x - p.y3.x) - Math.sin(-r.y2y3o3)*(p.y2.y - p.y3.y)) * s.y3o3 / s.y2y3 + p.y3.x;
-        p.o3.y = (Math.sin(-r.y2y3o3)*(p.y2.x - p.y3.x) + Math.cos(-r.y2y3o3)*(p.y2.y - p.y3.y)) * s.y3o3 / s.y2y3 + p.y3.y;
+        //p.o3.x = (Math.cos(-r.y2y3o3)*(p.y2.x - p.y3.x) - Math.sin(-r.y2y3o3)*(p.y2.y - p.y3.y)) * s.y3o3 / s.y2y3 + p.y3.x;
+        //p.o3.y = (Math.sin(-r.y2y3o3)*(p.y2.x - p.y3.x) + Math.cos(-r.y2y3o3)*(p.y2.y - p.y3.y)) * s.y3o3 / s.y2y3 + p.y3.y;
+        tmp.set( p.y2 , p.y3 );
+        p.o3.x = (Math.cos(-r.y2y3o3) * tmp.x - Math.sin(-r.y2y3o3) * tmp.y ) * s.y3o3 / s.y2y3 + p.y3.x;
+        p.o3.y = (Math.sin(-r.y2y3o3) * tmp.x + Math.cos(-r.y2y3o3) * tmp.y ) * s.y3o3 / s.y2y3 + p.y3.y;
 
         // b4
         r.y4y3o3 = Math.acos(((p.y4.x - p.y3.x)*(p.o3.x - p.y3.x) + (p.y4.y - p.y3.y)*(p.o3.y - p.y3.y))/(s.y3y4 * s.y3o3));
         s.y4o3 = Math.sqrt((Math.pow(s.y3y4,2)) - 2*s.y3y4*s.y3o3*Math.cos(r.y4y3o3) + (Math.pow(s.y3o3,2)));
         r.b4y4o3 = Math.acos((Math.pow(S.y4o3,2) + Math.pow(s.b4y4,2) - Math.pow(s.b4o3,2)) / (2*s.y4o3*s.b4y4));
 
-        p.b4.x = (Math.cos(-r.b4y4o3)*(p.o3.x - p.y4.x) - Math.sin(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.x;
-        p.b4.y = (Math.sin(-r.b4y4o3)*(p.o3.x - p.y4.x) + Math.cos(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.y;
+        //p.b4.x = (Math.cos(-r.b4y4o3)*(p.o3.x - p.y4.x) - Math.sin(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.x;
+        //p.b4.y = (Math.sin(-r.b4y4o3)*(p.o3.x - p.y4.x) + Math.cos(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.y;
+        tmp.set( p.o3 , p.y4 );
+        p.b4.x = (Math.cos(-r.b4y4o3) * tmp.x - Math.sin(-r.b4y4o3) * tmp.y ) * s.b4y4 / s.y4o3  + p.y4.x;
+        p.b4.y = (Math.sin(-r.b4y4o3) * tmp.x + Math.cos(-r.b4y4o3) * tmp.y ) * s.b4y4 / s.y4o3  + p.y4.y;
 
-        // for object rotation
-        r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*(p.o3.x - p.y4.x) + (p.y3.y - p.y4.y)*(p.o3.y - p.y4.y)) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.y4.x),2) + Math.pow((p.o3.y - p.y4.y),2))) );
+        // --- for object rotation
+        //r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*(p.o3.x - p.y4.x) + (p.y3.y - p.y4.y)*(p.o3.y - p.y4.y)) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.y4.x),2) + Math.pow((p.o3.y - p.y4.y),2))) );
+        r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*tmp.x + (p.y3.y - p.y4.y)*tmp.y) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2))) );
         r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*(p.o3.x - p.b4.x) + (p.y4.y - p.b4.y)*(p.o3.y - p.b4.y)) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.b4.x),2) + Math.pow((p.o3.y - p.b4.y),2))) );
 
         // o4
         r.y3y4o4 = pi;// 180
 
-        p.o4.x = (Math.cos(-r.y3y4o4)*(p.y3.x - p.y4.x) - Math.sin(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.x;
-        p.o4.y = (Math.sin(-r.y3y4o4)*(p.y3.x - p.y4.x) + Math.cos(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.y;
+        //p.o4.x = (Math.cos(-r.y3y4o4)*(p.y3.x - p.y4.x) - Math.sin(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.x;
+        //p.o4.y = (Math.sin(-r.y3y4o4)*(p.y3.x - p.y4.x) + Math.cos(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.y;
+        tmp.set( p.y3 , p.y4 );
+        p.o4.x = (Math.cos(-r.y3y4o4) * tmp.x - Math.sin(-r.y3y4o4)* tmp.y ) * s.y4o4 / s.y3y4 + p.y4.x;
+        p.o4.y = (Math.sin(-r.y3y4o4) * tmp.x + Math.cos(-r.y3y4o4)* tmp.y ) * s.y4o4 / s.y3y4 + p.y4.y;
         
         // y5
         r.b4y4y5 = 105/180*Math.PI;
 
-        p.y5.x = (Math.cos(-r.b4y4y5)*(p.b4.x - p.y4.x) - Math.sin(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.x;
-        p.y5.y = (Math.sin(-r.b4y4y5)*(p.b4.x - p.y4.x) + Math.cos(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.y;
-
-
+        //p.y5.x = (Math.cos(-r.b4y4y5)*(p.b4.x - p.y4.x) - Math.sin(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.x;
+        //p.y5.y = (Math.sin(-r.b4y4y5)*(p.b4.x - p.y4.x) + Math.cos(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.y;
+        tmp.set( p.b4 , p.y4 );
+        p.y5.x = (Math.cos(-r.b4y4y5) * tmp.x - Math.sin(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.x;
+        p.y5.y = (Math.sin(-r.b4y4y5) * tmp.x + Math.cos(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.y;
 
 
 
@@ -202,7 +240,6 @@ Turbulence.Formula.prototype = {
         var rr = new Turbulence.Euler().setFromQuaternion(this.endQuaternion);
 
         p.y4.r = rr.z;
-
 
 
         // final rotation -------------------
@@ -238,6 +275,21 @@ Turbulence.Formula.prototype = {
     
     }
 }
+
+
+Turbulence.Cross =function(){
+    this.x = 0;
+    this.y = 0;
+}
+Turbulence.Cross.prototype = {
+    constructor: Turbulence.Cross,
+    set:function(p1, p2){
+        this.x = p1.x - p2.x;
+        this.y = p1.y - p2.y;
+    }
+}
+
+
 
 // simple Vector 3d
 Turbulence.V3 = function(x,y,z,r){
