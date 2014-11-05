@@ -52,8 +52,6 @@ var pool = new SEA3D.Pool();
 pool.load( ['../models/basic.sea'], initObject, 'buffer' );
 
 
-
-
 function initObject(){
     // trace object imported list
     //tell(pool.getList());
@@ -147,6 +145,7 @@ function runFormule(){
     
     var b4o3 = C + Math.sqrt(C);
     var y4y5 = Math.sqrt(C);
+    
 //          ['a1','a2' ,'b1' ,'b2' ,'b3' ,'y1' ,'y2' ,'y3' ,'y4' ,'o1' ,'o2' ,        'o3' ,'o4' ,'b4' ,'y5' ];
     scale = [a1b1, a1a2, b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2,    y3o3, y4o4, b4o3, y4y5       ];
 
@@ -286,13 +285,16 @@ function runFormule(){
 
 
     // w1 // target
-    var w1 = new THREE.Vector3(y4.x, y4.y, -1.5);
+    //var w1 = new THREE.Vector3(y4.x, y4.y, -1.5);
 
-    target.position.set(w1.x*factor, w1.y*factor, w1.z*factor);
+    //target.position.set(w1.x*factor, w1.y*factor, w1.z*factor);
+
+    target.position.set(y4.x*factor, y4.y*factor, -1.5*factor);
     
     // two target vectors :: a-> is y4y3, b-> is y4o4
     var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
-    var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
+    var b = new THREE.Vector3(0, 0, -1.5);
+    //var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
 
     // start of the inner product (the calculation of the angle of rotation)
     // calculation by ourselves (for analysis)
@@ -305,7 +307,8 @@ function runFormule(){
     // var nor_y3y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
 
     var q = new THREE.Quaternion().setFromAxisAngle(nor_y3y4w1, rad_y3y4w1);
-    meshs.y4.rotation.setFromQuaternion(q);
+    //meshs.y4.rotation.setFromQuaternion(q);
+    meshs.y4.quaternion.copy(q);
 
 
     // _____ POSITION _____
@@ -329,29 +332,33 @@ function runFormule(){
     meshs.o3.position.set(o3.x*factor, o3.y*factor, -7);
     meshs.o4.position.set(o4.x*factor, o4.y*factor, -14);
 
-
-
     // _____ ROTATION _____
 
-    meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
+    var angle_A = rad_a2y1b1+rad_a1a2y1;
+    var angle_B = angle_A-rad_b1y1y2;
+    var angle_C = angle_B-rad_y1y2o1-rad_b2y2o1;
+    var angle_D = -rad_b2y2y3-rad_y2y3o2+rad_b3y3o2;
+    var angle_E = -rad_b3y3y4+rad_y3y4o3-rad_b4y4o3;
+    var angle_F = angle_C+angle_D-rad_b3y3y4;
 
-    meshs.b1.rotation.z = (rad_a2y1b1+rad_a1a2y1);
-    meshs.b2.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_y2b2o1)
-    meshs.b3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2+rad_y3b3o2);   
-    meshs.b4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_y4b4o3)-Math.PI;//(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3)-Math.PI;
+    //meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
+    meshs.a1.rotation.z = -rad_a2a1b1 + Math.PI;
 
-    meshs.o1.rotation.z = (-rad_y1a2o1+rad_a1a2y1)+Math.PI;
-    meshs.o2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o2)+Math.PI;
-    
-    meshs.o3.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o3)//-Math.PI;
-    meshs.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4)+Math.PI;
+    meshs.b1.rotation.z = angle_A;
+    meshs.b2.rotation.z = angle_C-rad_y2b2o1-Math.PI;
+    meshs.b3.rotation.z = angle_C+angle_D+rad_y3b3o2;   
+    meshs.b4.rotation.z = angle_C+angle_D+angle_E-rad_y4b4o3-Math.PI;
+
+    meshs.o1.rotation.z = -rad_y1a2o1+rad_a1a2y1+Math.PI;
+    meshs.o2.rotation.z = angle_B-rad_y1y2o2+Math.PI;
+    meshs.o3.rotation.z = angle_C-rad_b2y2y3-rad_y2y3o3;
+    meshs.o4.rotation.z = angle_C+angle_D-rad_b3y3y4+rad_y3y4o4+Math.PI;
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
-    meshs.y2.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2);
-    meshs.y3.rotation.z = (-Math.PI+rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3)
-    //meshs.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
-    meshs.y4.rotation.z = meshs.y4.rotation.z+(rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
-    meshs.y5.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o3-rad_b4y4o3-rad_b4y4y5)-Math.PI;
+    meshs.y2.rotation.z = angle_B;
+    meshs.y3.rotation.z = angle_C-rad_b2y2y3-Math.PI;
+    meshs.y4.rotation.z += angle_F;
+    meshs.y5.rotation.z = angle_C+angle_D+angle_E-rad_b4y4y5-Math.PI;
 
 
     // apply new position to each label
@@ -373,7 +380,7 @@ function runFormule(){
             links[name].translateX((scale[i]*factor)*0.5);
         }else{
         	links.y4.position.copy(meshs.y4.position);
-			links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
+			links.y4.rotation.z = angle_F;
             links.y4.translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1'||  name == 'b4') links[name].translateZ(-7);
@@ -389,7 +396,7 @@ function runFormule(){
     // extra link b2y2
     var b2y2_scale = b2y2*factor;
     links.bx0.position.copy(meshs.y2.position);
-    links.bx0.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1);
+    links.bx0.rotation.z = angle_C;
     links.bx0.translateX((b2y2_scale)*0.5);
     links.bx0.translateZ(-14);
     links.bx0.scale.x = b2y2_scale;
@@ -397,7 +404,7 @@ function runFormule(){
     // extra link b3y3
     var b3y3_scale = b3y3*factor;
     links.bx1.position.copy(meshs.b3.position);
-    links.bx1.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2);//meshs.b3.rotation.z - rad_y3y2o2;
+    links.bx1.rotation.z = angle_C+angle_D;
     links.bx1.translateX(((b3y3_scale)*0.5));
     links.bx1.translateZ(7);
     links.bx1.scale.x = b3y3_scale;
@@ -410,14 +417,12 @@ function runFormule(){
     links.bx2.scale.x = b4y4_scale;
 
     // extra rotation
-    links.o4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4+rad_y3y4o4);
+    links.o4.rotation.z = angle_F+rad_y3y4o4;
 
-    //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
+    // particle points
     pp.move(ppn, target.position.x, target.position.y, target.position.z);
     ppn++;
     if(ppn==ppmax) ppn = 0;
-    //if(rotation.z<(2*Math.PI))
-        //if(pp)pp.addV(Math.round(meshs.y4.position.x),Math.round(meshs.y4.position.y),0);
 
 
     inFormulEnable=true;
