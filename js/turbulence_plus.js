@@ -33,7 +33,7 @@ Turbulence.Formula = function(){
 	};
 	// size definition   static : sizes.length - 4
 	names = ['a1b1','a1a2','b1y1','b2o1','b3o2','a2y1','y1y2','y2y3','y3y4','a2o1','y2o2','b2y2','b3y3', 'a1o1','a2b1','y2o1','y3o2',
-    'y3o3', 'y4o4', 'b4o3', 'y4y5', 'y4o3'
+    'y3o3', 'y4o4', 'b4o3', 'y4y5', 'y4o3', 'b4y4'
     ];
 	for(var i=0; i<names.length; i++){
 		this.sizes[names[i]] = 0;
@@ -69,7 +69,7 @@ Turbulence.Formula.prototype = {
 		this.B = (Math.pow(s.a2y1,2) + Math.pow(s.a2o1,2));
 		s.y1o1 = s.b2y2 = Math.sqrt(this.B);
 		this.C = C || this.B;
-		s.y2o2 = s.b3y3 = s.y3o3 = s.y4o4 = s.y4y5 = Math.sqrt(this.C);
+		s.y2o2 = s.b3y3 = s.y3o3 = s.y4o4 = s.y4y5 = s.b4y4 = Math.sqrt(this.C);
 		s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = s.b4o3 = this.C + Math.sqrt(this.C);
 
     },
@@ -195,7 +195,7 @@ Turbulence.Formula.prototype = {
         // b4
         r.y4y3o3 = Math.acos(((p.y4.x - p.y3.x)*(p.o3.x - p.y3.x) + (p.y4.y - p.y3.y)*(p.o3.y - p.y3.y))/(s.y3y4 * s.y3o3));
         s.y4o3 = Math.sqrt((Math.pow(s.y3y4,2)) - 2*s.y3y4*s.y3o3*Math.cos(r.y4y3o3) + (Math.pow(s.y3o3,2)));
-        r.b4y4o3 = Math.acos((Math.pow(S.y4o3,2) + Math.pow(s.b4y4,2) - Math.pow(s.b4o3,2)) / (2*s.y4o3*s.b4y4));
+        r.b4y4o3 = Math.acos((Math.pow(s.y4o3,2) + Math.pow(s.b4y4,2) - Math.pow(s.b4o3,2)) / (2*s.y4o3*s.b4y4));
 
         //p.b4.x = (Math.cos(-r.b4y4o3)*(p.o3.x - p.y4.x) - Math.sin(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.x;
         //p.b4.y = (Math.sin(-r.b4y4o3)*(p.o3.x - p.y4.x) + Math.cos(-r.b4y4o3)*(p.o3.y - p.y4.y) ) * s.b4y4 / s.y4o3  + p.y4.y;
@@ -219,6 +219,8 @@ Turbulence.Formula.prototype = {
         
         // y5
         r.b4y4y5 = 105/180*Math.PI;
+        //var deg_b4y4y5 = 105;
+        //r.b4y4y5 = deg_b4y4y5/180*Math.PI;
 
         //p.y5.x = (Math.cos(-r.b4y4y5)*(p.b4.x - p.y4.x) - Math.sin(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.x;
         //p.y5.y = (Math.sin(-r.b4y4y5)*(p.b4.x - p.y4.x) + Math.cos(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.y;
@@ -230,16 +232,17 @@ Turbulence.Formula.prototype = {
 
         // extra rotation --------------------
 
-        w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
+        /*w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
         w.b.set( 0, 0, -1.5 );
 
         r.y3y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
         w.c.set((w.a.y*w.b.z - w.b.y*w.a.z), (w.a.z*w.b.x - w.b.z*w.a.x), (w.a.x*w.b.y - w.b.x*w.a.y))
+        w.c.normalize()
 
-        this.endQuaternion.setFromAxisAngle(w.c.normalize(), r.y3y4w1);
+        this.endQuaternion.setFromAxisAngle(w.c, r.y3y4w1);
         var rr = new Turbulence.Euler().setFromQuaternion(this.endQuaternion);
 
-        p.y4.r = rr.z;
+        p.y4.r = rr.z;*/
 
 
         // final rotation -------------------

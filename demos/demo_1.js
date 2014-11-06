@@ -21,6 +21,7 @@ var formula = function(pz, r, label){
     this.f.rotation = r || 0;
     this.labels = [];
     this.o = new V3D.Particle(v.scene, this.f.pNames.length);
+    //console.log(this.f.pNames.length)
     // add each formula point to 3d view
     for(var i = 0; i<this.f.pNames.length; i++){
         //this.o.addV(0,0,0);
@@ -38,9 +39,9 @@ formula.prototype = {
         var p;
         for(var i = 0; i<this.f.pNames.length; i++){
             p = this.f.points[this.f.pNames[i]];
-            this.o.move(i, p.x*this.mul, p.y*this.mul, this.pz);
+            this.o.move(i, p.x*this.mul, p.y*this.mul, (p.z*this.mul)+this.pz);
             if(this.labels.length>0){
-                this.labels[i].position.set(p.x*this.mul, p.y*this.mul, this.pz)
+                this.labels[i].position.set(p.x*this.mul, p.y*this.mul, (p.z*this.mul)+this.pz)
             }
         }
         this.o.update();
