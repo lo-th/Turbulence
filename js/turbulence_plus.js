@@ -232,17 +232,17 @@ Turbulence.Formula.prototype = {
 
         // extra rotation --------------------
 
-        /*w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
+        w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
         w.b.set( 0, 0, -1.5 );
 
         r.y3y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
-        w.c.set((w.a.y*w.b.z - w.b.y*w.a.z), (w.a.z*w.b.x - w.b.z*w.a.x), (w.a.x*w.b.y - w.b.x*w.a.y))
-        w.c.normalize()
+        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y )
+        //w.c.normalize();
 
-        this.endQuaternion.setFromAxisAngle(w.c, r.y3y4w1);
+
+        this.endQuaternion.setFromAxisAngle(w.c.normalize(), r.y3y4w1);
         var rr = new Turbulence.Euler().setFromQuaternion(this.endQuaternion);
-
-        p.y4.r = rr.z;*/
+        p.y4.r = rr.z;
 
 
         // final rotation -------------------
@@ -324,7 +324,7 @@ Turbulence.V3.prototype = {
             this.y = 0;
             this.z = 0;
         }
-        //return this;
+        return this;
     }
 }
 
@@ -364,6 +364,7 @@ Turbulence.Euler.prototype = {
         this.x = Math.atan2( 2 * ( q.x * q.w - q.y * q.z ), ( sqw - sqx - sqy + sqz ) );
         this.y = Math.asin(  this.clamp( 2 * ( q.x * q.z + q.y * q.w ), - 1, 1 ) );
         this.z = Math.atan2( 2 * ( q.z * q.w - q.x * q.y ), ( sqw + sqx - sqy - sqz ) );
+        return this;
     },
     clamp: function ( x, a, b ) {
         return ( x < a ) ? a : ( ( x > b ) ? b : x );
