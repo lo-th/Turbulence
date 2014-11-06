@@ -106,7 +106,7 @@ V3D.View.prototype = {
     	mats['point']  = new THREE.LineBasicMaterial( { color:0xF964A7 } );
     },
     initMaterial:function(){
-    	var img = THREE.ImageUtils.loadTexture( '../images/env.jpg' );
+    	var img = THREE.ImageUtils.loadTexture( '../images/e_metal.jpg' );
 	    var mats = {};
 	    this.initBasicMaterial(mats);
 	    //mats['bg'] = new THREE.MeshBasicMaterial( { side:THREE.BackSide, depthWrite: false, fog:false }  );
