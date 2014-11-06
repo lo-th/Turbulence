@@ -74,7 +74,7 @@ function initObject(){
         v.scene.add(t);
         // add Link
         if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c7 );
-        else l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        else l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
         
         v.scene.add(l);
 
@@ -91,7 +91,7 @@ function initObject(){
     // add tree extra link
     for(i=0; i<3; i++){
         name = 'bx'+ i;
-        l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
         v.scene.add(l);
         links[name] = l;
     }
@@ -352,7 +352,7 @@ function runFormule(){
     meshs.o1.rotation.z = -rad_y1a2o1+rad_a1a2y1+Math.PI;
     meshs.o2.rotation.z = angle_B-rad_y1y2o2+Math.PI;
     meshs.o3.rotation.z = angle_C-rad_b2y2y3-rad_y2y3o3;
-    meshs.o4.rotation.z = angle_C+angle_D-rad_b3y3y4+rad_y3y4o4+Math.PI;
+    meshs.o4.rotation.z = angle_F+rad_y3y4o4+Math.PI; //angle_C+angle_D-rad_b3y3y4+rad_y3y4o4-(2*Math.PI);
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = angle_B;
@@ -377,11 +377,9 @@ function runFormule(){
         if(name !== 'y4'){
             links[name].position.copy(meshs[name].position);
             links[name].rotation.copy(meshs[name].rotation);
-            links[name].translateX((scale[i]*factor)*0.5);
         }else{
         	links.y4.position.copy(meshs.y4.position);
 			links.y4.rotation.z = angle_F;
-            links.y4.translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1'||  name == 'b4') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
@@ -397,7 +395,6 @@ function runFormule(){
     var b2y2_scale = b2y2*factor;
     links.bx0.position.copy(meshs.y2.position);
     links.bx0.rotation.z = angle_C;
-    links.bx0.translateX((b2y2_scale)*0.5);
     links.bx0.translateZ(-14);
     links.bx0.scale.x = b2y2_scale;
 
@@ -405,7 +402,6 @@ function runFormule(){
     var b3y3_scale = b3y3*factor;
     links.bx1.position.copy(meshs.b3.position);
     links.bx1.rotation.z = angle_C+angle_D;
-    links.bx1.translateX(((b3y3_scale)*0.5));
     links.bx1.translateZ(7);
     links.bx1.scale.x = b3y3_scale;
 
@@ -413,11 +409,7 @@ function runFormule(){
     var b4y4_scale = b4y4*factor;
     links.bx2.position.copy(meshs.b4.position);
     links.bx2.rotation.z = meshs.b4.rotation.z+rad_y4b4o3;
-    links.bx2.translateX(((b4y4_scale)*0.5));
     links.bx2.scale.x = b4y4_scale;
-
-    // extra rotation
-    links.o4.rotation.z = angle_F+rad_y3y4o4;
 
     // particle points
     pp.move(ppn, target.position.x, target.position.y, target.position.z);

@@ -73,7 +73,7 @@ function initObject(){
         v.scene.add(t);
         // add Link
         if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c7 );
-        else l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        else l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
         
         v.scene.add(l);
 
@@ -90,7 +90,7 @@ function initObject(){
     // add two extra link
     for(i=0; i<2; i++){
         name = 'bx'+ i;
-        l = new THREE.Mesh( pool.geo('basic_joint1'), v.mats.c4 );
+        l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
         v.scene.add(l);
         links[name] = l;
     }
@@ -347,12 +347,9 @@ function runFormule(){
         if(name !== 'y4'){
             links[name].position.copy(meshs[name].position);
             links[name].rotation.copy(meshs[name].rotation);
-            links[name].translateX((scale[i]*factor)*0.5);
-
         }else{
             links.y4.position.copy(meshs.y4.position);
             links.y4.rotation.z = (rad_a2y1b1+rad_a1a2y1-rad_b1y1y2-rad_y1y2o1-rad_b2y2o1-rad_b2y2y3-rad_y2y3o2+rad_b3y3o2-rad_b3y3y4);
-            links.y4.translateX((scale[i]*factor)*0.5);
         }
         if(name == 'y3'|| name == 'o1' || name == 'y1') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
@@ -367,13 +364,11 @@ function runFormule(){
     // extra link
     links.bx0.position.copy(meshs.y2.position);
     links.bx0.rotation.copy(meshs.y3.rotation);
-    links.bx0.translateX((scale[11]*factor)*0.5);
     links.bx0.translateZ(-7);
     links.bx0.scale.x = scale[11]*factor;
 
     links.bx1.position.copy(meshs.b3.position);
     links.bx1.rotation.z = meshs.b3.rotation.z - rad_y3y2o2;
-    links.bx1.translateX(((scale[12]*factor)*0.5));
     links.bx1.scale.x = scale[12]*factor;
 
     //pp.move(ppn, meshs.y4.position.x, meshs.y4.position.y, -7);
