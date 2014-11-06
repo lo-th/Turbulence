@@ -274,7 +274,6 @@ Turbulence.Formula.prototype = {
         p.b4.z = p.o3.z = p.y5.z = -0.35;
         p.b1.z = p.o4.z = -0.7;
 
-
     
     }
 }

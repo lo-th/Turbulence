@@ -1,4 +1,4 @@
-tell('basic formula');
+tell('advanced formula');
 
 var v3d = new V3D.View();
 
@@ -48,8 +48,10 @@ function renderLoop(){
 v.addGrid(200, 20, [0,0,-30]);
 
 // import object pack
+var objName = "basic";
+//var objName = "basic_op"; // version optimiser
 var pool = new SEA3D.Pool();
-pool.load( ['../models/basic.sea'], initObject, 'buffer' );
+pool.load( ['../models/'+objName+'.sea'], initObject, 'buffer' );
 
 
 function initObject(){
@@ -59,27 +61,27 @@ function initObject(){
     for(var i=0; i<points.length; i++){
         // init basic mesh point
         name = points[i];
-        if(name=='a1') m = new THREE.Mesh( pool.geo('basic_point0'), v.mats.c6 );
-        else if(name=='y1'|| name=='y2') m = new THREE.Mesh( pool.geo('basic_point2'), v.mats.c6 );
-        else if(name=='y3') m = new THREE.Mesh( pool.geo('basic_point8'), v.mats.c6 );
-        else if(name=='b3') m = new THREE.Mesh( pool.geo('basic_point9'), v.mats.c6 );
-        else if(name=='o2'|| name=='b2' ) m = new THREE.Mesh( pool.geo('basic_point3'), v.mats.c6 );
-        else if(name=='y4') m = new THREE.Mesh( pool.geo('basic_point1'), v.mats.c6 );
-        else if(name=='a2' ) m = new THREE.Mesh( pool.geo('basic_point4'), v.mats.c6 );
-        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo('basic_point7'), v.mats.c6 ); 
-        else m = new THREE.Mesh( pool.geo('basic_point5'), v.mats.c6 );
+        if(name=='a1') m = new THREE.Mesh( pool.geo(objName+'_point0'), v.mats.c6 );
+        else if(name=='y1'|| name=='y2') m = new THREE.Mesh( pool.geo(objName+'_point2'), v.mats.c6 );
+        else if(name=='y3') m = new THREE.Mesh( pool.geo(objName+'_point8'), v.mats.c6 );
+        else if(name=='b3') m = new THREE.Mesh( pool.geo(objName+'_point9'), v.mats.c6 );
+        else if(name=='o2'|| name=='b2' ) m = new THREE.Mesh( pool.geo(objName+'_point3'), v.mats.c6 );
+        else if(name=='y4') m = new THREE.Mesh( pool.geo(objName+'_point1'), v.mats.c6 );
+        else if(name=='a2' ) m = new THREE.Mesh( pool.geo(objName+'_point4'), v.mats.c6 );
+        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo(objName+'_point7'), v.mats.c6 ); 
+        else m = new THREE.Mesh( pool.geo(objName+'_point5'), v.mats.c6 );
         v.scene.add(m);
         // add label 
         t = v.addLabel(name);
         v.scene.add(t);
         // add Link
-        if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo('basic_joint'), v.mats.c7 );
-        else l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
+        if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo(objName+'_joint'), v.mats.c7 );
+        else l = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c4 );
         
         v.scene.add(l);
 
         if(name=='a1' || name=='a2'){
-            var c = new THREE.Mesh( pool.geo('basic_origin'), v.mats.c5 );
+            var c = new THREE.Mesh( pool.geo(objName+'_origin'), v.mats.c5 );
             t.add(c);
         }
 
@@ -91,15 +93,15 @@ function initObject(){
     // add tree extra link
     for(i=0; i<3; i++){
         name = 'bx'+ i;
-        l = new THREE.Mesh( pool.geo('basic_joint_1'), v.mats.c4 );
+        l = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c4 );
         v.scene.add(l);
         links[name] = l;
     }
     // add extra pivot
-    pivot = new THREE.Mesh( pool.geo('basic_pivot'), v.mats.c6 );
+    pivot = new THREE.Mesh( pool.geo(objName+'_pivot'), v.mats.c6 );
     v.scene.add(pivot);
     // add extra target
-    target = new THREE.Mesh( pool.geo('basic_point6'), v.mats.c1 );
+    target = new THREE.Mesh( pool.geo(objName+'_point6'), v.mats.c1 );
     v.scene.add(target);
 
     //setType(0);

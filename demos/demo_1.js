@@ -1,4 +1,4 @@
-tell('basic formula class');
+tell('formula class');
 
 var v3d = new V3D.View(90,90,200);
 var v = v3d;
