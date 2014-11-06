@@ -395,8 +395,9 @@ function runFormule(){
 
     // extra link b2y2
     var b2y2_scale = b2y2*factor;
-    links.bx0.position.copy(meshs.y2.position);
-    links.bx0.rotation.z = angle_C;
+    //links.bx0.position.copy(meshs.y2.position);
+    links.bx0.position.copy(meshs.b2.position);
+    links.bx0.rotation.z = angle_C+Math.PI;
     links.bx0.translateZ(-14);
     links.bx0.scale.x = b2y2_scale;
 

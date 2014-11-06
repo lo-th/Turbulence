@@ -32,8 +32,8 @@ Turbulence.Formula = function(){
 		this.angles[names[i]] = 0;
 	};
 	// size definition   static : sizes.length - 4
-	names = ['a1b1','a1a2','b1y1','b2o1','b3o2','a2y1','y1y2','y2y3','y3y4','a2o1','y2o2','b2y2','b3y3', 'a1o1','a2b1','y2o1','y3o2',
-    'y3o3', 'y4o4', 'b4o3', 'y4y5', 'y4o3', 'b4y4'
+	names = ['a1b1','a1a2','b1y1','b2o1','b3o2','a2y1','y1y2','y2y3','y3y4','a2o1','y2o2','y3o3','y4o4', 'b4o3', 'y4y5',
+    'b2y2','b3y3', 'a1o1', 'a2b1','y2o1','y3o2', 'y4o3', 'b4y4'
     ];
 	for(var i=0; i<names.length; i++){
 		this.sizes[names[i]] = 0;
@@ -48,6 +48,10 @@ Turbulence.Formula = function(){
     for(var i=0; i<names.length; i++){
         this.ta[names[i]] = new Turbulence.V3();
     };
+
+    // extra links rotation
+    this.exr = [0,0,0];
+
 	
 	this.init();
 	//this.init(0.01, 2, 270);
@@ -71,6 +75,9 @@ Turbulence.Formula.prototype = {
 		this.C = C || this.B;
 		s.y2o2 = s.b3y3 = s.y3o3 = s.y4o4 = s.y4y5 = s.b4y4 = Math.sqrt(this.C);
 		s.y1y2 = s.b2o1 = s.y2y3 = s.b3o2 = s.y3y4 = s.b4o3 = this.C + Math.sqrt(this.C);
+
+        this.sizer = [s.a1b1,s.a1a2,s.b1y1,s.b2o1,s.b3o2,s.a2y1,s.y1y2,s.y2y3,s.y3y4,s.a2o1,s.y2o2,s.y3o3,s.y4o4,s.b4o3,s.y4y5,
+                      s.b2y2, s.b3y3, s.b4y4];
 
     },
     run:function(){
@@ -267,8 +274,14 @@ Turbulence.Formula.prototype = {
         p.y1.r = r.a1a2y1 + pi;
         p.y2.r = a.b;
         p.y3.r = a.c - r.b2y2y3 - pi;
-        p.y4.r += a.f;
+        p.y4.r = a.f;
         p.y5.r = a.c + a.d + a.e - r.b4y4y5 - pi;
+
+        // extra rotation
+        this.exr[0] = a.c+ pi;
+        this.exr[1] = a.c + a.d;
+        this.exr[2] = p.b4.r + r.y4b4o3;
+
 
         // extra decal Z
         p.b4.z = p.o3.z = p.y5.z = -0.35;
