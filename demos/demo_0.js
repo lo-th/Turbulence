@@ -13,8 +13,10 @@ var v = v3d;
 // three particle
 var ppmax = Math.round((2*Math.PI)/0.03);
 var ppn = 0;
-var pp = new V3D.Particle(v.scene, ppmax);
-
+var particules = new THREE.Group();
+var pp = new V3D.Particle(particules, ppmax);
+v.scene.add(particules)
+particules.position.z = -30;
 // formule points
 var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2', 'o3','o4','b4','y5'];
 var meshs = {};
@@ -422,7 +424,7 @@ function runFormule(){
     links.bx2.scale.x = b4y4_scale;
 
     // particle points
-    pp.move(ppn, target.position.x, target.position.y, target.position.z);
+    pp.move(ppn, target.position.x, target.position.y, target.position.z+30);
     ppn++;
     if(ppn==ppmax) ppn = 0;
 

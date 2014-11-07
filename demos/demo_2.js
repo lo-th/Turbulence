@@ -1,13 +1,14 @@
-tell('formula class');
+tell('The serpent');
 
-var v3d = new V3D.View(90,90,200);
+var v3d = new V3D.View(110,60,500);
 var v = v3d;
 // add basic grid
-v.addGrid(120, 20);
+v.addGrid(400, 20, [0,0,0], [0,0,0]);
 
 
 var l = new THREE.PlaneBufferGeometry(1,1);
 l.applyMatrix(new THREE.Matrix4().makeTranslation(0.5,0,0));
+var staticLinkMat = new THREE.MeshBasicMaterial({color:0xF964A7});
 var firstLinkMat = new THREE.MeshBasicMaterial({color:0x43B8CC});
 var baseLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.5});
 var extraLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.25});
@@ -22,7 +23,8 @@ renderLoop();
 var formula = function(pz, r,link,label){
     this.mesh = new THREE.Group();
     v.scene.add(this.mesh);
-    this.mesh.rotation.z = 90*V3D.ToRad;
+    this.mesh.rotation.z = 125*V3D.ToRad;
+    this.mesh.position.y = 100; 
     label = label || false;
     this.mul = 10;
     this.pz = pz || 0;
@@ -91,7 +93,8 @@ formula.prototype = {
     },
     createLink:function(name, s){
     	var m;
-    	if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
+        if(name=='a2') m = new THREE.Mesh(l, staticLinkMat);
+    	else if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
     	else if (name=='') m = new THREE.Mesh(l, extraLinkMat);
     	else m = new THREE.Mesh(l, baseLinkMat);
     	this.mesh.add(m);
@@ -102,8 +105,9 @@ formula.prototype = {
 
 // add 200 formule test
 for(var i = 0; i<48; i++){
-    if(i==0)fs[i] = new formula(30-(i*10), i*0.104, true, true);
-    else fs[i] = new formula(30-(i*10), i*(10*V3D.ToRad), true);
+   // if(i==0)fs[i] = new formula(200-(i*10), i*0.104, true, true);
+   // else 
+        fs[i] = new formula(240-(i*10), i*(10*V3D.ToRad), true);
 }
 
 function renderLoop(){

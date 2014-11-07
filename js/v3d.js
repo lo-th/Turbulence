@@ -139,14 +139,16 @@ V3D.View.prototype = {
 		p.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0,size,Math.random()));
 		return p;
     },
-    addGrid:function(size, div, pos){
+    addGrid:function(size, div, pos, rot){
     	size = size || 200;
     	div = div || 10;
     	pos = pos || [0,0,0];
+    	rot = rot || [90,0,0]
     	var helper = new THREE.GridHelper( size, div );
 		helper.setColors( this.debugColor2, this.debugColor );
 		helper.position.set(pos[0],pos[1],pos[2]);
-		helper.rotation.x = 90 * V3D.ToRad;
+		helper.rotation.set(rot[0]* V3D.ToRad,rot[1]* V3D.ToRad,rot[2]* V3D.ToRad);
+		//helper.rotation.x = 90 * V3D.ToRad;
 		//helper.position.z = -7;
 		this.scene.add( helper );
 		this.grid = helper;

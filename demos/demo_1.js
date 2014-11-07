@@ -8,6 +8,7 @@ v.addGrid(120, 20);
 
 var l = new THREE.PlaneBufferGeometry(1,1);
 l.applyMatrix(new THREE.Matrix4().makeTranslation(0.5,0,0));
+var staticLinkMat = new THREE.MeshBasicMaterial({color:0xF964A7});
 var firstLinkMat = new THREE.MeshBasicMaterial({color:0x43B8CC});
 var baseLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.5});
 var extraLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.25});
@@ -87,13 +88,14 @@ formula.prototype = {
         this.o.update();
     },
     createLink:function(name, s){
-    	var m;
-    	if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
-    	else if (name=='') m = new THREE.Mesh(l, extraLinkMat);
-    	else m = new THREE.Mesh(l, baseLinkMat);
-    	v.scene.add(m);
-    	m.scale.x = s*this.mul;
-    	return m;
+        var m;
+        if(name=='a2') m = new THREE.Mesh(l, staticLinkMat);
+        else if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
+        else if (name=='') m = new THREE.Mesh(l, extraLinkMat);
+        else m = new THREE.Mesh(l, baseLinkMat);
+        v.scene.add(m);
+        m.scale.x = s*this.mul;
+        return m;
     }
 }
 

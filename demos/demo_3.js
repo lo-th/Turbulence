@@ -1,7 +1,11 @@
+tell('The beetles');
 
-var v3d = new V3D.View();
+var v3d = new V3D.View(110,60,400);
 var v = v3d;
 renderLoop();
+
+// add basic grid
+v.addGrid(200, 20, [0,-60,0], [0,0,0]);
 
 var beetles = [];
 var wings = [];
