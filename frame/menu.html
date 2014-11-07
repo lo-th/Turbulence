@@ -55,11 +55,14 @@ var root = null;
 function setRoot(r){ root=r; }
 
 function initBasicMenu(startDemo){
-	pushFile("demo_"+startDemo+'.js', '#cccc00');
+	//pushFile("demo_"+startDemo+'.js', '#cccc00');
 	// pop demo at start
+	var name;
 	for(var i=0; i < 4; i++){
-		testFile("demo_"+i+'.js');
-		if(i==0)testFile("demo_"+i+'_c.js');
+		name = "demo_"+i+'.js';
+		pushFile(name, '#cccc00');
+		//testFile("demo_"+i+'.js');
+		//if(i==0)testFile("demo_"+i+'_c.js');
 	}
 
 

@@ -30,14 +30,14 @@ function initObject(){
 	var size = 0.25;
 
 	// define shader
-	var matC1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_b', true), false, false);
-	var matC2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('beetle_a', true), false, false);
-	var matBody1 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), true, false);
-	var matBody2 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), true, true);
-	var matBody3 = new V3D.Shader(v.img, 0xFFFFFF, pool.getTexture('body', true), false, false);
-	var matEye = v.mats.beye;
-	var matPalm = v.mats.b2;
-	var matcc = new V3D.Shader(v.img, 0x059BB5);
+	var matC1 = new V3D.SphericalShader({env:v.img, map:pool.getTexture('beetle_b', true) });
+	var matC2 = new V3D.SphericalShader({env:v.img, map:pool.getTexture('beetle_a', true) });
+	var matBody1 = new V3D.SphericalShader({env:v.img, map:pool.getTexture('body', true), skinning:true });
+	var matBody2 = new V3D.SphericalShader({env:v.img, map:pool.getTexture('body', true), skinning:true, morphTargets:true });
+	var matBody3 = new V3D.SphericalShader({env:v.img, map:pool.getTexture('body', true) });
+	var matEye = new V3D.SphericalShader({env:v.img, color:0x333333});
+	var matPalm = new V3D.SphericalShader({env:v.img, color:0x606060});
+	var matcc = new V3D.SphericalShader({env:v.img, color:0x059BB5});
 
 	for(var i=0;i<2;i++){
 

@@ -1,34 +1,28 @@
-tell('physics spider');
+tell('formula class');
 
 var v3d = new V3D.View(90,90,200);
 var v = v3d;
 // add basic grid
 v.addGrid(120, 20);
 
-// create oimo world contains all rigidBodys and joint.
-var world = new OIMO.World();
-world.gravity = new OIMO.Vec3(0, -9.8, 0);
-var bodys = [];
-world.worldscale(10);
 
-//add static ground
-var ground  = new OIMO.Body({size:[10000, 200, 10000], pos:[0,-300,0], world:world});
-v.add({size:[10000, 200, 10000], pos:[0,-300,0], world:world})
+var l = new THREE.PlaneBufferGeometry(1,1);
+l.applyMatrix(new THREE.Matrix4().makeTranslation(0.5,0,0));
+var firstLinkMat = new THREE.MeshBasicMaterial({color:0x43B8CC});
+var baseLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.5});
+var extraLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true, opacity:0.25});
+
+// add clock
+var c = new UI.Clock();
+
 var fs = [];
 renderLoop();
 
-// i create the main object
-var obj = {type:'sphere', size:[40, 40, 40], pos:[0,0,0], move:true, world:world}
-var spider = new THREE.Object3D();//v.add(obj);//
-var spiderPhy = new OIMO.Body(obj);
-v.scene.add(spider);
-var meshs = [];
-
-
 // basic class 
-var formula = function(pz, r, label){
-    this.mesh = new THREE.Object3D();
-    spider.add(this.mesh);
+var formula = function(pz, r,link,label){
+    this.mesh = new THREE.Group();
+    v.scene.add(this.mesh);
+    this.mesh.rotation.z = 90*V3D.ToRad;
     label = label || false;
     this.mul = 10;
     this.pz = pz || 0;
@@ -37,79 +31,86 @@ var formula = function(pz, r, label){
     // the start rotation
     this.f.rotation = r || 0;
     this.labels = [];
+    this.links = [];
     this.o = new V3D.Particle(this.mesh, this.f.pNames.length);
+    //console.log(this.f.pNames.length)
     // add each formula point to 3d view
-    for(var i = 0; i<this.f.pNames.length; i++){
-        //this.o.addV(0,0,0);
+    this.nLength = this.f.pNames.length;
+    var name;
+    for(var i = 0; i<this.nLength; i++){
+    	name = this.f.pNames[i];
+        if(link){ 
+        	this.links[i] = this.createLink(name, this.f.sizer[i]);
+        }
         if(label){ 
-            this.labels[i] = v.addLabel(this.f.pNames[i], 5);
-            v.scene.add(this.labels[i]);
+            this.labels[i] = v.addLabel(name, 5);
+            this.mesh.add(this.labels[i]);
         }
     }
+    // extra link
+    if(link){
+    	this.links.push(this.createLink('',this.f.sizer[this.nLength+0]));
+    	this.links.push(this.createLink('',this.f.sizer[this.nLength+1]));
+    	this.links.push(this.createLink('',this.f.sizer[this.nLength+2]));
+    }
+
+
+
 }
 
 formula.prototype = {
     run:function(){
         this.f.rotation += 0.03;
         this.f.run();
-        var p;
-        for(var i = 0; i<this.f.pNames.length; i++){
-            p = this.f.points[this.f.pNames[i]];
-            this.o.move(i, p.x*this.mul, p.y*this.mul, this.pz);
+        var p, name;
+        for(var i = 0; i<this.nLength; i++){
+        	name = this.f.pNames[i]
+            p = this.f.points[name];
+            this.o.move(i, p.x*this.mul, p.y*this.mul,this.pz)//, (p.z*this.mul)+this.pz);
+            if(this.links.length>0){
+                this.links[i].position.set(p.x*this.mul, p.y*this.mul,this.pz)//, (p.z*this.mul)+this.pz)
+                this.links[i].rotation.z = p.r;
+                if(name=='b2'){
+                	this.links[this.nLength+0].position.set(p.x*this.mul, p.y*this.mul,this.pz);
+                	this.links[this.nLength+0].rotation.z = this.f.exr[0];
+                }
+                if(name=='b3'){
+                	this.links[this.nLength+1].position.set(p.x*this.mul, p.y*this.mul,this.pz);
+                	this.links[this.nLength+1].rotation.z = this.f.exr[1];
+                }
+                if(name=='b4'){
+                	this.links[this.nLength+2].position.set(p.x*this.mul, p.y*this.mul,this.pz);
+                	this.links[this.nLength+2].rotation.z = this.f.exr[2];
+                }
+            }
             if(this.labels.length>0){
-                this.labels[i].position.set(p.x*this.mul, p.y*this.mul, this.pz)
+                this.labels[i].position.set(p.x*this.mul, p.y*this.mul,this.pz)// (p.z*this.mul)+this.pz)
             }
         }
         this.o.update();
     },
-    getEndPoint:function(){
-        var m = this.mesh.matrixWorld.clone();
-        var m2 = new THREE.Matrix4();
-        m2.makeTranslation(this.f.points.y4.x*this.mul,this.f.points.y4.y*this.mul,0); 
-        m.multiply( m2 );
-        var p = new THREE.Vector3().setFromMatrixPosition( m );
-        var q = new THREE.Quaternion().setFromRotationMatrix( m );
-        return [p,q];
+    createLink:function(name, s){
+    	var m;
+    	if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
+    	else if (name=='') m = new THREE.Mesh(l, extraLinkMat);
+    	else m = new THREE.Mesh(l, baseLinkMat);
+    	this.mesh.add(m);
+    	m.scale.x = s*this.mul;
+    	return m;
     }
 }
 
 // add 200 formule test
-for(var i = 0; i<8; i++){
-    if(i==0 || i==2 || i==4 || i==6)fs[i] = new formula(0, Math.PI);
-    else fs[i] = new formula(0, 0);
-    fs[i].mesh.rotation.set(0,(45*i)*V3D.ToRad,75*V3D.ToRad);
-
-    var obj = {type:'box', size:[60,20,20], pos:[0,0,0], move:true, world:world}
-    meshs[i] = v.add(obj);
-    bodys[i] = new OIMO.Body(obj);
+for(var i = 0; i<48; i++){
+    if(i==0)fs[i] = new formula(30-(i*10), i*0.104, true, true);
+    else fs[i] = new formula(30-(i*10), i*(10*V3D.ToRad), true);
 }
 
 function renderLoop(){
     for(var i = 0; i<fs.length; i++){
+        if(i==0) c.set(v.unDegrees(fs[i].f.rotation));
         fs[i].run();
-        var tt = fs[i].getEndPoint();
-        meshs[i].position.copy(tt[0])
-        meshs[i].quaternion.copy(tt[1])
     }
     v.render();
     requestAnimationFrame( renderLoop );
 }
-
-/* oimo loop */
-function oimoLoop() 
-{  
-    world.step();
-   spider.position.copy(spiderPhy.getPosition());
-    spider.quaternion.copy(spiderPhy.getQuaternion());
-    var i = bodys.length;
-    var body, mesh;
-    while (i--){
-        body = bodys[i];
-        mesh = meshs[i];
-        body.setPosition(mesh.position);
-        body.setQuaternion(mesh.quaternion);
-    }
-     
-}
-
-setInterval(oimoLoop, 1000/60);

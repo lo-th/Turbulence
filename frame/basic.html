@@ -39,6 +39,13 @@ function changeTheme(n){
 			if(e.id)e.className = cc;
 	}
 }
+
+function clearFocus(n){
+	var allTags=document.getElementsByTagName('*'), i=0, e;
+		while(e=allTags[i++]){
+			if(e.id)e.blur();
+	}
+}
 </script>
 </body>
 </html>
