@@ -45,7 +45,7 @@ function initObject(){
 
 	for(var i=0;i<2;i++){
 
-		var beetle = new THREE.Object3D();
+		var beetle = new THREE.Group();
 		var body = pool.getMesh('beetle_body').clone();
 		var foot = pool.getMesh('beetle_foot').clone();
 		foot.material = matBody2;
@@ -79,7 +79,7 @@ function initObject(){
 		chassis = pool.getMesh('beetle_chassis').clone();
 		chassis.material = matcc;
 
-		v3d.scene.add(beetle);
+		v.scene.add(beetle);
 
 		if(i==0){
 		    beetle.position.set(100,0,0);
@@ -88,7 +88,6 @@ function initObject(){
 		    palm = pool.getMesh('beetle_b_palm').clone();
 
 		    pelvis = pool.getMesh('beetle_b_pelvis').clone();
-
 
 		    head.material = matC1;
 			pelvis.children[0].material = matC1;

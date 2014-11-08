@@ -72,19 +72,21 @@ function initObject(){
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo(objName+'_point0'), v.mats.c6 );
         else if(name=='y1'|| name=='y2') m = new THREE.Mesh( pool.geo(objName+'_point2'), v.mats.c6 );
-        else if(name=='y3') m = new THREE.Mesh( pool.geo(objName+'_point8'), v.mats.c6 );
-        else if(name=='b3') m = new THREE.Mesh( pool.geo(objName+'_point9'), v.mats.c6 );
-        else if(name=='o2'|| name=='b2' ) m = new THREE.Mesh( pool.geo(objName+'_point3'), v.mats.c6 );
+        else if(name=='o2'|| name=='b2') m = new THREE.Mesh( pool.geo(objName+'_point3'), v.mats.c6 );
+        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo(objName+'_point6'), v.mats.c6 ); 
+        else if(name=='y3') m = new THREE.Mesh( pool.geo(objName+'_point7'), v.mats.c6 );
+        else if(name=='b3') m = new THREE.Mesh( pool.geo(objName+'_point8'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo(objName+'_point1'), v.mats.c6 );
         else if(name=='a2' ) m = new THREE.Mesh( pool.geo(objName+'_point4'), v.mats.c6 );
-        else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo(objName+'_point7'), v.mats.c6 ); 
         else m = new THREE.Mesh( pool.geo(objName+'_point5'), v.mats.c6 );
         v.scene.add(m);
-        // add label 
+
+        // add label
         t = v.addLabel(name);
         v.scene.add(t);
         // add Link
-        if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo(objName+'_joint'), v.mats.c7 );
+        if(name=='a2') m = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c5);
+        else if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo(objName+'_joint'), v.mats.c7 );
         else l = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c4 );
         
         v.scene.add(l);
@@ -111,7 +113,7 @@ function initObject(){
     pivot = new THREE.Mesh( pool.geo(objName+'_pivot'), v.mats.c6 );
     v.scene.add(pivot);
     // add extra target
-    target = new THREE.Mesh( pool.geo(objName+'_point6'), v.mats.c1 );
+    target = new THREE.Mesh( pool.geo(objName+'_point_end'), v.mats.c1 );
     v.scene.add(target);
 
     setFormule();

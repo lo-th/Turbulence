@@ -11,6 +11,7 @@ Turbulence.Formula = function(){
 	this.rotation = 0;
 
     this.endQuaternion = new Turbulence.Quat();
+    //this.endRotation = new Turbulence.Euler();
 
 	this.points = {};
 	this.angles = {};
@@ -18,6 +19,7 @@ Turbulence.Formula = function(){
     this.rot = {};
     this.ta = {};
 	this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5'];
+
 	
 	// point definition
 	var names = this.pNames;
@@ -248,8 +250,8 @@ Turbulence.Formula.prototype = {
 
 
         this.endQuaternion.setFromAxisAngle(w.c.normalize(), r.y3y4w1);
-        var rr = new Turbulence.Euler().setFromQuaternion(this.endQuaternion);
-        p.y4.r = rr.z;
+        //this.endRotation.setFromQuaternion(this.endQuaternion);
+        //p.y4.r = rr.z;
 
 
         // final rotation -------------------
@@ -281,6 +283,8 @@ Turbulence.Formula.prototype = {
         this.exr[0] = a.c+ pi;
         this.exr[1] = a.c + a.d;
         this.exr[2] = p.b4.r + r.y4b4o3;
+
+
 
 
         // extra decal Z
@@ -360,7 +364,7 @@ Turbulence.Quat.prototype = {
 }
 
 // simple rotation
-Turbulence.Euler = function ( x, y, z ) {
+/*Turbulence.Euler = function ( x, y, z ) {
     this.x = x || 0;
     this.y = y || 0;
     this.z = z || 0;
@@ -381,4 +385,4 @@ Turbulence.Euler.prototype = {
     clamp: function ( x, a, b ) {
         return ( x < a ) ? a : ( ( x > b ) ? b : x );
     }
-}
+}*/
