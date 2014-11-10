@@ -22,12 +22,19 @@ function renderLoop(){
     requestAnimationFrame( renderLoop );
 }
 
-// import sea3D object pack
+// import image
 
 var objName = "basic_op"; // version optimiser
+var headShader;
 var pool = new SEA3D.Pool();
-pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
+pool.loadImages(['../images/serpent.jpg'], initImages);
 
+function initImages(){
+    headShader = new V3D.SphericalShader({ env:v.img, map:pool.getTexture('serpent', true) });
+    pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
+}
+
+// import sea3D object pack
 function initObject(){
 
     geos['p0'] = pool.geo(objName+'_point0');
@@ -52,7 +59,7 @@ function initObject(){
     geos['h2'] = pool.geo('serpent_low_norm');
     geos['head'] = pool.geo('serpent_head');
     geos['end'] = pool.geo('serpent_end');
-    geos['tongue'] = pool.geo('serpent_tongue');
+    //geos['tongue'] = pool.geo('serpent_tongue');
 
     //----
 
@@ -74,6 +81,7 @@ var formula = function(pz, r, link, label, num){
 
     label = label || false;
     this.mul = 10;
+    this.scalar = 0.2;
     this.pz = pz || 0;
 
     this.mesh = new THREE.Group();
@@ -113,13 +121,13 @@ var formula = function(pz, r, link, label, num){
         // decal Z
         this.pointsDecal[i] = 0;
         this.linksDecal[i] = 0;
-        if(name == 'b1'|| name == 'o4')this.pointsDecal[i] = -14*0.25;
-        if(name == 'y5'|| name == 'o3')this.pointsDecal[i] = -7*0.25;
-        if(name == 'b4'){  this.linksDecal[i] =(-14*0.25); }
-        if(name == 'y3'|| name == 'o1' || name == 'y1') this.linksDecal[i] =(-7*0.25);
-        if(name == 'b3' ) this.linksDecal[i] =(-14*0.25);
-        if(name == 'a1') this.linksDecal[i] =(-21*0.25);
-        if(name == 'a2') this.linksDecal[i] =(-28*0.25);
+        if(name == 'b1'|| name == 'o4')this.pointsDecal[i] = -14*this.scalar;
+        if(name == 'y5'|| name == 'o3')this.pointsDecal[i] = -7*this.scalar;
+        if(name == 'b4'){  this.linksDecal[i] =(-14*this.scalar); }
+        if(name == 'y3'|| name == 'o1' || name == 'y1') this.linksDecal[i] =(-7*this.scalar);
+        if(name == 'b3' ) this.linksDecal[i] =(-14*this.scalar);
+        if(name == 'a1') this.linksDecal[i] =(-21*this.scalar);
+        if(name == 'a2') this.linksDecal[i] =(-28*this.scalar);
         if(name != 'y4' && name != 'o4' && name != 'y5')this.points[i] = this.createPoint(name);
         
         if(link){ 
@@ -137,11 +145,11 @@ var formula = function(pz, r, link, label, num){
     // extra link
     if(link){
     	this.links.push(this.createLink('',this.f.sizer[this.nLength+0]));
-        this.linksDecal.push(-14*0.25);
+        this.linksDecal.push(-14*this.scalar);
     	this.links.push(this.createLink('',this.f.sizer[this.nLength+1]));
-        this.linksDecal.push(7*0.25);
+        this.linksDecal.push(7*this.scalar);
     	this.links.push(this.createLink('',(this.f.sizer[this.nLength+2]/3)+(ex+0.2)));
-        this.linksDecal.push(0*0.25);
+        this.linksDecal.push(0*this.scalar);
     }
 
     var n = 0;
@@ -217,9 +225,9 @@ formula.prototype = {
         else if(name=='a2' ) m = new THREE.Mesh( geos['p4'], v.mats.c6 );
         else m = new THREE.Mesh( geos['p5'], v.mats.c6 );
         this.mesh.add(m);
-        m.scale.x *= 0.25;
-        m.scale.y *= 0.25;
-        m.scale.z *= 0.25;
+        m.scale.x *= this.scalar;
+        m.scale.y *= this.scalar;
+        m.scale.z *= this.scalar;
         return m;
     },
     createLink:function(name, s, decal){
@@ -231,8 +239,8 @@ formula.prototype = {
         else m1 = new THREE.Mesh(geos['j1'], v.mats.c4);
         
         m1.scale.x = (s*this.mul)-(decal*this.mul);
-        m1.scale.y *= 0.25;
-        m1.scale.z *= 0.25;
+        m1.scale.y *= this.scalar;
+        m1.scale.z *= this.scalar;
         m1.translateX(decal*this.mul);
 
         if(decal!=0){
@@ -268,12 +276,12 @@ formula.prototype = {
         }
         n = n || 0;
         if(n==1 && t==1){
-            m4 = new THREE.Mesh(geos['tongue'], v.mats.c1);
-            m3 = new THREE.Mesh(geos['head'], v.mats.c7);
+            //m4 = new THREE.Mesh(geos['tongue'], v.mats.c1);
+            m3 = new THREE.Mesh(geos['head'], headShader);
             m3.rotation.y = Math.PI;
             //m3.rotation.z = 25*V3D.ToRad;
             this.head = m3;
-            m3.add(m4);
+            //m3.add(m4);
             this.mesh.add(m3);
         }else if(n==2 && t==2){
             m3 = new THREE.Mesh(geos['end'], v.mats.c1);
