@@ -52,6 +52,7 @@ function initObject(){
 
     geos['head'] = pool.geo('serpent_head');
     geos['end'] = pool.geo('serpent_end');
+    geos['tongue'] = pool.geo('serpent_tongue');
 
     //----
 
@@ -239,7 +240,7 @@ formula.prototype = {
     createSnakeLink:function(type, n){
         var t = 0;
         var m = new THREE.Group();
-    	var m1, m2, m3;
+    	var m1, m2, m3, m4;
         if(type=='high_rat'){
             t = 1;
             m1 = new THREE.Mesh(geos['c1'], v.mats.c7);
@@ -259,10 +260,12 @@ formula.prototype = {
         }
         n = n || 0;
         if(n==1 && t==1){
-            m3 = new THREE.Mesh(geos['head'], v.mats.c1);
+            m4 = new THREE.Mesh(geos['tongue'], v.mats.c1);
+            m3 = new THREE.Mesh(geos['head'], v.mats.c7);
             m3.rotation.y = Math.PI
             m3.rotation.z = 25*V3D.ToRad;
             this.head = m3;
+            m3.add(m4);
             m.add(m3);
         }else if(n==2 && t==2){
             m3 = new THREE.Mesh(geos['end'], v.mats.c1);
