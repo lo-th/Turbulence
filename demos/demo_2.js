@@ -57,7 +57,7 @@ function initObject(){
 
     // add 48 formule
     for(var i = 0; i<48; i++){
-            fs[i] = new formula(240-(i*20), i*(10*V3D.ToRad), true);
+        fs[i] = new formula(240-(i*20), i*(10*V3D.ToRad), true, false, i);
     }
 }
 
@@ -67,7 +67,7 @@ function initObject(){
 
 
 // basic class 
-var formula = function(pz, r,link,label){
+var formula = function(pz, r, link, label, num){
     label = label || false;
     this.mul = 10;
     this.pz = pz || 0;
@@ -87,6 +87,7 @@ var formula = function(pz, r,link,label){
     this.pointsDecal = [];
     this.points = [];
     this.snakeLink = [];
+    this.head = null;
 
 
    // this.o = new V3D.Particle(this.mesh, this.f.pNames.length);
@@ -104,17 +105,23 @@ var formula = function(pz, r,link,label){
         this.linksDecal[i] = 0;
         if(name == 'b1'|| name == 'o4')this.pointsDecal[i] = -14*0.25;
         if(name == 'y5'|| name == 'o3')this.pointsDecal[i] = -7*0.25;
-        if(name == 'b4'){ this.pointsDecal[i] = -7*0.25; this.linksDecal[i] =(-7*0.25); }
+        if(name == 'b4'){  this.linksDecal[i] =(-14*0.25); }
         if(name == 'y3'|| name == 'o1' || name == 'y1') this.linksDecal[i] =(-7*0.25);
 
         if(name == 'b3' ) this.linksDecal[i] =(-14*0.25);
         if(name == 'a1') this.linksDecal[i] =(-21*0.25);
         if(name == 'a2') this.linksDecal[i] =(-28*0.25);
+      //  if(name == 'o3')this.linksDecal[i] = -7*0.25;
 
-        this.points[i] = this.createPoint(name);
+        if(name != 'y4' && name != 'o4' && name != 'y5')this.points[i] = this.createPoint(name);
         
         if(link){ 
-        	this.links[i] = this.createLink(name, this.f.sizer[i]);   
+        	if(name == 'y4'){
+                this.links[i] = this.createLink(name, this.f.sizer[i], this.f.sizer[i]/5); 
+                //this.links[i].translateX(-this.f.sizer[i]/5);
+            }
+            else if(name!='y5' && name!='o4') this.links[i] = this.createLink(name, this.f.sizer[i]);
+            else this.links[i]=0
         }
         if(label){ 
             this.labels[i] = v.addLabel(name, 5);
@@ -127,15 +134,21 @@ var formula = function(pz, r,link,label){
         this.linksDecal.push(-14*0.25);
     	this.links.push(this.createLink('',this.f.sizer[this.nLength+1]));
         this.linksDecal.push(7*0.25);
-    	this.links.push(this.createLink('',this.f.sizer[this.nLength+2]));
-        this.linksDecal.push(-7*0.25);
+    	this.links.push(this.createLink('',this.f.sizer[this.nLength+2]/3));
+        this.linksDecal.push(0*0.25);
     }
 
-    this.snakeLink[0] = this.createSnakeLink('high_rat');
-    this.snakeLink[1] = this.createSnakeLink('low_rat');
+    var n = 0;
+    if(num==0) n=1;
+    else if(num == 47) n=2;
 
+    //this.snakeLink[0] = this.createSnakeLink('high_rat', n);
+    //this.snakeLink[1] = this.createSnakeLink('low_rat', n);
 
+    this.snakeLink[0] = this.createSnakeLink('high_norm', n);
+    this.snakeLink[1] = this.createSnakeLink('low_norm', n);
 
+    //this.points.y4.visible = false;
 }
 
 formula.prototype = {
@@ -145,25 +158,24 @@ formula.prototype = {
         var p, name;
         for(var i = 0; i<this.nLength; i++){
         	name = this.f.pNames[i]
-            p = this.f.points[name];
-            if(name!='y4'){
-                this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-                this.points[i].rotation.z = p.r;
-                if(name=='y5')this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)//(Math.PI/2); 
-            }else{
+            p = this.f.points[name];//|| name!='o4' || name!='y5'
+            if(name=='y4'){
                 this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-
-                this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i])
-                this.points[i].quaternion.copy(this.f.endQuaternion);
-                this.points[i].rotation.z += p.r;
-                //this.points[i].rotation.copy(this.f.endRotation);
+                if(this.head!=null) this.head.rotation.z = ((p.r-(Math.PI/2)-(40*V3D.ToRad))/2)-Math.PI/2;
+            }else if(name=='y5'){
+                this.snakeLink[1].rotation.z = p.r-(80*V3D.ToRad)
+            }else if(name!='o4'){
+                this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
+                this.points[i].rotation.z = p.r;
             }
             //this.o.move(i, p.x*this.mul, p.y*this.mul,this.pz)//, (p.z*this.mul)+this.pz);
             if(this.links.length>0){
-                this.links[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]+this.linksDecal[i]);
-                this.links[i].rotation.z = p.r;
+                if(name!='y5' && name!='o4'){
+                    this.links[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]+this.linksDecal[i]);
+                    this.links[i].rotation.z = p.r;
+                }
                 if(name=='b2'){
                 	this.links[this.nLength+0].position.set(p.x*this.mul, p.y*this.mul,this.linksDecal[this.nLength+0]);
                 	this.links[this.nLength+0].rotation.z = this.f.exr[0];
@@ -188,7 +200,7 @@ formula.prototype = {
         var m;
         if(name=='a1') m = new THREE.Mesh( geos['p0'], v.mats.c6 );
         else if(name=='y1'|| name=='y2') m = new THREE.Mesh( geos['p2'], v.mats.c6 );
-        else if(name=='o2'|| name=='b2') m = new THREE.Mesh( geos['p3'], v.mats.c6 );
+        else if(name=='o2'|| name=='b2'|| name=='b4') m = new THREE.Mesh( geos['p3'], v.mats.c6 );
         else if(name=='o4' || name=='y5')m = new THREE.Mesh( geos['p6'], v.mats.c6 ); 
         else if(name=='y3') m = new THREE.Mesh( geos['p7'], v.mats.c6 );
         else if(name=='b3') m = new THREE.Mesh( geos['p8'], v.mats.c6 );
@@ -201,32 +213,61 @@ formula.prototype = {
         m.scale.z *= 0.25;
         return m;
     },
-    createLink:function(name, s){
-        var m;
-        if(name=='a2') m = new THREE.Mesh(geos['j1'], v.mats.c1);
-        else if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(geos['j0'], v.mats.c7);
-        else m = new THREE.Mesh(geos['j1'], v.mats.c4);
+    createLink:function(name, s, decal){
+        decal = decal || 0;
+        
+        var m, m1;
+        if(name=='a2') m1 = new THREE.Mesh(geos['j1'], v.mats.c1);
+        else if(name=='y2' || name=='y3' || name=='y4') m1 = new THREE.Mesh(geos['j0'], v.mats.c7);
+        else m1 = new THREE.Mesh(geos['j1'], v.mats.c4);
+        
+        m1.scale.x = (s*this.mul)-(decal*this.mul);
+        m1.scale.y *= 0.25;
+        m1.scale.z *= 0.25;
+        m1.translateX(decal*this.mul);
+
+        if(decal!=0){
+            m = new THREE.Group();
+            m.add(m1);
+        } else {
+            m = m1;
+        }
         this.mesh.add(m);
-        m.scale.x = s*this.mul;
-        m.scale.y *= 0.25;
-        m.scale.z *= 0.25;
+        
         return m;
     },
-    createSnakeLink:function(type){
+    createSnakeLink:function(type, n){
+        var t = 0;
         var m = new THREE.Group();
-    	var m1, m2;
+    	var m1, m2, m3;
         if(type=='high_rat'){
-            m1 = new THREE.Mesh(geos['c1'], v.mats.c1);
+            t = 1;
+            m1 = new THREE.Mesh(geos['c1'], v.mats.c7);
             m2 = new THREE.Mesh(geos['s1'], v.mats.c7);
         } else if(type=='low_rat'){
+            t = 2;
             m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
-            m2 = new THREE.Mesh(geos['s2'], v.mats.c7);
-        } else if(type=='norm_high'){
-            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
-            m2 = new THREE.Mesh(geos['h2'], v.mats.c7);
+            m2 = new THREE.Mesh(geos['s2'], v.mats.c1);
+        } else if(type=='high_norm'){
+            t = 1;
+            m1 = new THREE.Mesh(geos['c1'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['h1'], v.mats.c7);
         } else if(type=='low_norm'){
+            t = 2;
             m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
             m2 = new THREE.Mesh(geos['h2'], v.mats.c7);
+        }
+        n = n || 0;
+        if(n==1 && t==1){
+            m3 = new THREE.Mesh(geos['head'], v.mats.c1);
+            m3.rotation.y = Math.PI
+            m3.rotation.z = 25*V3D.ToRad;
+            this.head = m3;
+            m.add(m3);
+        }else if(n==2 && t==2){
+            m3 = new THREE.Mesh(geos['end'], v.mats.c1);
+            m3.rotation.y = Math.PI
+            m.add(m3);
         }
         m.add(m1);
         m1.add(m2);
