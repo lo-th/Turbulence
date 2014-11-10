@@ -250,12 +250,12 @@ formula.prototype = {
             m2 = new THREE.Mesh(geos['s2'], v.mats.c1);
         } else if(type=='high_norm'){
             t = 1;
-            m1 = new THREE.Mesh(geos['c1'], v.mats.c1);
+            m1 = new THREE.Mesh(geos['c1'], v.mats.c7);
             m2 = new THREE.Mesh(geos['h1'], v.mats.c7);
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
-            m2 = new THREE.Mesh(geos['h2'], v.mats.c7);
+            m2 = new THREE.Mesh(geos['h2'], v.mats.c1);
         }
         n = n || 0;
         if(n==1 && t==1){
