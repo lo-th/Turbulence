@@ -23,7 +23,7 @@ var extraLinkMat = new THREE.MeshBasicMaterial({color:0x059BB5, transparent:true
 // import object pack
 var objName = "basic_op"; // version optimiser
 var pool = new SEA3D.Pool();
-pool.load( ['../models/'+objName+'.sea'], initObject, 'buffer' );
+pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
 
 function initObject(){
     geos['p0'] = pool.geo(objName+'_point0');
@@ -39,9 +39,25 @@ function initObject(){
     geos['j0'] = pool.geo(objName+'_joint');
     geos['j1'] = pool.geo(objName+'_joint_1');
 
+    //-----
+
+    geos['c1'] = pool.geo('serpent_center_high');
+    geos['c2'] = pool.geo('serpent_center_low');
+
+    geos['s1'] = pool.geo('serpent_high_rat');
+    geos['s2'] = pool.geo('serpent_low_rat');
+
+    geos['h1'] = pool.geo('serpent_high_norm');
+    geos['h2'] = pool.geo('serpent_low_norm');
+
+    geos['head'] = pool.geo('serpent_head');
+    geos['end'] = pool.geo('serpent_end');
+
+    //----
+
     // add 48 formule
     for(var i = 0; i<48; i++){
-            fs[i] = new formula(240-(i*10), i*(10*V3D.ToRad), true);
+            fs[i] = new formula(240-(i*20), i*(10*V3D.ToRad), true);
     }
 }
 
@@ -70,6 +86,7 @@ var formula = function(pz, r,link,label){
     this.linksDecal = [];
     this.pointsDecal = [];
     this.points = [];
+    this.snakeLink = [];
 
 
    // this.o = new V3D.Particle(this.mesh, this.f.pNames.length);
@@ -82,6 +99,7 @@ var formula = function(pz, r,link,label){
 
         name = this.f.pNames[i];
 
+        // decal Z
         this.pointsDecal[i] = 0;
         this.linksDecal[i] = 0;
         if(name == 'b1'|| name == 'o4')this.pointsDecal[i] = -14*0.25;
@@ -93,17 +111,10 @@ var formula = function(pz, r,link,label){
         if(name == 'a1') this.linksDecal[i] =(-21*0.25);
         if(name == 'a2') this.linksDecal[i] =(-28*0.25);
 
-
-
-
-
-    	
         this.points[i] = this.createPoint(name);
         
         if(link){ 
-        	this.links[i] = this.createLink(name, this.f.sizer[i]);
-            
-            
+        	this.links[i] = this.createLink(name, this.f.sizer[i]);   
         }
         if(label){ 
             this.labels[i] = v.addLabel(name, 5);
@@ -120,6 +131,9 @@ var formula = function(pz, r,link,label){
         this.linksDecal.push(-7*0.25);
     }
 
+    this.snakeLink[0] = this.createSnakeLink('high_rat');
+    this.snakeLink[1] = this.createSnakeLink('low_rat');
+
 
 
 }
@@ -135,7 +149,12 @@ formula.prototype = {
             if(name!='y4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;
+                if(name=='y5')this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)//(Math.PI/2); 
             }else{
+                this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
+                this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
+                this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
+
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i])
                 this.points[i].quaternion.copy(this.f.endQuaternion);
                 this.points[i].rotation.z += p.r;
@@ -191,19 +210,30 @@ formula.prototype = {
         m.scale.x = s*this.mul;
         m.scale.y *= 0.25;
         m.scale.z *= 0.25;
-
         return m;
-    }
-    /*createLink:function(name, s){
-    	var m;
-        if(name=='a2') m = new THREE.Mesh(l, staticLinkMat);
-    	else if(name=='y2' || name=='y3' || name=='y4') m = new THREE.Mesh(l, firstLinkMat);
-    	else if (name=='') m = new THREE.Mesh(l, extraLinkMat);
-    	else m = new THREE.Mesh(l, baseLinkMat);
-    	this.mesh.add(m);
-    	m.scale.x = s*this.mul;
+    },
+    createSnakeLink:function(type){
+        var m = new THREE.Group();
+    	var m1, m2;
+        if(type=='high_rat'){
+            m1 = new THREE.Mesh(geos['c1'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['s1'], v.mats.c7);
+        } else if(type=='low_rat'){
+            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['s2'], v.mats.c7);
+        } else if(type=='norm_high'){
+            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['h2'], v.mats.c7);
+        } else if(type=='low_norm'){
+            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['h2'], v.mats.c7);
+        }
+        m.add(m1);
+        m1.add(m2);
+        this.mesh.add(m);
+        m1.rotation.y = Math.PI
     	return m;
-    }*/
+    }
 }
 
 
