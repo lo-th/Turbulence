@@ -118,7 +118,7 @@ var formula = function(pz, r, link, label, num){
         
         if(link){ 
         	if(name == 'y4'){
-                this.links[i] = this.createLink(name, this.f.sizer[i], this.f.sizer[i]/5); 
+                this.links[i] = this.createLink(name, this.f.sizer[i], (this.f.sizer[i]/5)-((num/100)-0.2)); 
                 //this.links[i].translateX(-this.f.sizer[i]/5);
             }
             else if(name!='y5' && name!='o4') this.links[i] = this.createLink(name, this.f.sizer[i]);
@@ -135,7 +135,7 @@ var formula = function(pz, r, link, label, num){
         this.linksDecal.push(-14*0.25);
     	this.links.push(this.createLink('',this.f.sizer[this.nLength+1]));
         this.linksDecal.push(7*0.25);
-    	this.links.push(this.createLink('',this.f.sizer[this.nLength+2]/3));
+    	this.links.push(this.createLink('',(this.f.sizer[this.nLength+2]/3)+((num/100)+0.2)));
         this.linksDecal.push(0*0.25);
     }
 
@@ -146,8 +146,8 @@ var formula = function(pz, r, link, label, num){
     //this.snakeLink[0] = this.createSnakeLink('high_rat', n);
     //this.snakeLink[1] = this.createSnakeLink('low_rat', n);
 
-    this.snakeLink[0] = this.createSnakeLink('high_norm', n);
-    this.snakeLink[1] = this.createSnakeLink('low_norm', n);
+    this.snakeLink[0] = this.createSnakeLink('high_norm', n, 1-(num/100));
+    this.snakeLink[1] = this.createSnakeLink('low_norm', n, 1-(num/100));
 
     //this.points.y4.visible = false;
 }
@@ -166,7 +166,7 @@ formula.prototype = {
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 if(this.head!=null) this.head.rotation.z = ((p.r-(Math.PI/2)-(40*V3D.ToRad))/2)-Math.PI/2;
             }else if(name=='y5'){
-                this.snakeLink[1].rotation.z = p.r-(80*V3D.ToRad)
+                this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)
             }else if(name!='o4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;
@@ -237,7 +237,7 @@ formula.prototype = {
         
         return m;
     },
-    createSnakeLink:function(type, n){
+    createSnakeLink:function(type, n, s){
         var t = 0;
         var m = new THREE.Group();
     	var m1, m2, m3, m4;
@@ -275,7 +275,8 @@ formula.prototype = {
         m.add(m1);
         m1.add(m2);
         this.mesh.add(m);
-        m1.rotation.y = Math.PI
+        m1.rotation.y = Math.PI;
+        m.scale.set(s,s,s);
     	return m;
     }
 }
