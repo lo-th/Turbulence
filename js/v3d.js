@@ -52,17 +52,10 @@ V3D.View.prototype = {
         //this.projector = new THREE.Projector();
     	//this.raycaster = new THREE.Raycaster();
     },
-    initLight:function(){
-    	if(this.isMobile) return;
-    	//this.scene.fog = new THREE.Fog( 0x1d1f20, 100, 600 );
-    	//this.scene.add( new THREE.AmbientLight( 0x3D4143 ) );
-    	var hemiLight = new THREE.HemisphereLight( 0xffffff, 0x303030, 0.3 );
-		this.scene.add( hemiLight );
-		var dirLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
-		dirLight.position.set( 0.5, 1, 0.5 ).normalize();
-		this.scene.add( dirLight );
-		this.initLightMaterial();
+    render : function(){
+    	this.renderer.render( this.scene, this.camera );
     },
+
     initBasic:function(){
     	var geos = {};
 		geos['sph'] = new THREE.BufferGeometry();
@@ -94,29 +87,10 @@ V3D.View.prototype = {
 	    mats['c6'] = new V3D.SphericalShader({env:img, color:0xFFFFFF, map:this.doubleTexture()});
 	    mats['c7'] = new V3D.SphericalShader({env:img, color:0xFFFFFF, map:this.doubleTexture('#07DAFF', '#059BB5')});
 
-	    /*mats['b0'] = new V3D.SphericalShader({env:img, color:0x606060, null, true, true);
-	    mats['b1'] = new V3D.SphericalShader({env:img, color:0x606060, null, true, false);
-	    mats['b2'] = new V3D.SphericalShader({env:img, color:0x606060, null, false, false);
-	    mats['bc1'] = new V3D.SphericalShader({env:img, color: 0x60FF60, null, false, false);
-	    mats['bc2'] = new V3D.SphericalShader({env:img, color:0xFF6060, null, false, false);
-	    mats['beye'] = new V3D.SphericalShader({env:img, color:0x333333, null, false, false );
-
-	    mats['sph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(0), name:'sph' } );
-	    mats['ssph'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(1), name:'ssph' } );
-	    mats['box'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(2), name:'box' } );
-	    mats['sbox'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(3), name:'sbox' } );
-	    mats['cyl'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(5), name:'cyl' } );
-	    mats['scyl'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(6), name:'scyl' } );
-	    mats['static'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(4), name:'static' } );
-	    mats['static2'] = new THREE.MeshBasicMaterial( { map: this.basicTexture(4, 6), name:'static2' } );*/
-
-	    //mats['joint']  = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 	    this.img = img;
 	    this.mats = mats;
     },
-    render : function(){
-    	this.renderer.render( this.scene, this.camera );
-    },
+    
     addLabel:function(text, size, color){
     	if(!color) color = "#F964A7";
 		if(!size) size = 10;
@@ -155,7 +129,7 @@ V3D.View.prototype = {
 		this.scene.add( helper );
 		this.grid = helper;
     },
-    add : function(obj, target){
+    add:function(obj, target){
     	var type = obj.type || 'box';
     	var size = obj.size || [10,10,10];
     	var pos = obj.pos || [0,0,0];
@@ -643,12 +617,7 @@ V3D.Spherical = {
             '}',
 
             // environment
-            'vec3 ev = texture2D( env, vN ).rgb;',
-            'base *= ev;',
-
-            //'if(useLightMap == 1.){',
-	        //    'base *= texture2D( mapLight, vU ).rgb;',
-            //'}',
+            'base *= texture2D( env, vN ).rgb;',
             
             'gl_FragColor = vec4( base, alpha );',
 

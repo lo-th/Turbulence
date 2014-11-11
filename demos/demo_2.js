@@ -10,10 +10,15 @@ v.addGrid(400, 20, [0,0,0], [0,0,0]);
 
 // ui add clock
 var c = new UI.Clock();
+var snakeType = 0;
+var tween;
+var snake = {u:0};
+var b1 = new UI.Button('normal', setType);
 
 renderLoop();
 
 function renderLoop(){
+    TWEEN.update();
     for(var i = 0; i<fs.length; i++){
         if(i==0) c.set(v.unDegrees(fs[i].f.rotation));
         fs[i].run();
@@ -22,16 +27,37 @@ function renderLoop(){
     requestAnimationFrame( renderLoop );
 }
 
+function setType(){
+    if(snakeType == 0) snakeType = 1;
+    else snakeType = 0;
+    if(snakeType == 1 ){
+        b1.text('rat');
+        tween = new TWEEN.Tween( snake )
+            .to( {u:1}, 200 )
+            .easing( TWEEN.Easing.Linear.None )
+            .onUpdate( function () { for(var i = 0; i<48; i++){fs[i].setMorph(snake.u);}  } )
+            .start();
+    }else{
+        b1.text('normal');
+        tween = new TWEEN.Tween( snake )
+            .to( {u:0}, 200 )
+            .easing( TWEEN.Easing.Linear.None )
+            .onUpdate( function () { for(var i = 0; i<48; i++){fs[i].setMorph(snake.u);}  } )
+            .start();
+    }
+}
+
 // import image
 
 var objName = "basic_op"; // version optimiser
-var headShader, centerShader;
+var headShader, centerShader, centerMorphShader;
 var pool = new SEA3D.Pool();
 pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
 
 function initImages(){
     headShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('serpent', true) });
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
+    centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
     pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
 }
 //
@@ -52,14 +78,12 @@ function initObject(){
 
     //----- serpent
 
-    geos['c1'] = pool.geo('serpent_center_high');
-    geos['c2'] = pool.geo('serpent_center_low');
-    geos['s1'] = pool.geo('serpent_high_rat');
-    geos['s2'] = pool.geo('serpent_low_rat');
-    geos['h1'] = pool.geo('serpent_high_norm');
-    geos['h2'] = pool.geo('serpent_low_norm');
+    geos['c1'] = pool.getMesh('serpent_center_high').geometry;
+    geos['c2'] = pool.getMesh('serpent_center_low').geometry;
+    geos['h1'] = pool.getMesh('serpent_high_norm').geometry;
+    geos['h2'] = pool.getMesh('serpent_low_norm').geometry;
     geos['head'] = pool.geo('serpent_head');
-    geos['end'] = pool.geo('serpent_end');
+    geos['end'] = pool.getMesh('serpent_end').geometry;
     //geos['tongue'] = pool.geo('serpent_tongue');
 
     //----
@@ -71,11 +95,7 @@ function initObject(){
 
 }
 
-
-
-
 // -------------------------------------------------
-
 
 // basic class 
 var formula = function(pz, r, link, label, num){
@@ -102,6 +122,7 @@ var formula = function(pz, r, link, label, num){
     this.points = [];
     this.snakeLink = [];
     this.head = null;
+    this.morphs = [];
 
     // extra scale snake
     var ex = (num/100);
@@ -110,8 +131,6 @@ var formula = function(pz, r, link, label, num){
     if (num==2) ex = (num/100)+0.15;
     if (num==3) ex = (num/100)+0.10;
     if (num==4) ex = (num/100)+0.05;
-
-
 
     // add each formula point to 3d view
     var name;
@@ -162,8 +181,6 @@ var formula = function(pz, r, link, label, num){
 
     this.snakeLink[0] = this.createSnakeLink('high_norm', n, 1-ex);
     this.snakeLink[1] = this.createSnakeLink('low_norm', n, 1-ex);
-
-    //this.points.y4.visible = false;
 }
 
 formula.prototype = {
@@ -180,7 +197,7 @@ formula.prototype = {
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 if(this.head!=null){
                     this.head.position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-                    this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad)//((p.r-(Math.PI/2)-(40*V3D.ToRad))/2)-Math.PI/2;
+                    this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
                 }
             }else if(name=='y5'){
                 this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)
@@ -188,7 +205,6 @@ formula.prototype = {
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;
             }
-            //this.o.move(i, p.x*this.mul, p.y*this.mul,this.pz)//, (p.z*this.mul)+this.pz);
             if(this.links.length>0){
                 if(name!='y5' && name!='o4'){
                     this.links[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]+this.linksDecal[i]);
@@ -209,7 +225,7 @@ formula.prototype = {
 
             }
             if(this.labels.length>0){
-                this.labels[i].position.set(p.x*this.mul, p.y*this.mul,this.pz)// (p.z*this.mul)+this.pz)
+                this.labels[i].position.set(p.x*this.mul, p.y*this.mul,this.pz);
             }
         }
         //this.o.update();
@@ -258,22 +274,15 @@ formula.prototype = {
         var t = 0;
         var m = new THREE.Group();
     	var m1, m2, m3, m4;
-        if(type=='high_rat'){
+        if(type=='high_norm'){
             t = 1;
             m1 = new THREE.Mesh(geos['c1'], centerShader);
-            m2 = new THREE.Mesh(geos['s1'], v.mats.c4);
-        } else if(type=='low_rat'){
-            t = 2;
-            m1 = new THREE.Mesh(geos['c2'], centerShader);
-            m2 = new THREE.Mesh(geos['s2'], v.mats.c1);
-        } else if(type=='high_norm'){
-            t = 1;
-            m1 = new THREE.Mesh(geos['c1'], centerShader);
-            m2 = new THREE.Mesh(geos['h1'], v.mats.c4);
+            m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
-            m2 = new THREE.Mesh(geos['h2'], v.mats.c1);
+            m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
+            
         }
         n = n || 0;
         if(n==1 && t==1){
@@ -291,10 +300,17 @@ formula.prototype = {
         }
         m.add(m1);
         m1.add(m2);
+        this.morphs.push(m2);
         this.mesh.add(m);
         m1.rotation.y = Math.PI;
-        m.scale.set(s,s,s);
+        m.scale.set(s,s,-s);
     	return m;
+    },
+    setMorph:function(n){
+        var i = this.morphs.length;
+        while(i--){
+            this.morphs[i].setWeight("rat", n);
+        }
     }
 }
 
