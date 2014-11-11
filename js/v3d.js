@@ -34,6 +34,8 @@ V3D.View.prototype = {
     	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true});
     	this.renderer.setSize( this.w, this.h );
     	this.renderer.setClearColor( 0x1d1f20, 1 );
+    	this.renderer.gammaInput = true;
+		this.renderer.gammaOutput = true;
     	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 2000 );
     	this.scene = new THREE.Scene();
     	
@@ -558,6 +560,11 @@ V3D.SphericalShader =  function(o){
         fog: o.fog || false
     });
 
+    if(o.mapLight){
+        material.uniforms.mapLight.value = o.mapLight;
+        material.uniforms.useLightMap.value = 1.0;
+    }
+
     if(o.map){
         material.uniforms.map.value = o.map;
         material.uniforms.useMap.value = 1.0;
@@ -574,8 +581,10 @@ V3D.Spherical = {
     uniforms:{ 
         env: {type: 't', value: null},
         //map: {type: 't', value: null},
+        mapLight: {type: 't', value: null},
         color: {type: 'c', value: null},
         useMap: {type: 'f', value: 0},
+        useLightMap: {type: 'f', value: 0},
         //opacity: {type: 'f', value: 0.3},
         useRim: {type: 'f', value: 0.5},
         rimPower: {type: 'f', value: 2},
@@ -585,6 +594,8 @@ V3D.Spherical = {
         'uniform vec3 diffuse;',
         'uniform float opacity;',
         'uniform float useMap;',
+        'uniform sampler2D mapLight;',
+        'uniform float useLightMap;',
         'uniform float useRim;',
         'uniform float rimPower;',
         'uniform float useExtraRim;',
@@ -593,6 +604,7 @@ V3D.Spherical = {
         //'uniform vec3 color;',
         'varying vec2 vN;',
         'varying vec2 vU;',
+        //'varying vec2 vUv2;',
         //'varying vec3 vEye;',
         'varying vec3 vNormal;',
         'varying vec3 vPos;',
@@ -633,8 +645,18 @@ V3D.Spherical = {
             // environment
             'vec3 ev = texture2D( env, vN ).rgb;',
             'base *= ev;',
+
+            //'if(useLightMap == 1.){',
+	        //    'base *= texture2D( mapLight, vU ).rgb;',
+            //'}',
             
             'gl_FragColor = vec4( base, alpha );',
+
+            'if(useLightMap == 1.){',
+	            'gl_FragColor = gl_FragColor * texture2D( mapLight, vU );',
+            '}',
+
+
 
             THREE.ShaderChunk[ "logdepthbuf_fragment" ],
             //THREE.ShaderChunk[ "map_fragment" ],
@@ -663,13 +685,14 @@ V3D.Spherical = {
 
         'varying vec2 vN;',
         'varying vec2 vU;',
+        //'varying vec2 vUv2;',
         //'varying vec3 vEye;',
         'varying vec3 vNormal;',
         'varying vec3 vPos;',
 
         'void main() {',
             //THREE.ShaderChunk[ "map_vertex" ],
-           // THREE.ShaderChunk[ "lightmap_vertex" ],
+            //THREE.ShaderChunk[ "lightmap_vertex" ],
             //THREE.ShaderChunk[ "color_vertex" ],
             THREE.ShaderChunk[ "skinbase_vertex" ],
 
@@ -697,6 +720,7 @@ V3D.Spherical = {
             'float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );',
             'vN = r.xy / m + .5;',
             'vU = uv;',
+            //'vUv2 = uv2;',
             //'vEye = ( modelViewMatrix * vec4( position, 1.0 ) ).xyz;',
             //'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );',
             'gl_Position = projectionMatrix * mvPosition;',

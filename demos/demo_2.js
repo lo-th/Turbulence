@@ -25,15 +25,16 @@ function renderLoop(){
 // import image
 
 var objName = "basic_op"; // version optimiser
-var headShader;
+var headShader, centerShader;
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/serpent.jpg'], initImages);
+pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
 
 function initImages(){
-    headShader = new V3D.SphericalShader({ env:v.img, map:pool.getTexture('serpent', true) });
+    headShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('serpent', true) });
+    centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
 }
-
+//
 // import sea3D object pack
 function initObject(){
 
@@ -259,19 +260,19 @@ formula.prototype = {
     	var m1, m2, m3, m4;
         if(type=='high_rat'){
             t = 1;
-            m1 = new THREE.Mesh(geos['c1'], v.mats.c4);
+            m1 = new THREE.Mesh(geos['c1'], centerShader);
             m2 = new THREE.Mesh(geos['s1'], v.mats.c4);
         } else if(type=='low_rat'){
             t = 2;
-            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
+            m1 = new THREE.Mesh(geos['c2'], centerShader);
             m2 = new THREE.Mesh(geos['s2'], v.mats.c1);
         } else if(type=='high_norm'){
             t = 1;
-            m1 = new THREE.Mesh(geos['c1'], v.mats.c4);
+            m1 = new THREE.Mesh(geos['c1'], centerShader);
             m2 = new THREE.Mesh(geos['h1'], v.mats.c4);
         } else if(type=='low_norm'){
             t = 2;
-            m1 = new THREE.Mesh(geos['c2'], v.mats.c1);
+            m1 = new THREE.Mesh(geos['c2'], centerShader);
             m2 = new THREE.Mesh(geos['h2'], v.mats.c1);
         }
         n = n || 0;
