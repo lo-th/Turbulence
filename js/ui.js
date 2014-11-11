@@ -4,10 +4,11 @@ UI.Unselect = '-o-user-select:none; -ms-user-select:none; -khtml-user-select:non
 
 //--------------------------- BUTTON
 
-UI.Button = function(name, fun, pos){
+UI.Button = function(name, fun, pos, w){
 	pos = pos || 10;
+	w = w || 70;
 	var b = document.createElement( 'div' );
-	b.style.cssText = UI.Unselect + 'position:absolute; bottom:10px; left:'+pos+'px; width:70px; padding:6px; cursor:pointer; text-align:center; pointer-events:auto;';
+	b.style.cssText = UI.Unselect + 'position:absolute; bottom:10px; left:'+pos+'px; width:'+w+'px; padding:6px; cursor:pointer; text-align:center; pointer-events:auto;';
 	b.id = 'button';
 	b.textContent = name;
 	b.onclick = fun;

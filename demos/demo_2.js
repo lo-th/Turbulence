@@ -2,18 +2,25 @@ tell('The serpent');
 
 var fs = [];
 var geos = {};
-var v3d = new V3D.View(110,60,500);
+var v3d = new V3D.View(94,86,600);
 var v = v3d;
 
 // add basic grid
-v.addGrid(400, 20, [0,0,0], [0,0,0]);
+v.addGrid(600, 20, [0,0,0], [0,0,0]);
 
 // ui add clock
 var c = new UI.Clock();
 var snakeType = 0;
+var displayFormule = 0;
 var tween;
 var snake = {u:0};
 var b1 = new UI.Button('normal', setType);
+var b2 = new UI.Button('show formula', showFormule, 110, 120);
+
+var objName = "basic_op"; // version optimiser
+var headShader, centerShader, centerMorphShader;
+var pool = new SEA3D.Pool();
+pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
 
 renderLoop();
 
@@ -33,36 +40,47 @@ function setType(){
     if(snakeType == 1 ){
         b1.text('rat');
         tween = new TWEEN.Tween( snake )
-            .to( {u:1}, 200 )
-            .easing( TWEEN.Easing.Linear.None )
-            .onUpdate( function () { for(var i = 0; i<48; i++){fs[i].setMorph(snake.u);}  } )
+            .to( {u:1}, 200 ).easing( TWEEN.Easing.Linear.None )
+            .onUpdate( function () { var i = 48; while(i--) fs[i].setMorph(snake.u); } )
             .start();
     }else{
         b1.text('normal');
         tween = new TWEEN.Tween( snake )
-            .to( {u:0}, 200 )
-            .easing( TWEEN.Easing.Linear.None )
-            .onUpdate( function () { for(var i = 0; i<48; i++){fs[i].setMorph(snake.u);}  } )
+            .to( {u:0}, 200 ).easing( TWEEN.Easing.Linear.None )
+            .onUpdate( function () { var i = 48; while(i--) fs[i].setMorph(snake.u); } )
             .start();
+    }
+}
+
+function showFormule(){
+    if(displayFormule == 0) displayFormule = 1;
+    else displayFormule = 0;
+    if(displayFormule == 1 ){
+        b2.text('hide formula');
+        var i = 48;
+        while(i--) fs[i].showFormule(true);
+    }else{
+        b2.text('show formula');
+        var i = 48;
+        while(i--) fs[i].showFormule(false);
     }
 }
 
 // import image
 
-var objName = "basic_op"; // version optimiser
-var headShader, centerShader, centerMorphShader;
-var pool = new SEA3D.Pool();
-pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
-
 function initImages(){
     headShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('serpent', true) });
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
+
     pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
 }
-//
+
 // import sea3D object pack
+
 function initObject(){
+
+    //----- formule
 
     geos['p0'] = pool.geo(objName+'_point0');
     geos['p1'] = pool.geo(objName+'_point1');
@@ -82,15 +100,14 @@ function initObject(){
     geos['c2'] = pool.getMesh('serpent_center_low').geometry;
     geos['h1'] = pool.getMesh('serpent_high_norm').geometry;
     geos['h2'] = pool.getMesh('serpent_low_norm').geometry;
-    geos['head'] = pool.geo('serpent_head');
     geos['end'] = pool.getMesh('serpent_end').geometry;
-    //geos['tongue'] = pool.geo('serpent_tongue');
+    geos['head'] = pool.geo('serpent_head');
 
-    //----
+    //---- add 48 formule
 
-    // add 48 formule
     for(var i = 0; i<48; i++){
-        fs[i] = new formula(240-(i*20), i*(10*V3D.ToRad), true, false, i);
+        fs[i] = new formula(450-(i*20), i*(10*V3D.ToRad), true, false, i);
+        fs[i].showFormule(false);
     }
 
 }
@@ -100,16 +117,25 @@ function initObject(){
 // basic class 
 var formula = function(pz, r, link, label, num){
 
+    // extra scale snake
+    var ex = (num/100);
+    if (num==0) ex = (num/100)+0.25;
+    if (num==1) ex = (num/100)+0.20;
+    if (num==2) ex = (num/100)+0.15;
+    if (num==3) ex = (num/100)+0.10;
+    if (num==4) ex = (num/100)+0.05;
+
     label = label || false;
     this.mul = 10;
     this.scalar = 0.2;
     this.pz = pz || 0;
+    //if(num>4)this.pz = -ex*20*100
 
     this.mesh = new THREE.Group();
     v.scene.add(this.mesh);
-    this.mesh.rotation.z = 125*V3D.ToRad;
-    this.mesh.position.y = 100;
-    this.mesh.position.z = pz;
+    this.mesh.rotation.z = 130*V3D.ToRad;
+    this.mesh.position.y = 95;
+    this.mesh.position.z = this.pz;
     // init formula class
     this.f = new Turbulence.Formula();
     this.nLength = this.f.pNames.length;
@@ -123,14 +149,9 @@ var formula = function(pz, r, link, label, num){
     this.snakeLink = [];
     this.head = null;
     this.morphs = [];
+    this.formuleMesh = [];
 
-    // extra scale snake
-    var ex = (num/100);
-    if (num==0) ex = (num/100)+0.25;
-    if (num==1) ex = (num/100)+0.20;
-    if (num==2) ex = (num/100)+0.15;
-    if (num==3) ex = (num/100)+0.10;
-    if (num==4) ex = (num/100)+0.05;
+    
 
     // add each formula point to 3d view
     var name;
@@ -141,21 +162,20 @@ var formula = function(pz, r, link, label, num){
         // decal Z
         this.pointsDecal[i] = 0;
         this.linksDecal[i] = 0;
-        if(name == 'b1'|| name == 'o4')this.pointsDecal[i] = -14*this.scalar;
-        if(name == 'y5'|| name == 'o3')this.pointsDecal[i] = -7*this.scalar;
-        if(name == 'b4'){  this.linksDecal[i] =(-14*this.scalar); }
+        if(name == 'b1'|| name == 'o4') this.pointsDecal[i] = -14*this.scalar;
+        if(name == 'y5'|| name == 'o3') this.pointsDecal[i] = -7*this.scalar;
+        if(name == 'b4') this.linksDecal[i] =(-14*this.scalar);
         if(name == 'y3'|| name == 'o1' || name == 'y1') this.linksDecal[i] =(-7*this.scalar);
-        if(name == 'b3' ) this.linksDecal[i] =(-14*this.scalar);
-        if(name == 'a1') this.linksDecal[i] =(-21*this.scalar);
-        if(name == 'a2') this.linksDecal[i] =(-28*this.scalar);
-        if(name != 'y4' && name != 'o4' && name != 'y5')this.points[i] = this.createPoint(name);
+        if(name == 'b3') this.linksDecal[i] = -14*this.scalar;
+        if(name == 'a1') this.linksDecal[i] = -21*this.scalar;
+        if(name == 'a2') this.linksDecal[i] = -28*this.scalar;
+
+        if(name != 'y4' && name != 'o4' && name != 'y5') this.points[i] = this.createPoint(name);
         
         if(link){ 
-        	if(name == 'y4'){
-                this.links[i] = this.createLink(name, this.f.sizer[i], (this.f.sizer[i]/5)-(ex-0.2));
-            }
+        	if(name == 'y4') this.links[i] = this.createLink(name, this.f.sizer[i], (this.f.sizer[i]/5)-(ex-0.2));
             else if(name!='y5' && name!='o4') this.links[i] = this.createLink(name, this.f.sizer[i]);
-            else this.links[i]=0
+            else this.links[i]=0;
         }
         if(label){ 
             this.labels[i] = v.addLabel(name, 5);
@@ -176,9 +196,6 @@ var formula = function(pz, r, link, label, num){
     if(num==0) n=1;
     else if(num == 47) n=2;
 
-    //this.snakeLink[0] = this.createSnakeLink('high_rat', n);
-    //this.snakeLink[1] = this.createSnakeLink('low_rat', n);
-
     this.snakeLink[0] = this.createSnakeLink('high_norm', n, 1-ex);
     this.snakeLink[1] = this.createSnakeLink('low_norm', n, 1-ex);
 }
@@ -190,7 +207,7 @@ formula.prototype = {
         var p, name;
         for(var i = 0; i<this.nLength; i++){
         	name = this.f.pNames[i]
-            p = this.f.points[name];//|| name!='o4' || name!='y5'
+            p = this.f.points[name];
             if(name=='y4'){
                 this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
@@ -235,16 +252,17 @@ formula.prototype = {
         if(name=='a1') m = new THREE.Mesh( geos['p0'], v.mats.c6 );
         else if(name=='y1'|| name=='y2') m = new THREE.Mesh( geos['p2'], v.mats.c6 );
         else if(name=='o2'|| name=='b2'|| name=='b4') m = new THREE.Mesh( geos['p3'], v.mats.c6 );
-        else if(name=='o4' || name=='y5')m = new THREE.Mesh( geos['p6'], v.mats.c6 ); 
+        else if(name=='o4' || name=='y5') m = new THREE.Mesh( geos['p6'], v.mats.c6 ); 
         else if(name=='y3') m = new THREE.Mesh( geos['p7'], v.mats.c6 );
         else if(name=='b3') m = new THREE.Mesh( geos['p8'], v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( geos['p1'], v.mats.c6 );
         else if(name=='a2' ) m = new THREE.Mesh( geos['p4'], v.mats.c6 );
         else m = new THREE.Mesh( geos['p5'], v.mats.c6 );
-        this.mesh.add(m);
         m.scale.x *= this.scalar;
         m.scale.y *= this.scalar;
         m.scale.z *= this.scalar;
+        this.mesh.add(m);
+        this.formuleMesh.push(m);
         return m;
     },
     createLink:function(name, s, decal){
@@ -267,7 +285,7 @@ formula.prototype = {
             m = m1;
         }
         this.mesh.add(m);
-        
+        this.formuleMesh.push(m);
         return m;
     },
     createSnakeLink:function(type, n, s){
@@ -282,16 +300,12 @@ formula.prototype = {
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
             m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
-            
         }
         n = n || 0;
         if(n==1 && t==1){
-            //m4 = new THREE.Mesh(geos['tongue'], v.mats.c1);
             m3 = new THREE.Mesh(geos['head'], headShader);
             m3.rotation.y = Math.PI;
-            //m3.rotation.z = 25*V3D.ToRad;
             this.head = m3;
-            //m3.add(m4);
             this.mesh.add(m3);
         }else if(n==2 && t==2){
             m3 = new THREE.Mesh(geos['end'], v.mats.c1);
@@ -306,6 +320,12 @@ formula.prototype = {
         m.scale.set(s,s,-s);
     	return m;
     },
+    showFormule:function(n){
+        var i = this.formuleMesh.length;
+        while(i--){
+            this.formuleMesh[i].visible = n;
+        }
+    },
     setMorph:function(n){
         var i = this.morphs.length;
         while(i--){
@@ -313,5 +333,3 @@ formula.prototype = {
         }
     }
 }
-
-

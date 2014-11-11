@@ -33,10 +33,10 @@ V3D.View.prototype = {
 
     	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true});
     	this.renderer.setSize( this.w, this.h );
-    	this.renderer.setClearColor( 0x1d1f20, 1 );
-    	this.renderer.gammaInput = true;
-		this.renderer.gammaOutput = true;
-    	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 2000 );
+    	//this.renderer.setClearColor( 0x1d1f20, 1 );
+    	//this.renderer.gammaInput = true;
+		//this.renderer.gammaOutput = true;
+    	this.camera = new THREE.PerspectiveCamera( 60, this.w/this.h, 0.1, 4000 );
     	this.scene = new THREE.Scene();
     	
     	
@@ -199,7 +199,7 @@ V3D.View.prototype = {
         t.needsUpdate = true;
         var mat = new THREE.MeshBasicMaterial( {map:t, side:THREE.BackSide, depthWrite: false, fog:false }  );
         //var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.IcosahedronGeometry(1000,1) );
-        var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.SphereGeometry(1000,12,10) );
+        var buffgeoBack = new THREE.BufferGeometry().fromGeometry( new THREE.SphereGeometry(3000,12,10) );
         this.back = new THREE.Mesh( buffgeoBack, mat);
         //this.back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(90*V3D.ToRad));
         this.scene.add( this.back );
