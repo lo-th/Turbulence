@@ -31,8 +31,9 @@ V3D.View.prototype = {
     init:function(h,v,d, revers){
     	this.clock = new THREE.Clock();
 
-    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true});
+    	this.renderer = new THREE.WebGLRenderer({precision: "mediump", antialias:true, stencil:false });
     	this.renderer.setSize( this.w, this.h );
+    	this.renderer.autoClear = false;
     	//this.renderer.setClearColor( 0x1d1f20, 1 );
     	//this.renderer.gammaInput = true;
 		//this.renderer.gammaOutput = true;
@@ -76,6 +77,7 @@ V3D.View.prototype = {
     	mats['point']  = new THREE.LineBasicMaterial( { color:0xF964A7 } );
     },
     initMaterial:function(){
+    	//var img = THREE.ImageUtils.loadTexture( '../images/e_plastic_r.jpg' );
     	var img = THREE.ImageUtils.loadTexture( '../images/e_metal.jpg' );
 	    var mats = {};
 	    this.initBasicMaterial(mats);
@@ -560,9 +562,13 @@ V3D.Spherical = {
         useMap: {type: 'f', value: 0},
         useLightMap: {type: 'f', value: 0},
         //opacity: {type: 'f', value: 0.3},
-        useRim: {type: 'f', value: 0.5},
-        rimPower: {type: 'f', value: 2},
-        useExtraRim: {type: 'f', value: 0},
+        useRim: {type: 'f', value: 0.8},
+        rimPower: {type: 'f', value: 1.4},
+        useExtraRim: {type: 'i', value: 0},
+
+        reflectivity: {type: 'f', value: 1.0},
+        //specularStrength: {type: 'f', value: 1.0},
+        combine: {type: 'i', value: 2},
     },
     fs:[
         'uniform vec3 diffuse;',
@@ -572,16 +578,25 @@ V3D.Spherical = {
         'uniform float useLightMap;',
         'uniform float useRim;',
         'uniform float rimPower;',
-        'uniform float useExtraRim;',
+        'uniform int useExtraRim;',
         'uniform sampler2D env;',
         'uniform sampler2D map;',
+
+        'uniform float reflectivity;',
+        //'uniform float specularStrength;',
+        'uniform int combine;',
+	
         //'uniform vec3 color;',
         'varying vec2 vN;',
         'varying vec2 vU;',
         //'varying vec2 vUv2;',
         //'varying vec3 vEye;',
         'varying vec3 vNormal;',
+
         'varying vec3 vPos;',
+        //'varying float specularStrength;',
+
+
         //THREE.ShaderChunk[ "color_pars_fragment" ],
         //THREE.ShaderChunk[ "map_pars_fragment" ],
         //THREE.ShaderChunk[ "alphamap_pars_fragment" ],
@@ -594,11 +609,13 @@ V3D.Spherical = {
 
 
         'void main() {',
+            'float specularStrength = 1.0;',
             'vec3 base = diffuse;',
             'float alpha = opacity;',
 
             'if(useMap == 1.){',
                 'vec3 mapping = texture2D( map, vU ).rgb;',
+                //'specularStrength = mapping.r;',
                 "alpha *= texture2D( map, vU ).a;",
                 'base *= mapping;',
             '}',
@@ -608,18 +625,30 @@ V3D.Spherical = {
                 'f = useRim * ( 1. - smoothstep( 0.0, 1., f ) );',
                 'base += vec3( f );',
             '}',
-            'if( useExtraRim == 1. ) {',
-                'float rim = max( 0., abs( dot( vNormal, -vPos ) ) );',
+            'if( useExtraRim == 1 ) {',
+                'float rim = max( 0., abs( dot( vNormal, vPos ) ) );',
                 'float r = smoothstep( .25, .75, 1. - rim );',
                 'r -= smoothstep( .5, 1., 1. - rim );',
-                'vec3 c = vec3( 168. / 255., 205. / 255., 225. / 255. );',
+                'vec3 c = vec3( 55. / 255., 55. / 255., 55. / 255. );',
                 'base *= c;',
             '}',
 
-            // environment
-            'base *= texture2D( env, vN ).rgb;',
-            
+
             'gl_FragColor = vec4( base, alpha );',
+
+            // environment
+            'vec3 reflect = texture2D( env, vN ).rgb;',
+            //'base *= texture2D( env, vN ).rgb;',
+
+            'if ( combine == 1 ) {',
+				'gl_FragColor.xyz = mix( gl_FragColor.xyz, reflect.xyz, specularStrength * reflectivity );',
+			'} else if ( combine == 2 ) {',
+				'gl_FragColor.xyz += reflect.xyz * specularStrength * reflectivity;',
+			'} else {',
+				'gl_FragColor.xyz = mix( gl_FragColor.xyz, gl_FragColor.xyz * reflect.xyz, specularStrength * reflectivity );',
+			'}',
+            
+            //'gl_FragColor = vec4( base, alpha );',
 
             'if(useLightMap == 1.){',
 	            'gl_FragColor = gl_FragColor * texture2D( mapLight, vU );',
@@ -637,7 +666,7 @@ V3D.Spherical = {
             //THREE.ShaderChunk[ "envmap_fragment" ],
             //THREE.ShaderChunk[ "shadowmap_fragment" ],
 
-            //THREE.ShaderChunk[ "linear_to_gamma_fragment" ],
+            THREE.ShaderChunk[ "linear_to_gamma_fragment" ],
 
             THREE.ShaderChunk[ "fog_fragment" ],
         '}'
