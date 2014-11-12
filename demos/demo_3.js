@@ -278,8 +278,8 @@ var formula = function(target, r, link, label, num){
     this.mesh.rotation.x = -90*V3D.ToRad;
     this.mesh.rotation.z = -78*V3D.ToRad;
 	this.mesh.position.x = -63.3
-    if(this.revers)this.mesh.position.y = -134;
-    else this.mesh.position.y = 134;
+    if(this.revers)this.mesh.position.y = -128;
+    else this.mesh.position.y = 128;
 	
     this.mesh.position.z = 205.6;
     this.mesh.scale.set(2.8,2.8,2.8);
