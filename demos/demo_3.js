@@ -266,14 +266,7 @@ var formula = function(target, r, link, label, num){
 	this.revers = false;
 	if(num==1 || num==3) this.revers = true;
 
-    // extra scale snake
     var ex = 0.3;
-    /*if (num==0) ex = (num/100)+0.25;
-    if (num==1) ex = (num/100)+0.20;
-    if (num==2) ex = (num/100)+0.15;
-    if (num==3) ex = (num/100)+0.10;
-    if (num==4) ex = (num/100)+0.05;*/
-
     label = label || false;
     this.mul = 10;
     this.scalar = 0.34;
@@ -283,13 +276,13 @@ var formula = function(target, r, link, label, num){
     this.mesh = new THREE.Group();
     target.add(this.mesh);
     this.mesh.rotation.x = -90*V3D.ToRad;
-    this.mesh.rotation.z = -80*V3D.ToRad;
-	this.mesh.position.x = -62
-    if(this.revers)this.mesh.position.y = -136;
-    else this.mesh.position.y = 136;
+    this.mesh.rotation.z = -78*V3D.ToRad;
+	this.mesh.position.x = -63.3
+    if(this.revers)this.mesh.position.y = -134;
+    else this.mesh.position.y = 134;
 	
-    this.mesh.position.z = 204;
-    this.mesh.scale.set(3,3,3);
+    this.mesh.position.z = 205.6;
+    this.mesh.scale.set(2.8,2.8,2.8);
     // init formula class
     this.f = new Turbulence.Formula();
     this.nLength = this.f.pNames.length;
@@ -300,7 +293,7 @@ var formula = function(target, r, link, label, num){
     this.linksDecal = [];
     this.pointsDecal = [];
     this.points = [];
-    this.snakeLink = [];
+    this.centralLink = [];
     this.head = null;
     this.morphs = [];
     this.formuleMesh = [];
@@ -356,8 +349,8 @@ var formula = function(target, r, link, label, num){
 
     var n = 0;
 
-    this.snakeLink[0] = this.createSnakeLink('high_norm', n, 1-ex);
-    this.snakeLink[1] = this.createSnakeLink('low_norm', n, 1-ex);
+    this.centralLink[0] = this.createCentralLink('high_norm', n, 1-ex);
+    this.centralLink[1] = this.createCentralLink('low_norm', n, 1-ex);
 
     this.run();
 }
@@ -372,15 +365,15 @@ formula.prototype = {
             p = this.f.points[name];
 			pdecal = this.pointsDecal[i];
             if(name=='y4'){
-                this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,pdecal);
-                this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
-                this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                this.centralLink[0].position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                this.centralLink[0].rotation.z = p.r-(Math.PI/2); 
+                this.centralLink[1].position.set(p.x*this.mul, p.y*this.mul,pdecal);
                 if(this.head!=null){
                     this.head.position.set(p.x*this.mul, p.y*this.mul,pdecal);
                     this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
                 }
             }else if(name=='y5'){
-                this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)
+                this.centralLink[1].rotation.z = p.r-(75*V3D.ToRad)
             }else if(name!='o4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,pdecal);
                 this.points[i].rotation.z = p.r;
@@ -453,16 +446,14 @@ formula.prototype = {
         this.formuleMesh.push(m);
         return m;
     },
-    createSnakeLink:function(type, n, s){
+    createCentralLink:function(type, n, s){
         var t = 0;
         var m = new THREE.Group();
     	var m1, m2, m3, m4;
         if(type=='high_norm'){
             m1 = new THREE.Mesh(geos['c1'], centerShader);
-            //m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
         } else if(type=='low_norm'){
             m1 = new THREE.Mesh(geos['c2'], centerShader);
-           // m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
         }
 
         m.add(m1);

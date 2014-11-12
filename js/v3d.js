@@ -546,6 +546,8 @@ V3D.SphericalShader =  function(o){
         material.uniforms.useMap.value = 1.0;
     }
     material.uniforms.env.value = o.env || null;
+    material.uniforms.reflectivity.value = o.reflectivity || 1;
+    material.uniforms.combine.value = o.combine || 0;
     material.uniforms.diffuse.value = new THREE.Color( o.color || 0xFFFFFF );
     material.uniforms.opacity.value = o.opacity || 1;
     return material;
@@ -568,7 +570,7 @@ V3D.Spherical = {
 
         reflectivity: {type: 'f', value: 1.0},
         //specularStrength: {type: 'f', value: 1.0},
-        combine: {type: 'i', value: 2},
+        combine: {type: 'i', value: 0},
     },
     fs:[
         'uniform vec3 diffuse;',
