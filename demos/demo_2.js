@@ -17,7 +17,6 @@ var snake = {u:0};
 var b1 = new UI.Button('normal', setType);
 var b2 = new UI.Button('show formula', showFormule, 110, 120);
 
-var objName = "basic_op"; // version optimiser
 var headShader, centerShader, centerMorphShader;
 var pool = new SEA3D.Pool();
 pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
@@ -73,7 +72,7 @@ function initImages(){
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
 
-    pool.load( ['../models/'+objName+'.sea', '../models/serpent.sea'], initObject, 'buffer' );
+    pool.load( ['../models/basic_op.sea', '../models/serpent.sea'], initObject, 'buffer' );
 }
 
 // import sea3D object pack
@@ -82,22 +81,24 @@ function initObject(){
 
     //----- formule
 
-    geos['p0'] = pool.geo(objName+'_point0');
-    geos['p1'] = pool.geo(objName+'_point1');
-    geos['p2'] = pool.geo(objName+'_point2');
-    geos['p3'] = pool.geo(objName+'_point3');
-    geos['p4'] = pool.geo(objName+'_point4');
-    geos['p5'] = pool.geo(objName+'_point5');
-    geos['p6'] = pool.geo(objName+'_point6');
-    geos['p7'] = pool.geo(objName+'_point7');
-    geos['p8'] = pool.geo(objName+'_point8');
-    geos['j0'] = pool.geo(objName+'_joint');
-    geos['j1'] = pool.geo(objName+'_joint_1');
+    geos['p0'] = pool.geo('basic_op_point0');
+    geos['p1'] = pool.geo('basic_op_point1');
+    geos['p2'] = pool.geo('basic_op_point2');
+    geos['p3'] = pool.geo('basic_op_point3');
+    geos['p4'] = pool.geo('basic_op_point4');
+    geos['p5'] = pool.geo('basic_op_point5');
+    geos['p6'] = pool.geo('basic_op_point6');
+    geos['p7'] = pool.geo('basic_op_point7');
+    geos['p8'] = pool.geo('basic_op_point8');
+    geos['j0'] = pool.geo('basic_op_joint');
+    geos['j1'] = pool.geo('basic_op_joint_1');
+    geos['c1'] = pool.getMesh('basic_op_center_high').geometry;
+    geos['c2'] = pool.getMesh('basic_op_center_low').geometry;
 
     //----- serpent
 
-    geos['c1'] = pool.getMesh('serpent_center_high').geometry;
-    geos['c2'] = pool.getMesh('serpent_center_low').geometry;
+    //geos['c1'] = pool.getMesh('serpent_center_high').geometry;
+    //geos['c2'] = pool.getMesh('serpent_center_low').geometry;
     geos['h1'] = pool.getMesh('serpent_high_norm').geometry;
     geos['h2'] = pool.getMesh('serpent_low_norm').geometry;
     geos['end'] = pool.getMesh('serpent_end').geometry;
@@ -333,3 +334,4 @@ formula.prototype = {
         }
     }
 }
+

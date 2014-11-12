@@ -32,8 +32,9 @@ function renderLoop(){
     TWEEN.update();
     var delta = v3d.clock.getDelta();
     THREE.AnimationHandler.update( delta );
-	if(b1set.fly==1){fs[0].run();fs[1].run();}
-	if(b2set.fly==1){fs[2].run();fs[3].run();}
+    /*for(var i = 0; i<fs.length; i++){
+        fs[i].run();
+    }*/
     v3d.render();
     requestAnimationFrame( renderLoop );
 }
@@ -112,12 +113,9 @@ function initObject(){
 		body.animations[2].weight = 0;
 		body.animations[2].loop = false;
 
-		var head, eye, palm, pelvis, chassis, center;
+		var head, eye, palm, pelvis, chassis;
 		chassis = pool.getMesh('beetle_chassis').clone();
 		chassis.material = matcc;
-
-        center = new THREE.Group();
-        center.scale.set(1,1,-1)
 
 		v.scene.add(beetle);
 
@@ -177,14 +175,13 @@ function initObject(){
 					bone.add(palm);
 				}
 				if(name=='BeetlePelvis'){
-                    bone.add(center);
 					bone.add(pelvis);
 					bone.add(chassis);
 				}
 			}
 		beetles[i] = beetle;
 		parts[i] = [body, foot];
-		bChassis[i] = center;
+		bChassis[i] = chassis;
 	}
 
 	for(var i = 0; i<4; i++){
@@ -263,33 +260,29 @@ function weightAnim (n, base){
 
 
 var formula = function(target, r, link, label, num){
-	this.revers = false;
-	if(num==1 || num==3) this.revers = true;
 
     // extra scale snake
-    var ex = 0.3;
-    /*if (num==0) ex = (num/100)+0.25;
+    var ex = (num/100);
+    if (num==0) ex = (num/100)+0.25;
     if (num==1) ex = (num/100)+0.20;
     if (num==2) ex = (num/100)+0.15;
     if (num==3) ex = (num/100)+0.10;
-    if (num==4) ex = (num/100)+0.05;*/
+    if (num==4) ex = (num/100)+0.05;
 
     label = label || false;
     this.mul = 10;
-    this.scalar = 0.34;
-    this.pz =  -200;
+    this.scalar = 0.2;
+    this.pz =  -190;
     //if(num>4)this.pz = -ex*20*100
 
     this.mesh = new THREE.Group();
     target.add(this.mesh);
-    this.mesh.rotation.x = -90*V3D.ToRad;
-    this.mesh.rotation.z = -80*V3D.ToRad;
-	this.mesh.position.x = -62
-    if(this.revers)this.mesh.position.y = -136;
-    else this.mesh.position.y = 136;
-	
-    this.mesh.position.z = 204;
-    this.mesh.scale.set(3,3,3);
+    this.mesh.rotation.x = 90*V3D.ToRad;
+    this.mesh.rotation.z = -90*V3D.ToRad;
+    if(num==1 || num==3)this.mesh.position.y = 140;
+    else this.mesh.position.y = -140;
+    this.mesh.position.z = this.pz;
+    this.mesh.scale.set(4,4,4);
     // init formula class
     this.f = new Turbulence.Formula();
     this.nLength = this.f.pNames.length;
@@ -323,7 +316,7 @@ var formula = function(target, r, link, label, num){
         if(name == 'b3') this.linksDecal[i] = -14*this.scalar;
         if(name == 'a1') this.linksDecal[i] = -21*this.scalar;
         if(name == 'a2') this.linksDecal[i] = -28*this.scalar;
-		
+
         if(name != 'y4' && name != 'o4' && name != 'y5') this.points[i] = this.createPoint(name);
         
         if(link){ 
@@ -345,14 +338,6 @@ var formula = function(target, r, link, label, num){
     	this.links.push(this.createLink('',(this.f.sizer[this.nLength+2]/3)+(ex+0.2)));
         this.linksDecal.push(0*this.scalar);
     }
-	
-	if(this.revers){
-		var j = this.pointsDecal.length;
-		while(j--)this.pointsDecal[j] = Math.abs(this.pointsDecal[j]);
-		j = this.linksDecal.length;
-		while(j--)this.linksDecal[j] = Math.abs(this.linksDecal[j]);
-		this.linksDecal[this.nLength+1] = -7*this.scalar
-	}
 
     var n = 0;
 
@@ -366,29 +351,27 @@ formula.prototype = {
     run:function(){
         this.f.rotation += 0.03;
         this.f.run();
-        var p, name, decal, pdecal;
+        var p, name;
         for(var i = 0; i<this.nLength; i++){
         	name = this.f.pNames[i]
             p = this.f.points[name];
-			pdecal = this.pointsDecal[i];
             if(name=='y4'){
-                this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
-                this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 if(this.head!=null){
-                    this.head.position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                    this.head.position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                     this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
                 }
             }else if(name=='y5'){
                 this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)
             }else if(name!='o4'){
-                this.points[i].position.set(p.x*this.mul, p.y*this.mul,pdecal);
+                this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;
             }
             if(this.links.length>0){
                 if(name!='y5' && name!='o4'){
-					decal = this.pointsDecal[i]+this.linksDecal[i];
-                    this.links[i].position.set(p.x*this.mul, p.y*this.mul,decal);
+                    this.links[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]+this.linksDecal[i]);
                     this.links[i].rotation.z = p.r;
                 }
                 if(name=='b2'){
@@ -427,7 +410,6 @@ formula.prototype = {
         m.scale.z *= this.scalar;
         this.mesh.add(m);
         this.formuleMesh.push(m);
-		if(this.revers)m.rotation.y = Math.PI;
         return m;
     },
     createLink:function(name, s, decal){
