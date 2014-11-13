@@ -9,7 +9,7 @@ var v = v3d;
 v.addGrid(600, 20, [0,0,0], [0,0,0]);
 
 // ui add clock
-var c = new UI.Clock();
+var uiClock = new UI.Clock();
 var snakeType = 0;
 var displayFormule = 0;
 var tween;
@@ -25,10 +25,20 @@ renderLoop();
 
 function renderLoop(){
     TWEEN.update();
-    for(var i = 0; i<fs.length; i++){
-        if(i==0) c.set(v.unDegrees(fs[i].f.rotation));
-        fs[i].run();
+    var target = new Turbulence.V3();
+
+    if(fs.length){
+        uiClock.set(v.unDegrees(fs[0].f.rotation));
+        var i = 48;
+        while(i--){
+            if(i<46){
+                target.set(fs[i+1].f.points.y4.x, fs[i+1].f.points.y4.y, -2);
+                fs[i].f.setW1(target);
+            }
+            fs[i].run();
+        }
     }
+   
     v.render();
     requestAnimationFrame( renderLoop );
 }
@@ -199,6 +209,12 @@ var formula = function(pz, r, link, label, num){
 
     this.snakeLink[0] = this.createSnakeLink('high_norm', n, 1-ex);
     this.snakeLink[1] = this.createSnakeLink('low_norm', n, 1-ex);
+
+    // for test
+    this.snakeLink[2] = new THREE.Mesh(new THREE.BoxGeometry(12,1,2), v.mats.c0);
+    this.snakeLink[2].geometry.applyMatrix(new THREE.Matrix4().makeTranslation(6,0,0));
+    this.mesh.add(this.snakeLink[2]);
+    this.run();
 }
 
 formula.prototype = {
@@ -206,6 +222,13 @@ formula.prototype = {
         this.f.rotation += 0.03;
         this.f.run();
         var p, name;
+
+        // for test
+        this.snakeLink[2].position.set(this.f.points.y4.x*this.mul, this.f.points.y4.y*this.mul,0);
+        this.snakeLink[2].quaternion.copy(this.f.endQuaternion);
+        this.snakeLink[2].rotation.z += this.f.points.y4.r;
+        //
+
         for(var i = 0; i<this.nLength; i++){
         	name = this.f.pNames[i]
             p = this.f.points[name];
@@ -218,7 +241,9 @@ formula.prototype = {
                     this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
                 }
             }else if(name=='y5'){
-                this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad)
+                //this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
+                //this.snakeLink[1].rotation.copy(this.snakeLink[2].rotation);
+                this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad);
             }else if(name!='o4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;

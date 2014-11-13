@@ -81,6 +81,7 @@ V3D.View.prototype = {
     	var img = THREE.ImageUtils.loadTexture( '../images/e_metal.jpg' );
 	    var mats = {};
 	    this.initBasicMaterial(mats);
+	    mats['c0'] = new V3D.SphericalShader({env:img, color:0x00FF00});
 	    mats['c1'] = new V3D.SphericalShader({env:img, color:0xF964A7});
 	    mats['c2'] = new V3D.SphericalShader({env:img, color:0xFF0073});
 	    mats['c3'] = new V3D.SphericalShader({env:img, color:0x43B8CC});

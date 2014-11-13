@@ -20,6 +20,10 @@ Turbulence.Formula = function(){
     this.ta = {};
 	this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5'];
 
+	this.w1 = new Turbulence.V3();
+	this.looking = 'base';
+	//this.target = new Turbulence.V3();
+
 	
 	// point definition
 	var names = this.pNames;
@@ -81,6 +85,10 @@ Turbulence.Formula.prototype = {
         this.sizer = [s.a1b1,s.a1a2,s.b1y1,s.b2o1,s.b3o2,s.a2y1,s.y1y2,s.y2y3,s.y3y4,s.a2o1,s.y2o2,s.y3o3,s.y4o4,s.b4o3,s.y4y5,
                       s.b2y2, s.b3y3, s.b4y4];
 
+    },
+    setW1:function(v){
+    	this.w1.set(v.x, v.y, v.z);
+    	this.looking = 'advanced';
     },
     run:function(){
 
@@ -241,13 +249,13 @@ Turbulence.Formula.prototype = {
 
         // extra rotation --------------------
 
+        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
+
         w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
-        w.b.set( 0, 0, -1.5 );
+        w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
 
         r.y3y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
-        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y )
-        //w.c.normalize();
-
+        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y );
 
         this.endQuaternion.setFromAxisAngle(w.c.normalize(), r.y3y4w1);
         //this.endRotation.setFromQuaternion(this.endQuaternion);
