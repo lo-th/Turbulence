@@ -103,12 +103,14 @@ function initObject(){
     geos['j0'] = pool.geo('basic_op_joint');
     geos['j1'] = pool.geo('basic_op_joint_1');
     geos['c1'] = pool.getMesh('basic_op_center_high').geometry;
-    geos['c2'] = pool.getMesh('basic_op_center_low').geometry;
+    //geos['c2'] = pool.getMesh('basic_op_center_low').geometry;
 
     //----- serpent
 
     //geos['c1'] = pool.getMesh('serpent_center_high').geometry;
-    //geos['c2'] = pool.getMesh('serpent_center_low').geometry;
+    geos['c2'] = pool.getMesh('serpent_center_low_mid').geometry;
+    geos['c2a'] = pool.getMesh('serpent_center_low_axe').geometry;
+
     geos['h1'] = pool.getMesh('serpent_high_norm').geometry;
     geos['h2'] = pool.getMesh('serpent_low_norm').geometry;
     geos['end'] = pool.getMesh('serpent_end').geometry;
@@ -161,6 +163,7 @@ var formula = function(pz, r, link, label, num){
     this.head = null;
     this.morphs = [];
     this.formuleMesh = [];
+    this.lowAxe = null;
 
     
 
@@ -227,6 +230,10 @@ formula.prototype = {
         this.snakeLink[2].position.set(this.f.points.y4.x*this.mul, this.f.points.y4.y*this.mul,0);
         this.snakeLink[2].quaternion.copy(this.f.endQuaternion);
         this.snakeLink[2].rotation.z += this.f.points.y4.r;
+
+
+        // a trouver ??
+        //this.lowAxe.rotation.y = (15*V3D.ToRad);
         //
 
         for(var i = 0; i<this.nLength; i++){
@@ -324,10 +331,15 @@ formula.prototype = {
             t = 1;
             m1 = new THREE.Mesh(geos['c1'], centerShader);
             m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
+            m1.add(m2);
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
+            m4 = new THREE.Mesh(geos['c2a'], centerShader);
             m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
+            m1.add(m4);
+            this.lowAxe = m4;
+            m4.add(m2);
         }
         n = n || 0;
         if(n==1 && t==1){
@@ -341,7 +353,7 @@ formula.prototype = {
             m.add(m3);
         }
         m.add(m1);
-        m1.add(m2);
+        
         this.morphs.push(m2);
         this.mesh.add(m);
         m1.rotation.y = Math.PI;
