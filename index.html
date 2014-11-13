@@ -25,6 +25,10 @@ body.night {background-color: #212324;  font: normal 12px Consolas;}
 </head>
 <body>
 <script>
+var now = new Date();
+var h = now.getHours();
+//console.log(h);
+
 var startDemo = 0;
 var numLesson = 4;
 
@@ -37,6 +41,7 @@ var rootValue = null;
 var showCode = false;
 var viewType = 'vertical';
 var styleType = 'day';
+if(h>19 || h<6){ styleType ='night'; }
 var scriptText = 12;
 var defStyle = 'position:absolute; display:block; border:none;';
 var codeLoaded = false;
@@ -89,9 +94,15 @@ function init(){
 function testload(){
 	if(nview == 2){
 		clearInterval(tmpTest);
+		if(styleType == 'night'){
+			document.body.className = 'night';
+			views[2].contentWindow.isNight();
+			views[0].contentWindow.changeTheme(1);
+			if(codeLoaded)views[1].contentWindow.changeTheme(1);
+			views[1].style.background = '#212324';
+		}
+		//switchStyle();
 		views[2].contentWindow.initBasicMenu(startDemo);
-		//views[2].contentWindow.startByOpenFile(startDemo);
-		//setTimeout(views[2].contentWindow.startByOpenFile, 100, startDemo);
 	}
 }
 
@@ -139,7 +150,7 @@ function switchStyle(){
 		if(codeLoaded)views[1].contentWindow.changeTheme(0);
 		views[1].style.background = '#D6D6D6';
 	}
-	else{ 
+	else{
 		document.body.className = 'night';
 		views[0].contentWindow.changeTheme(1);
 		if(codeLoaded)views[1].contentWindow.changeTheme(1);
@@ -150,7 +161,6 @@ function switchStyle(){
 function loadFile(name){
 	isFirst = true;
     views[0].contentWindow.loadfile(name);
-    //showSave();
 }
 
 function openFile(o){
@@ -209,10 +219,6 @@ function checkCurrent(){
 
 function createLink(blob, name, type){
 	views[2].contentWindow.addIconLink(blob, name, type);
-}
-
-function showSave(){
-	//b1.style.display = 'block';
 }
 
 function showModif(){

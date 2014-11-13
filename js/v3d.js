@@ -291,6 +291,7 @@ V3D.Navigation = function(root){
 	this.mouse = { x:0, y:0, ox:0, oy:0, h:0, v:0, mx:0, my:0, down:false, over:false, moving:true, button:0 };
 	this.vsize = { w:this.parent.w, h:this.parent.h};
 	this.center = { x:0, y:0, z:0 };
+	this.oldcenter = { x:0, y:0, z:0 };
 	this.key = [0,0,0,0,0,0,0];
 	this.rayTest = null;
 
@@ -364,11 +365,21 @@ V3D.Navigation.prototype = {
 	    if(this.rayTest !== null) this.onMouseRay();
 	    if (this.mouse.down ) {
 	        document.body.style.cursor = 'move';
-	        if(this.isRevers) this.camPos.h = (-(this.mouse.x - this.mouse.ox) * 0.3) + this.mouse.h;
-            else this.camPos.h = ((this.mouse.x - this.mouse.ox) * 0.3) + this.mouse.h;
-            this.camPos.v = (-(this.mouse.y - this.mouse.oy) * 0.3) + this.mouse.v;
-            if(this.camPos.v<this.camPos.vmin) this.camPos.v = this.camPos.vmin;
-            if(this.camPos.v>this.camPos.vmax) this.camPos.v = this.camPos.vmax;
+	        if(this.mouse.button==0 || this.mouse.button==1){
+		        if(this.isRevers) this.camPos.h = (-(this.mouse.x - this.mouse.ox) * 0.3) + this.mouse.h;
+	            else this.camPos.h = ((this.mouse.x - this.mouse.ox) * 0.3) + this.mouse.h;
+	            this.camPos.v = (-(this.mouse.y - this.mouse.oy) * 0.3) + this.mouse.v;
+	            if(this.camPos.v<this.camPos.vmin) this.camPos.v = this.camPos.vmin;
+	            if(this.camPos.v>this.camPos.vmax) this.camPos.v = this.camPos.vmax;
+	        } else if(this.mouse.button==3){
+	        	var r = -this.camPos.h * V3D.ToRad;
+	        	var g = this.camPos.v * V3D.ToRad;
+	        	var vx = (this.mouse.x - this.mouse.ox)/3;
+	        	var vy = (this.mouse.y - this.mouse.oy)/3;
+	        	this.center.x = this.oldcenter.x + (Math.sin(r) * vx + Math.cos(r) * vy);
+	        	this.center.z = this.oldcenter.z + (Math.cos(r) * vx - Math.sin(r) * vy);
+	        	//this.center.y = this.oldcenter.y + ( Math.cos(r) * vy);
+	        }
             this.moveCamera();
 	    }
 	},
@@ -386,6 +397,9 @@ V3D.Navigation.prototype = {
 	    }
 	    this.mouse.ox = px;
 	    this.mouse.oy = py;
+	    this.oldcenter.x = this.center.x;
+	    this.oldcenter.y = this.center.y;
+	    this.oldcenter.z = this.center.z;
 	    this.mouse.h = this.camPos.h;
 	    this.mouse.v = this.camPos.v;
 	    this.mouse.down = true;
@@ -546,7 +560,7 @@ V3D.SphericalShader =  function(o){
         material.uniforms.useMap.value = 1.0;
     }
     material.uniforms.env.value = o.env || null;
-    material.uniforms.reflectivity.value = o.reflectivity || 1;
+    material.uniforms.reflect.value = o.reflect || 1;
     material.uniforms.combine.value = o.combine || 0;
     material.uniforms.diffuse.value = new THREE.Color( o.color || 0xFFFFFF );
     material.uniforms.opacity.value = o.opacity || 1;
@@ -564,11 +578,11 @@ V3D.Spherical = {
         useMap: {type: 'f', value: 0},
         useLightMap: {type: 'f', value: 0},
         //opacity: {type: 'f', value: 0.3},
-        useRim: {type: 'f', value: 0.8},
+        useRim: {type: 'f', value: 0.3},
         rimPower: {type: 'f', value: 1.4},
         useExtraRim: {type: 'i', value: 0},
 
-        reflectivity: {type: 'f', value: 1.0},
+        reflect: {type: 'f', value: 1.0},
         //specularStrength: {type: 'f', value: 1.0},
         combine: {type: 'i', value: 0},
     },
@@ -584,7 +598,7 @@ V3D.Spherical = {
         'uniform sampler2D env;',
         'uniform sampler2D map;',
 
-        'uniform float reflectivity;',
+        'uniform float reflect;',
         //'uniform float specularStrength;',
         'uniform int combine;',
 	
@@ -639,16 +653,19 @@ V3D.Spherical = {
             'gl_FragColor = vec4( base, alpha );',
 
             // environment
-            'vec3 reflect = texture2D( env, vN ).rgb;',
+            'vec3 reflectMap = texture2D( env, vN ).rgb;',
+            'vec4 reflectif = vec4( reflectMap, reflect );',
+            'gl_FragColor.xyz = mix( gl_FragColor.xyz, gl_FragColor.xyz * reflectMap.xyz, reflect );',
+            //'gl_FragColor = gl_FragColor * reflectif;',
             //'base *= texture2D( env, vN ).rgb;',
 
-            'if ( combine == 1 ) {',
-				'gl_FragColor.xyz = mix( gl_FragColor.xyz, reflect.xyz, specularStrength * reflectivity );',
-			'} else if ( combine == 2 ) {',
-				'gl_FragColor.xyz += reflect.xyz * specularStrength * reflectivity;',
-			'} else {',
-				'gl_FragColor.xyz = mix( gl_FragColor.xyz, gl_FragColor.xyz * reflect.xyz, specularStrength * reflectivity );',
-			'}',
+            //'if ( combine == 1 ) {',
+			//	'gl_FragColor.xyz = mix( gl_FragColor.xyz, reflect.xyz, specularStrength * reflectivity );',
+			//'} else if ( combine == 2 ) {',
+			//	'gl_FragColor.xyz += reflect.xyz * specularStrength * reflectivity;',
+			//'} else {',
+			//	'gl_FragColor.xyz = mix( gl_FragColor.xyz, gl_FragColor.xyz * reflect.xyz, specularStrength * reflectivity );',
+			//'}',
             
             //'gl_FragColor = vec4( base, alpha );',
 

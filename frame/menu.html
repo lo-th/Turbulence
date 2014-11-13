@@ -142,35 +142,43 @@ bc.onclick = function (e){
 
 bn.onclick = function (e){
 	if(root.styleType=='day'){
-		root.styleType = 'night'; bn.innerHTML = 'D';
-		document.body.className = 'night';
-		document.getElementById('logo').src="../images/logon.png";
-		document.getElementById('bg').className = 'night';
-		bn.className = 'bn';
-		bc.className = 'bn';
-		b0.className = 'bn';
-		b1.className = 'bn';
-		b2.className = 'bn';
-		colorSelect = '#D6D6D6';
-		colorOver = 'rgba(255,255,255,0.3)';
-		iconImg = '../images/sc2.png';
+		isNight();
 	}else {
-		root.styleType = 'day'; bn.innerHTML = 'N';
-		document.body.className = '';
-		document.getElementById('logo').src="../images/logo.png";
-		document.getElementById('bg').className = '';
-		bn.className = 'b';
-		bc.className = 'b';
-		b0.className = 'b';
-		b1.className = 'b';
-		b2.className = 'b';
-		colorSelect = '#2b2e41';
-		colorOver = 'rgba(0,0,0,0.3)';
-		iconImg = '../images/sc.png';
+		isDay();
 	}
 	resetIcon(true);
 	root.switchStyle();
 };
+
+function isDay(){
+	root.styleType = 'day'; bn.innerHTML = 'N';
+	document.body.className = '';
+	document.getElementById('logo').src="../images/logo.png";
+	document.getElementById('bg').className = '';
+	bn.className = 'b';
+	bc.className = 'b';
+	b0.className = 'b';
+	b1.className = 'b';
+	b2.className = 'b';
+	colorSelect = '#2b2e41';
+	colorOver = 'rgba(0,0,0,0.3)';
+	iconImg = '../images/sc.png';
+}
+
+function isNight(){
+	root.styleType = 'night'; bn.innerHTML = 'D';
+	document.body.className = 'night';
+	document.getElementById('logo').src="../images/logon.png";
+	document.getElementById('bg').className = 'night';
+	bn.className = 'bn';
+	bc.className = 'bn';
+	b0.className = 'bn';
+	b1.className = 'bn';
+	b2.className = 'bn';
+	colorSelect = '#D6D6D6';
+	colorOver = 'rgba(255,255,255,0.3)';
+	iconImg = '../images/sc2.png';
+}
 
 b0.onclick = function (e){
 	if(root.viewType=='vertical'){
