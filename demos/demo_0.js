@@ -299,16 +299,16 @@ function runFormule(){
 
 
     // w1 // target
-    //var w1 = new THREE.Vector3(y4.x, y4.y, -1.5);
+    var w1 = new THREE.Vector3(y4.x, y4.y, -1.5);
 
-    //target.position.set(w1.x*factor, w1.y*factor, w1.z*factor);
+    target.position.set(w1.x*factor, w1.y*factor, w1.z*factor);
 
-    target.position.set(y4.x*factor, y4.y*factor, -1.5*factor);
+    //target.position.set(y4.x*factor, y4.y*factor, -1.5*factor);
     
     // two target vectors :: a-> is y4y3, b-> is y4o4
     var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
-    var b = new THREE.Vector3(0, 0, -1.5);
-    //var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
+    //var b = new THREE.Vector3(0, 0, -1.5);
+    var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
 
     // start of the inner product (the calculation of the angle of rotation)
     // calculation by ourselves (for analysis)
