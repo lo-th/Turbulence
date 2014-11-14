@@ -241,8 +241,14 @@ formula.prototype = {
             p = this.f.points[name];
             if(name=='y4'){
                 this.snakeLink[0].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-                this.snakeLink[0].rotation.z = p.r-(Math.PI/2); 
+                this.snakeLink[0].rotation.z = p.r-(Math.PI/2);
+                this.snakeLink[0].quaternion.copy(this.f.endQuaternion);
+                this.snakeLink[0].rotation.z += this.f.points.y4.r;
+
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
+                this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
+               	this.snakeLink[1].rotation.z += this.f.points.y4.r;﻿
+
                 if(this.head!=null){
                     this.head.position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                     this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
