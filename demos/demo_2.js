@@ -362,6 +362,7 @@ formula.prototype = {
         
         this.morphs.push(m2);
         this.mesh.add(m);
+        m1.rotation.x = -155 * Math.PI / 180; //(angle y3-y4-o4)
         m1.rotation.y = Math.PI/2;
         m.scale.set(s,s,-s);
     	return m;
