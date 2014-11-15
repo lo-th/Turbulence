@@ -278,7 +278,7 @@ function runFormule(){
     var rad_y4b4o3 = Math.acos( ((y4.x - b4.x)*(o3.x - b4.x) + (y4.y - b4.y)*(o3.y - b4.y)) / (Math.sqrt(Math.pow((y4.x - b4.x),2) + Math.pow((y4.y - b4.y),2)) * Math.sqrt(Math.pow((o3.x - b4.x),2) + Math.pow((o3.y - b4.y),2))) );
 
     // o4 //
-    var rad_y3y4o4 = Math.PI;//180
+    var rad_y3y4o4 = Math.PI;//155 * Math.PI / 180//180
 
     var y4o4_X = (Math.cos(-rad_y3y4o4)*(y3.x - y4.x) - Math.sin(-rad_y3y4o4)*(y3.y - y4.y)) * y4o4 / y3y4 + y4.x;
     var y4o4_Y = (Math.sin(-rad_y3y4o4)*(y3.x - y4.x) + Math.cos(-rad_y3y4o4)*(y3.y - y4.y)) * y4o4 / y3y4 + y4.y;
@@ -366,7 +366,7 @@ function runFormule(){
     meshs.o1.rotation.z = -rad_y1a2o1+rad_a1a2y1+Math.PI;
     meshs.o2.rotation.z = angle_B-rad_y1y2o2+Math.PI;
     meshs.o3.rotation.z = angle_C-rad_b2y2y3-rad_y2y3o3;
-    meshs.o4.rotation.z = angle_F+rad_y3y4o4+Math.PI;
+    meshs.o4.rotation.z = angle_C+angle_D-rad_y3y4o4;//+Math.PI;
 
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = angle_B;

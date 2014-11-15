@@ -226,7 +226,7 @@ Turbulence.Formula.prototype = {
         r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*(p.o3.x - p.b4.x) + (p.y4.y - p.b4.y)*(p.o3.y - p.b4.y)) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.b4.x),2) + Math.pow((p.o3.y - p.b4.y),2))) );
 
         // o4
-        r.y3y4o4 = pi;// 180
+        r.y3y4o4 = pi;//155 * Math.PI / 180//pi;// 180
 
         //p.o4.x = (Math.cos(-r.y3y4o4)*(p.y3.x - p.y4.x) - Math.sin(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.x;
         //p.o4.y = (Math.sin(-r.y3y4o4)*(p.y3.x - p.y4.x) + Math.cos(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.y;
@@ -280,7 +280,7 @@ Turbulence.Formula.prototype = {
         p.o1.r = -r.y1a2o1 + r.a1a2y1 + pi;
         p.o2.r = a.b - r.y1y2o2 + pi;
         p.o3.r = a.c - r.b2y2y3 - r.y2y3o3;
-        p.o4.r = a.f + r.y3y4o4 + pi;
+        p.o4.r = a.c+a.d-r.y3y4o4;//a.f + r.y3y4o4 + pi;
         p.y1.r = r.a1a2y1 + pi;
         p.y2.r = a.b;
         p.y3.r = a.c - r.b2y2y3 - pi;
