@@ -257,7 +257,7 @@ formula.prototype = {
                 //this.snakeLink[1].rotation.copy(this.snakeLink[2].rotation);
                 this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad);
                 this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
-                this.snakeLink[1].rotation.z += this.f.points.y4.r;﻿
+                this.snakeLink[1].rotation.z += this.f.points.y5.r;﻿
                // var qq = new THREE.Quaternion().multiplyQuaternions(this.snakeLink[2].quaternion.clone().inverse(), this.snakeLink[1].quaternion.clone().inverse())//.inverse().normalize() 
                 //this.snakeLink[1].quaternion.copy(qq);
             }else if(name!='o4'){
