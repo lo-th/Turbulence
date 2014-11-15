@@ -84,6 +84,11 @@ Turbulence.Formula.prototype = {
 
         this.sizer = [s.a1b1,s.a1a2,s.b1y1,s.b2o1,s.b3o2,s.a2y1,s.y1y2,s.y2y3,s.y3y4,s.a2o1,s.y2o2,s.y3o3,s.y4o4,s.b4o3,s.y4y5,
                       s.b2y2, s.b3y3, s.b4y4];
+        this.angleDeg = {
+        	b1y1y2 : 135,
+        	y3y4o4 : 180,
+        	b4y4y5 : 105
+        }
 
     },
     setW1:function(v){
@@ -135,7 +140,7 @@ Turbulence.Formula.prototype = {
     	p.o1.y = (Math.sin(-r.y1a2o1)*p.y1.x + Math.cos(-r.y1a2o1)*p.y1.y) * s.a2o1 / s.a2y1;
 
     	// y2
-    	r.b1y1y2 = 135*Turbulence.ToRad;
+    	r.b1y1y2 = this.angleDeg.b1y1y2*Turbulence.ToRad;
     	//p.y2.x = (Math.cos(-r.b1y1y2)*( p.b1.x - p.y1.x ) - Math.sin(-r.b1y1y2)*(p.b1.y - p.y1.y )) * s.y1y2 / s.b1y1 + p.y1.x;
     	//p.y2.y = (Math.sin(-r.b1y1y2)*( p.b1.x - p.y1.x ) + Math.cos(-r.b1y1y2)*(p.b1.y - p.y1.y )) * s.y1y2 / s.b1y1 + p.y1.y;
         tmp.set( p.b1 , p.y1 );
@@ -226,7 +231,7 @@ Turbulence.Formula.prototype = {
         r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*(p.o3.x - p.b4.x) + (p.y4.y - p.b4.y)*(p.o3.y - p.b4.y)) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.b4.x),2) + Math.pow((p.o3.y - p.b4.y),2))) );
 
         // o4
-        r.y3y4o4 = pi;//155 * Math.PI / 180//pi;// 180
+        r.y3y4o4 = this.angleDeg.y3y4o4*Turbulence.ToRad;
 
         //p.o4.x = (Math.cos(-r.y3y4o4)*(p.y3.x - p.y4.x) - Math.sin(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.x;
         //p.o4.y = (Math.sin(-r.y3y4o4)*(p.y3.x - p.y4.x) + Math.cos(-r.y3y4o4)*(p.y3.y - p.y4.y)) * s.y4o4 / s.y3y4 + p.y4.y;
@@ -235,9 +240,7 @@ Turbulence.Formula.prototype = {
         p.o4.y = (Math.sin(-r.y3y4o4) * tmp.x + Math.cos(-r.y3y4o4)* tmp.y ) * s.y4o4 / s.y3y4 + p.y4.y;
         
         // y5
-        r.b4y4y5 = 105/180*Math.PI;
-        //var deg_b4y4y5 = 105;
-        //r.b4y4y5 = deg_b4y4y5/180*Math.PI;
+        r.b4y4y5 = this.angleDeg.b4y4y5*Turbulence.ToRad;
 
         //p.y5.x = (Math.cos(-r.b4y4y5)*(p.b4.x - p.y4.x) - Math.sin(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.x;
         //p.y5.y = (Math.sin(-r.b4y4y5)*(p.b4.x - p.y4.x) + Math.cos(-r.b4y4y5)*(p.b4.y - p.y4.y)) * s.y4y5 / s.b4y4 + p.y4.y;
@@ -280,7 +283,7 @@ Turbulence.Formula.prototype = {
         p.o1.r = -r.y1a2o1 + r.a1a2y1 + pi;
         p.o2.r = a.b - r.y1y2o2 + pi;
         p.o3.r = a.c - r.b2y2y3 - r.y2y3o3;
-        p.o4.r = a.c+a.d-r.y3y4o4;//a.f + r.y3y4o4 + pi;
+        p.o4.r = a.c + a.d - r.y3y4o4;//a.f + r.y3y4o4 + pi;
         p.y1.r = r.a1a2y1 + pi;
         p.y2.r = a.b;
         p.y3.r = a.c - r.b2y2y3 - pi;
@@ -292,13 +295,9 @@ Turbulence.Formula.prototype = {
         this.exr[1] = a.c + a.d;
         this.exr[2] = p.b4.r + r.y4b4o3;
 
-
-
-
         // extra decal Z
         p.b4.z = p.o3.z = p.y5.z = -0.35;
         p.b1.z = p.o4.z = -0.7;
-
     
     }
 }

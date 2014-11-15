@@ -120,6 +120,7 @@ function initObject(){
 
     for(var i = 0; i<48; i++){
         fs[i] = new formula(450-(i*20), i*(10*V3D.ToRad), true, false, i);
+		fs[i].f.angleDeg.y3y4o4 = 155;
         fs[i].showFormule(false);
     }
 
