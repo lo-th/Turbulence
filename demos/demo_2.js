@@ -223,7 +223,7 @@ var formula = function(pz, r, link, label, num){
 
 formula.prototype = {
     run:function(){
-        this.f.rotation += 0.03;
+        this.f.rotation -= 0.03;
         this.f.run();
         var p, name;
 
