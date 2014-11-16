@@ -339,6 +339,24 @@ formula.prototype = {
             m1 = new THREE.Mesh(geos['c1'], centerShader);
             m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
             m1.add(m2);
+	    m2.rotation.x = -155 * Math.PI / 180; //(angle y3-y4-o4)
+     	    m2.rotation.y = Math.PI/2;
+        } else if(type=='low_norm'){
+            t = 2;
+            m1 = new THREE.Mesh(geos['c2'], centerShader);
+            m4 = new THREE.Mesh(geos['c2a'], centerShader);
+            m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
+            m1.add(m4);
+            this.lowAxe = m4;
+            m4.add(m2);
+	    m4.rotation.x = (-360+138) * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
+            m4.rotation.y = Math.PI/2;
+        }
+        if(type=='high_norm'){
+            t = 1;
+            m1 = new THREE.Mesh(geos['c1'], centerShader);
+            m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
+            m1.add(m2);
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
@@ -363,8 +381,7 @@ formula.prototype = {
         
         this.morphs.push(m2);
         this.mesh.add(m);
-        m1.rotation.x = -155 * Math.PI / 180; //(angle y3-y4-o4)
-        m1.rotation.y = Math.PI/2;
+
         m.scale.set(s,s,-s);
     	return m;
     },
