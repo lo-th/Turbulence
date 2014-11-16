@@ -256,9 +256,10 @@ formula.prototype = {
                 //this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
                 //this.snakeLink[1].rotation.copy(this.snakeLink[2].rotation);
                 this.snakeLink[1].rotation.z = p.r-(75*V3D.ToRad);
-                this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
-                this.snakeLink[1].rotation.z += this.f.points.y4.r;﻿
-               // var qq = new THREE.Quaternion().multiplyQuaternions(this.snakeLink[2].quaternion.clone().inverse(), this.snakeLink[1].quaternion.clone().inverse())//.inverse().normalize() 
+                //this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
+                //this.snakeLink[1].rotation.z += this.f.points.y4.r;﻿
+
+                // var qq = new THREE.Quaternion().multiplyQuaternions(this.snakeLink[2].quaternion.clone().inverse(), this.snakeLink[1].quaternion.clone().inverse())//.inverse().normalize() 
                 //this.snakeLink[1].quaternion.copy(qq);
             }else if(name!='o4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
@@ -349,8 +350,9 @@ formula.prototype = {
             m1.add(m4);
             this.lowAxe = m4;
             m4.add(m2);
-            m4.rotation.x = (-360+138) * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
-            m4.rotation.y = Math.PI/2;
+//            m4.rotation.x = (-360+138) * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
+//            m4.rotation.y = Math.PI/2;
+            m4.rotation.y = Math.PI;
         }
         n = n || 0;
         if(n==1 && t==1){
