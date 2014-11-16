@@ -305,6 +305,7 @@ Turbulence.Formula.prototype = {
         p.y3.r = a.c - r.b2y2y3 - pi;
         p.y4.r = a.f;
         p.y5.r = a.c + a.d + a.e - r.b4y4y5 - pi;
+	p.y4a.r =  a.c + a.d + a.e;
 
         // extra rotation
         this.exr[0] = a.c+ pi;
