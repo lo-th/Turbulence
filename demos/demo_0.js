@@ -304,45 +304,46 @@ function runFormule(){
     target.position.set(w1.x*factor, w1.y*factor, w1.z*factor);
 
     //target.position.set(y4.x*factor, y4.y*factor, -1.5*factor);
-    
-    // two target vectors :: a-> is y4y3, b-> is y4w1
-    var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
-    //var b = new THREE.Vector3(0, 0, -1.5);
+ 
+//    hide for test of rotation b4-y4-w1 (16.nov.2014)
+//    // two target vectors :: a-> is y4y3, b-> is y4w1
+//    var a = new THREE.Vector3((y3.x-y4.x), (y3.y-y4.y), (y3.z-y4.z));
+//    //var b = new THREE.Vector3(0, 0, -1.5);
+//    var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
+
+//    // start of the inner product (the calculation of the angle of rotation)
+//    // calculation by ourselves (for analysis)
+//    var rad_y3y4w1 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
+//    // var rad_y3y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
+
+//    // start of the cross vectors (the calculation of the normal vector or axis of rotation)
+//    // calculation by ourselves (for analysis)
+//    var nor_y3y4w1 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
+//    // var nor_y3y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
+
+//    var q = new THREE.Quaternion().setFromAxisAngle(nor_y3y4w1, rad_y3y4w1);
+
+    // for b4-y4-w1…
+    // two target vectors :: a-> is y4b4, b-> is y4w1
+    var a = new THREE.Vector3((b4.x-y4.x), (b4.y-y4.y), (b4.z-y4.z));
     var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
 
     // start of the inner product (the calculation of the angle of rotation)
     // calculation by ourselves (for analysis)
-    var rad_y3y4w1 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
-    // var rad_y3y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
+    var rad_b4y4w1 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
+
+    // another method with a help of class of Three.js (same result)
+    // var rad_b4y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
 
     // start of the cross vectors (the calculation of the normal vector or axis of rotation)
+
     // calculation by ourselves (for analysis)
-    var nor_y3y4w1 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
-    // var nor_y3y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
+    var nor_b4y4w1 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
 
-    var q = new THREE.Quaternion().setFromAxisAngle(nor_y3y4w1, rad_y3y4w1);
+    // another method with a help of class of Three.js (same result)
+    // var nor_b4y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
 
-    // // for b4-y4-w1…
-    // // two target vectors :: a-> is y4b4, b-> is y4w1
-    // var a = new THREE.Vector3((b4.x-y4.x), (b4.y-y4.y), (b4.z-y4.z));
-    // var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
-
-    // // start of the inner product (the calculation of the angle of rotation)
-    // // calculation by ourselves (for analysis)
-    // var rad_b4y4w1 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
-
-    // // another method with a help of class of Three.js (same result)
-    // // var rad_b4y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
-
-    // // start of the cross vectors (the calculation of the normal vector or axis of rotation)
-
-    // // calculation by ourselves (for analysis)
-    // var nor_b4y4w1 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
-
-    // // another method with a help of class of Three.js (same result)
-    // // var nor_b4y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
-
-    // var q = new THREE.Quaternion().setFromAxisAngle(nor_b4y4w1, rad_b4y4w1);
+    var q = new THREE.Quaternion().setFromAxisAngle(nor_b4y4w1, rad_b4y4w1);
 
     //meshs.y4.rotation.setFromQuaternion(q);
     meshs.y4.quaternion.copy(q);
@@ -394,7 +395,11 @@ function runFormule(){
     meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = angle_B;
     meshs.y3.rotation.z = angle_C-rad_b2y2y3-Math.PI;
-    meshs.y4.rotation.z += angle_F;
+
+//for test of rotation b4-y4-y5 (line 308-325)
+//    meshs.y4.rotation.z += angle_F;
+    meshs.y4.rotation.z += angle_C+angle_D+angle_E;
+
     meshs.y5.rotation.z = angle_C+angle_D+angle_E-rad_b4y4y5-Math.PI;
 
 
