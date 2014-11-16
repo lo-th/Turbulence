@@ -19,7 +19,7 @@ Turbulence.Formula = function(){
 	this.sizes = {};
     this.rot = {};
     this.ta = {};
-	this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5'];
+    this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5','y4a'];
 
 	this.w1 = new Turbulence.V3();
 	this.looking = 'base';
