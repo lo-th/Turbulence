@@ -11,6 +11,7 @@ Turbulence.Formula = function(){
 	this.rotation = 0;
 
     this.endQuaternion = new Turbulence.Quat();
+    this.endQuaternion2 = new Turbulence.Quat();
     //this.endRotation = new Turbulence.Euler();
 
 	this.points = {};
@@ -264,7 +265,22 @@ Turbulence.Formula.prototype = {
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
 
+	
+	// extra rotation 2 (b4y4w1)-------------------
 
+        //if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
+
+        w.a.set( p.b4.x-p.y4.x, p.b4.y-p.y4.y, p.b4.z-p.y4.z );
+        w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
+
+        r.b4y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
+        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y );
+
+        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.b4y4w1);
+        //this.endRotation.setFromQuaternion(this.endQuaternion);
+        //p.y4.r = rr.z;
+
+	
         // final rotation -------------------
 
         a.a = r.a2y1b1 + r.a1a2y1;
