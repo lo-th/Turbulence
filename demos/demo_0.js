@@ -322,25 +322,25 @@ function runFormule(){
 
     var q = new THREE.Quaternion().setFromAxisAngle(nor_y3y4w1, rad_y3y4w1);
 
-    // for b4-y4-w1…
-    // two target vectors :: a-> is y4b4, b-> is y4w1
+    // // for b4-y4-w1…
+    // // two target vectors :: a-> is y4b4, b-> is y4w1
     // var a = new THREE.Vector3((b4.x-y4.x), (b4.y-y4.y), (b4.z-y4.z));
     // var b = new THREE.Vector3((w1.x-y4.x), (w1.y-y4.y), (w1.z-y4.z));
 
-    // start of the inner product (the calculation of the angle of rotation)
-    // calculation by ourselves (for analysis)
+    // // start of the inner product (the calculation of the angle of rotation)
+    // // calculation by ourselves (for analysis)
     // var rad_b4y4w1 = Math.acos( (a.x*b.x + a.y*b.y + a.z*b.z) / (Math.sqrt( Math.pow(a.x,2) + Math.pow(a.y,2) + Math.pow(a.z,2) ) * Math.sqrt( Math.pow(b.x,2) + Math.pow(b.y,2) + Math.pow(b.z,2) )) );
 
-    // another method with a help of class of Three.js (same result)
-    // var rad_b4y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
+    // // another method with a help of class of Three.js (same result)
+    // // var rad_b4y4w1 = Math.acos(a.dot(b)); // / (up.length() * normalAxis.length());
 
-    // start of the cross vectors (the calculation of the normal vector or axis of rotation)
+    // // start of the cross vectors (the calculation of the normal vector or axis of rotation)
 
-    // calculation by ourselves (for analysis)
+    // // calculation by ourselves (for analysis)
     // var nor_b4y4w1 = new THREE.Vector3((a.y*b.z - b.y*a.z), (a.z*b.x - b.z*a.x), (a.x*b.y - b.x*a.y)).normalize();
 
-    // another method with a help of class of Three.js (same result)
-    // var nor_b4y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
+    // // another method with a help of class of Three.js (same result)
+    // // var nor_b4y4w1 = new THREE.Vector3().crossVectors(a, b).normalize();
 
     // var q = new THREE.Quaternion().setFromAxisAngle(nor_b4y4w1, rad_b4y4w1);
 
