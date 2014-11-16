@@ -352,20 +352,6 @@ formula.prototype = {
             m4.rotation.x = (-360+138) * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
             m4.rotation.y = Math.PI/2;
         }
-        if(type=='high_norm'){
-            t = 1;
-            m1 = new THREE.Mesh(geos['c1'], centerShader);
-            m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
-            m1.add(m2);
-        } else if(type=='low_norm'){
-            t = 2;
-            m1 = new THREE.Mesh(geos['c2'], centerShader);
-            m4 = new THREE.Mesh(geos['c2a'], centerShader);
-            m2 = new THREE.Mesh(geos['h2'], centerMorphShader);
-            m1.add(m4);
-            this.lowAxe = m4;
-            m4.add(m2);
-        }
         n = n || 0;
         if(n==1 && t==1){
             m3 = new THREE.Mesh(geos['head'], headShader);
