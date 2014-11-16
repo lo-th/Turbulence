@@ -396,7 +396,7 @@ function runFormule(){
     meshs.y2.rotation.z = angle_B;
     meshs.y3.rotation.z = angle_C-rad_b2y2y3-Math.PI;
 
-//for test of rotation b4-y4-y5 (line 308-325)
+//for test of rotation b4-y4-w1 (line 308-325)
 //    meshs.y4.rotation.z += angle_F;
     meshs.y4.rotation.z += angle_C+angle_D+angle_E;
 
