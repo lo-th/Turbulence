@@ -103,7 +103,6 @@ Turbulence.Formula.prototype = {
     	var p = this.points;
     	var s = this.sizes;
     	var r = this.angles;
-//	var r2 = this.angles;
         var a = this.rot;
         var w = this.ta;
 
@@ -305,8 +304,8 @@ Turbulence.Formula.prototype = {
         p.y2.r = a.b;
         p.y3.r = a.c - r.b2y2y3 - pi;
         p.y4.r = a.f;
+	p.y4a.r = a.c + a.d + a.e;
         p.y5.r = a.c + a.d + a.e - r.b4y4y5 - pi;
-//	p.y4.r2 =  a.c + a.d + a.e;
 
         // extra rotation
         this.exr[0] = a.c+ pi;
