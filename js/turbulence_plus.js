@@ -19,9 +19,13 @@ Turbulence.Formula = function(){
 	this.sizes = {};
     this.rot = {};
     this.ta = {};
-    this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','y4a','o1','o2','o3','o4','b4','y5'];
+   // this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','y4a','o1','o2','o3','o4','b4','y5'];
+    this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5'];
 
+
+   // this.ya1 = new Turbulence.V3();
 	this.w1 = new Turbulence.V3();
+
 	this.looking = 'base';
 	//this.target = new Turbulence.V3();
 
@@ -302,7 +306,8 @@ Turbulence.Formula.prototype = {
         p.y2.r = a.b;
         p.y3.r = a.c - r.b2y2y3 - pi;
         p.y4.r = a.f;
-	p.y4a.r = a.c + a.d + a.e;
+        p.y4.r2 = a.c + a.d + a.e;
+	//p.y4a.r = a.c + a.d + a.e;
         p.y5.r = a.c + a.d + a.e - r.b4y4y5 - pi;
 
         // extra rotation
@@ -333,21 +338,23 @@ Turbulence.Cross.prototype = {
 
 
 // simple Vector 3d
-Turbulence.V3 = function(x,y,z,r){
+Turbulence.V3 = function(x,y,z,r,r2){
 	this.x = x || 0;
 	this.y = y || 0;
 	this.z = z || 0;
     // extra rotation
     this.r = r || 0;
+    this.r2 = r2 || 0;
 }
 Turbulence.V3.prototype = {
     constructor: Turbulence.V3,
-    set:function(x,y,z,r){
+    set:function(x,y,z,r,r2){
     	this.x = x || 0;
     	this.y = y || 0;
     	this.z = z || 0;
         // extra rotation
         this.r = r || 0;
+        this.r2 = r2 || 0;
     },
     normalize:function(){
         var scalar = Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );

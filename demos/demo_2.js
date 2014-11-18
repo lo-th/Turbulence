@@ -230,7 +230,7 @@ formula.prototype = {
         // for test
         this.snakeLink[2].position.set(this.f.points.y4.x*this.mul, this.f.points.y4.y*this.mul,0);
         this.snakeLink[2].quaternion.copy(this.f.endQuaternion2);
-        this.snakeLink[2].rotation.z += this.f.points.y4a.r;
+        this.snakeLink[2].rotation.z += this.f.points.y4.r2;
 
 
         // a trouver ??
