@@ -120,7 +120,6 @@ function initObject(){
 
     for(var i = 0; i<48; i++){
         fs[i] = new formula(450-(i*20), i*(10*V3D.ToRad), true, false, i);
-		fs[i].f.angleDeg.b4y4y5 = 138;
 		fs[i].f.angleDeg.y3y4o4 = 155;
         fs[i].showFormule(false);
     }
@@ -343,9 +342,8 @@ formula.prototype = {
             m1 = new THREE.Mesh(geos['c1'], centerShader);
             m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
             m1.add(m2);
-            //m2.rotation.x = -155 * Math.PI / 180; //(angle y3-y4-o4)
-     	    m1.rotation.y = -Math.PI/2;
-			m1.rotation.z = Math.PI/2;
+            m2.rotation.x = -155 * Math.PI / 180; //(angle y3-y4-o4)
+     	    m2.rotation.y = Math.PI/2;
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
@@ -354,10 +352,8 @@ formula.prototype = {
             m1.add(m4);
             this.lowAxe = m4;
             m4.add(m2);
-            m1.rotation.x = (-138+90) * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
-            //m4.rotation.y = Math.PI/2;
-			m1.rotation.y = -Math.PI/2;
-			//m1.rotation.z = -Math.PI/2;
+            m4.rotation.x = -138 * Math.PI / 180; //(angle b4-y4-y5 as 138deg)
+            m4.rotation.y = Math.PI/2;
         }
         n = n || 0;
         if(n==1 && t==1){
