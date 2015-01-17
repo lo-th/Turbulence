@@ -1,8 +1,9 @@
-tell('The serpent');
+
 
 var fs = [];
 var geos = {};
 var v3d = new V3D.View(94,86,600);
+v3d.tell('The serpent');
 var v = v3d;
 
 // add basic grid
@@ -19,7 +20,7 @@ var b2 = new UI.Button('show formula', showFormule, 110, 120);
 
 var headShader, centerShader, centerMorphShader;
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
+pool.loadImages(['./images/serpent.jpg','./images/center.jpg'], initImages);
 
 renderLoop();
 
@@ -82,7 +83,7 @@ function initImages(){
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
 
-    pool.load( ['../models/basic_op.sea', '../models/serpent.sea'], initObject, 'buffer' );
+    pool.load( ['./models/basic_op.sea', './models/serpent.sea'], initObject, 'buffer' );
 }
 
 // import sea3D object pack

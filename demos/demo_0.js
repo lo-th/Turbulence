@@ -1,6 +1,7 @@
-tell('The formula');
+
 
 var v3d = new V3D.View();
+v3d.tell('The formula');
 
 var ToRad = Math.PI / 180;
 var ToDeg = 180 / Math.PI;
@@ -60,7 +61,7 @@ v.addGrid(200, 20, [0,0,-30]);
 var objName = "basic";
 //var objName = "basic_op"; // version optimiser
 var pool = new SEA3D.Pool();
-pool.load( ['../models/'+objName+'.sea'], initObject, 'buffer' );
+pool.load( ['./models/'+objName+'.sea'], initObject, 'buffer' );
 
 
 function initObject(){
@@ -455,6 +456,7 @@ function runFormule(){
 
     // particle points
     pp.move(ppn, target.position.x, target.position.y, target.position.z+30);
+    pp.update();
     ppn++;
     if(ppn==ppmax) ppn = 0;
 

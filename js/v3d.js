@@ -23,7 +23,8 @@ V3D.View = function(h,v,d, revers){
 	this.init(h,v,d, revers);
 	this.initBasic();
 	this.initMaterial();
-	//this.initBackground();
+
+	this.info = document.getElementById('info');
 }
 
 V3D.View.prototype = {
@@ -53,6 +54,13 @@ V3D.View.prototype = {
         //this.projector = new THREE.Projector();
     	//this.raycaster = new THREE.Raycaster();
     },
+    tell :function (s){
+    	this.info.innerHTML = s;
+    },
+    clearFocus:function (n){
+		var allTags=document.getElementsByTagName('*'), i=0, e;
+		while(e=allTags[i++]){ if(e.id)e.blur(); }
+	},
     render : function(){
     	this.renderer.render( this.scene, this.camera );
     },
@@ -78,7 +86,7 @@ V3D.View.prototype = {
     },
     initMaterial:function(){
     	//var img = THREE.ImageUtils.loadTexture( '../images/e_plastic_r.jpg' );
-    	var img = THREE.ImageUtils.loadTexture( '../images/e_metal.jpg' );
+    	var img = THREE.ImageUtils.loadTexture( './images/e_metal.jpg' );
 	    var mats = {};
 	    this.initBasicMaterial(mats);
 	    mats['c0'] = new V3D.SphericalShader({env:img, color:0x00FF00});
@@ -111,6 +119,9 @@ V3D.View.prototype = {
 		ctx.fillText(text,canvas.width*0.5, canvas.height*0.5);
 
 		var texture = new THREE.Texture(canvas);
+		texture.minFilter = THREE.LinearFilter;
+		texture.magFilter = THREE.LinearFilter;
+		//texture.format = THREE.RGBFormat;
 		texture.needsUpdate = true;
 
 		var mat = new THREE.MeshBasicMaterial( { map:texture, transparent:true, depthWrite:false  } );
@@ -125,11 +136,16 @@ V3D.View.prototype = {
     	rot = rot || [90,0,0]
     	var helper = new THREE.GridHelper( size, div );
 		helper.setColors( this.debugColor2, this.debugColor );
+		helper.material.transparent = true;
+		helper.material.opacity = 0.1;
 		helper.position.set(pos[0],pos[1],pos[2]);
 		helper.rotation.set(rot[0]* V3D.ToRad,rot[1]* V3D.ToRad,rot[2]* V3D.ToRad);
 		//helper.rotation.x = 90 * V3D.ToRad;
 		//helper.position.z = -7;
-		this.scene.add( helper );
+		
+		var _this = this;
+		setTimeout( function() {_this.scene.add( helper );}, 500);
+		
 		this.grid = helper;
     },
     add:function(obj, target){
@@ -405,7 +421,7 @@ V3D.Navigation.prototype = {
 	    this.mouse.v = this.camPos.v;
 	    this.mouse.down = true;
 	    if(this.rayTest !== null) this.onMouseRay(px,py);
-        clearFocus();
+        this.parent.clearFocus();
 	},
 	onMouseUp : function(e){
 	    this.mouse.down = false;
@@ -464,6 +480,7 @@ V3D.Particle = function(obj, n){
 	this.material = new THREE.PointCloudMaterial( { size:4, sizeAttenuation: true, map:this.makeSprite(), transparent: true} )
 	this.particles = new THREE.PointCloud( this.geometry, this.material );
 	this.particles.sortParticles = true;
+	this.particles.dynamic = true;
 	n=n||0;
 	for(var i=0; i<n; i++){
 		this.addV();
@@ -477,8 +494,8 @@ V3D.Particle.prototype = {
     	canvas.width=canvas.height=32;
 
 	    var context = canvas.getContext('2d');
-	    var centerX = canvas.width / 2;
-	    var centerY = canvas.height / 2;
+	    var centerX = canvas.width * 0.5;
+	    var centerY = canvas.height * 0.5;
 	    var radius = 16;
 
 	    var grd=context.createRadialGradient(centerX-6,centerY-3,1,centerX,centerY,radius);
@@ -495,6 +512,8 @@ V3D.Particle.prototype = {
 	    var tx = new THREE.Texture(canvas);
         //tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
         //tx.repeat = new THREE.Vector2( 1, 1);
+        //tx.minFilter = THREE.LinearFilter;
+		//tx.magFilter = THREE.LinearFilter;
         tx.needsUpdate = true;
         return tx;
     },

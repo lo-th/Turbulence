@@ -1,8 +1,9 @@
-tell('The serpent');
+
 
 var fs = [];
 var geos = {};
 var v3d = new V3D.View(94,86,600);
+v3d.tell('The serpent');
 var v = v3d;
 
 // add basic grid

@@ -1,6 +1,7 @@
-tell('The beetles');
+
 
 var v3d = new V3D.View(110,60,400);
+v3d.tell('The beetles');
 var v = v3d;
 
 

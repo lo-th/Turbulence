@@ -1,6 +1,7 @@
-tell('The beetles');
+
 
 var v3d = new V3D.View(110,60,400);
+v3d.tell('The beetles');
 var v = v3d;
 
 
@@ -40,10 +41,10 @@ function renderLoop(){
 
 // import object pack
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/beetle_a.jpg', '../images/beetle_b.jpg', '../images/body.jpg', '../images/center.jpg'], loadObject);
+pool.loadImages(['./images/beetle_a.jpg', './images/beetle_b.jpg', './images/body.jpg', './images/center.jpg'], loadObject);
 
 function loadObject(){
-	pool.load( ['../models/basic_op.sea','../models/beetle.sea'], initObject, 'auto' );
+	pool.load( ['./models/basic_op.sea','./models/beetle.sea'], initObject, 'auto' );
 }
 
 function initObject(){
