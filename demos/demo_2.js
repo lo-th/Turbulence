@@ -1,8 +1,7 @@
-tell('The serpent');
-
 var fs = [];
 var geos = {};
 var v3d = new V3D.View(94,86,600);
+v3d.tell('The serpent');
 var v = v3d;
 
 // add basic grid
@@ -19,7 +18,7 @@ var b2 = new UI.Button('show formula', showFormule, 110, 120);
 
 var headShader, centerShader, centerMorphShader;
 var pool = new SEA3D.Pool();
-pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
+pool.loadImages(['./images/serpent.jpg','./images/center.jpg'], initImages);
 
 renderLoop();
 
@@ -82,7 +81,7 @@ function initImages(){
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
 
-    pool.load( ['../models/basic_op.sea', '../models/serpent.sea'], initObject, 'buffer' );
+    pool.load( ['./models/basic_op.sea', './models/serpent.sea'], initObject, 'buffer' );
 }
 
 // import sea3D object pack
@@ -250,6 +249,11 @@ formula.prototype = {
 
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
 
+                //if(this.head!=null){
+                //    this.head.position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
+                //    this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
+                //}
+		
             }else if(name=='y5'){
                 //this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
                 //this.snakeLink[1].rotation.copy(this.snakeLink[2].rotation);
