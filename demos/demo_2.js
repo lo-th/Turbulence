@@ -1,9 +1,8 @@
-
+tell('The serpent');
 
 var fs = [];
 var geos = {};
 var v3d = new V3D.View(94,86,600);
-v3d.tell('The serpent');
 var v = v3d;
 
 // add basic grid
@@ -20,7 +19,7 @@ var b2 = new UI.Button('show formula', showFormule, 110, 120);
 
 var headShader, centerShader, centerMorphShader;
 var pool = new SEA3D.Pool();
-pool.loadImages(['./images/serpent.jpg','./images/center.jpg'], initImages);
+pool.loadImages(['../images/serpent.jpg','../images/center.jpg'], initImages);
 
 renderLoop();
 
@@ -83,7 +82,7 @@ function initImages(){
     centerShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true) });
     centerMorphShader = new V3D.SphericalShader({ env:v.img, mapLight:pool.getTexture('center', true), morphTargets:true });
 
-    pool.load( ['./models/basic_op.sea', './models/serpent.sea'], initObject, 'buffer' );
+    pool.load( ['../models/basic_op.sea', '../models/serpent.sea'], initObject, 'buffer' );
 }
 
 // import sea3D object pack
@@ -115,7 +114,7 @@ function initObject(){
     geos['h1'] = pool.getMesh('serpent_high_norm').geometry;
     geos['h2'] = pool.getMesh('serpent_low_norm').geometry;
     geos['end'] = pool.getMesh('serpent_end').geometry;
-    geos['head'] = pool.geo('serpent_head');
+    geos['head'] = pool.getMesh('serpent_head').geometry;
 
     //---- add 48 formule
 
@@ -251,10 +250,6 @@ formula.prototype = {
 
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
 
-                if(this.head!=null){
-                    this.head.position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-                    this.head.rotation.z = -(p.r+(Math.PI/2))/2-(20*V3D.ToRad);
-                }
             }else if(name=='y5'){
                 //this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
                 //this.snakeLink[1].rotation.copy(this.snakeLink[2].rotation);
@@ -343,10 +338,10 @@ formula.prototype = {
 	    if(type=='high_norm'){
     	    t = 1;
        	    m1 = new THREE.Mesh(geos['c1'], centerShader);
-	    m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
-	    m1.add(m2);
+			m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
+		    m1.add(m2);
      	    m1.rotation.y = -Math.PI/2;
-	    m1.rotation.z = Math.PI/2;
+	    	m1.rotation.z = Math.PI/2;
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
@@ -356,20 +351,20 @@ formula.prototype = {
             this.lowAxe = m4;
             m4.add(m2);
             m1.rotation.x = 0;
-  	    m1.rotation.y = -Math.PI/2;
+	   		m1.rotation.y = -Math.PI/2;
         }
         n = n || 0;
         if(n==1 && t==1){
             m3 = new THREE.Mesh(geos['head'], headShader);
-            m3.rotation.y = Math.PI;
-            this.head = m3;
-            this.mesh.add(m3);
-        }else if(n==2 && t==1){
-            m3 = new THREE.Mesh(geos['end'], v.mats.c1);
             m.add(m3);
-	    m3.rotation.y = -Math.PI/2;
-	    m3.rotation.z = Math.PI/2;			
-	}
+			m3.rotation.y = -Math.PI/2;
+	    	m3.rotation.z = Math.PI*110/180;
+        }else if(n==2 && t==1){
+        	m3 = new THREE.Mesh(geos['end'], v.mats.c1);
+            m.add(m3);
+			m3.rotation.y = -Math.PI/2;
+	    	m3.rotation.z = Math.PI/2;			
+		}
         m.add(m1);
         
         this.morphs.push(m2);
@@ -391,5 +386,3 @@ formula.prototype = {
         }
     }
 }
-
-
