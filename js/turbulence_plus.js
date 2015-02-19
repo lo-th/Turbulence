@@ -20,7 +20,7 @@ Turbulence.Formula = function(){
     this.rot = {};
     this.ta = {};
    // this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','y4a','o1','o2','o3','o4','b4','y5'];
-    this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5','a1b1','b1y1','a2y1','a2o1','y1y2','b2y2','o1b2','y2o2','y2y3','b3y3','o2b3','y3o3','y3y4','b4y4','o3b4','y4o4','y4y5'];
+    this.pNames = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2','o3','o4','b4','y5'];
 
 
    // this.ya1 = new Turbulence.V3();
@@ -232,11 +232,9 @@ Turbulence.Formula.prototype = {
 
         // --- for object rotation
         //r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*(p.o3.x - p.y4.x) + (p.y3.y - p.y4.y)*(p.o3.y - p.y4.y)) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.y4.x),2) + Math.pow((p.o3.y - p.y4.y),2))) );
-        //r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*(p.o3.x - p.b4.x) + (p.y4.y - p.b4.y)*(p.o3.y - p.b4.y)) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.b4.x),2) + Math.pow((p.o3.y - p.b4.y),2))) );
+        r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*tmp.x + (p.y3.y - p.y4.y)*tmp.y) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2))) );
+        r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*(p.o3.x - p.b4.x) + (p.y4.y - p.b4.y)*(p.o3.y - p.b4.y)) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow((p.o3.x - p.b4.x),2) + Math.pow((p.o3.y - p.b4.y),2))) );
 
-	r.y3y4o3 = Math.acos( ((p.y3.x - p.y4.x)*tmp.x + (p.y3.y - p.y4.y)*tmp.y) / (Math.sqrt(Math.pow((p.y3.x - p.y4.x),2) + Math.pow((p.y3.y - p.y4.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2))) );
-	r.y4b4o3 = Math.acos( ((p.y4.x - p.b4.x)*tmp.x + (p.y4.y - p.b4.y)*tmp.y) / (Math.sqrt(Math.pow((p.y4.x - p.b4.x),2) + Math.pow((p.y4.y - p.b4.y),2)) * Math.sqrt(Math.pow(tmp.x,2) + Math.pow(tmp.y,2))) );
-	
         // o4
         r.y3y4o4 = this.angleDeg.y3y4o4*Turbulence.ToRad;
 
@@ -255,24 +253,24 @@ Turbulence.Formula.prototype = {
         p.y5.x = (Math.cos(-r.b4y4y5) * tmp.x - Math.sin(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.x;
         p.y5.y = (Math.sin(-r.b4y4y5) * tmp.x + Math.cos(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.y;
 
-	// extra rotation 2 (y5y4w1)-------------------
+	// extra rotation 2 (b4y4w1)-------------------
 
         if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
 
-        w.a.set( p.y5.x-p.y4.x, p.y5.y-p.y4.y, p.y5.z-p.y4.z );
+        w.a.set( p.b4.x-p.y4.x, p.b4.y-p.y4.y, p.b4.z-p.y4.z );
         w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
 
-        r.y5y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
+        r.b4y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
         w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y );
 
-        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.y5y4w1);
+        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.b4y4w1);
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
 
 
         // extra rotation --------------------
 
-//        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
+        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
 
         w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
         w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
@@ -312,36 +310,6 @@ Turbulence.Formula.prototype = {
 	//p.y4a.r = a.c + a.d + a.e;
         p.y5.r = a.c + a.d + a.e - r.b4y4y5 - pi;
 
-	// reference rotation_positions
-	p.a1b1.r = (-r.a2a1b1);
-	p.b1y1.r = (r.a2y1b1+r.a1a2y1);
-
-	p.a2y1.r = r.a1a2y1-Math.PI;
-	p.a2o1.r = (-r.y1a2o1+r.a1a2y1);
-
-	p.y1y2.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2);
-
-	p.b2y2.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1)-Math.PI;
-	p.o1b2.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.y2b2o1);
-
-	p.y2o2.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o2);
-
-	p.y2y3.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3)-Math.PI;
-
-	p.b3y3.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2);
-	p.o2b3.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2+r.y3b3o2)-Math.PI;
-
-	p.y3o3.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o3)-Math.PI;
-
-	p.y3y4.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2-r.b3y3y4);
-
-	p.b4y4.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2-r.b3y3y4+r.y3y4o3-r.b4y4o3)-Math.PI;
-	p.o3b4.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2-r.b3y3y4+r.y3y4o3-r.b4y4o3-r.y4b4o3);
-
-	p.y4o4.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2-r.b3y3y4+r.y3y4o4);
-
-	p.y4y5.r = (r.a2y1b1+r.a1a2y1-r.b1y1y2-r.y1y2o1-r.b2y2o1-r.b2y2y3-r.y2y3o2+r.b3y3o2-r.b3y3y4+r.y3y4o3-r.b4y4o3-r.b4y4y5)-Math.PI;
-	
         // extra rotation
         this.exr[0] = a.c+ pi;
         this.exr[1] = a.c + a.d;
