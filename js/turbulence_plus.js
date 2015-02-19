@@ -108,8 +108,7 @@ Turbulence.Formula.prototype = {
     	var s = this.sizes;
     	var r = this.angles;
         var a = this.rot;
-        var w_o4 = this.ta;
-        var w_y5 = this.ta;
+        var w = this.ta;
 
     	r.a2a1b1 = Math.PI- Math.atan(s.a2o1/s.a1o1) - this.rotation;
     	s.a2b1 = Math.sqrt((Math.pow(s.a1a2,2)) - 2*s.a1a2*s.a1b1*Math.cos(r.a2a1b1) + (Math.pow(s.a1b1,2)));
@@ -256,32 +255,32 @@ Turbulence.Formula.prototype = {
         p.y5.x = (Math.cos(-r.b4y4y5) * tmp.x - Math.sin(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.x;
         p.y5.y = (Math.sin(-r.b4y4y5) * tmp.x + Math.cos(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.y;
 
-	// extra rotation 2 (b4y4y5-w1)-------------------
+	// extra rotation 2 (b4y4w1)-------------------
 
         if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -5.0);
 
-        w_y5.a.set( p.b4.x-p.y4.x, p.b4.y-p.y4.y, p.b4.z-p.y4.z );
-        w_y5.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
+        w.a2.set( p.b4.x-p.y4.x, p.b4.y-p.y4.y, p.b4.z-p.y4.z );
+        w.b2.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
 
-        r.y5-w1 = Math.acos( (w_y5.a.x*w_y5.b.x + w_y5.a.y*w_y5.b.y + w_y5.a.z*w_y5.b.z) / (Math.sqrt( Math.pow(w_y5.a.x,2) + Math.pow(w_y5.a.y,2) + Math.pow(w_y5.a.z,2) ) * Math.sqrt( Math.pow(w_y5.b.x,2) + Math.pow(w_y5.b.y,2) + Math.pow(w_y5.b.z,2) )) );
-        w_y5.c.set( w_y5.a.y*w_y5.b.z - w_y5.b.y*w_y5.a.z ,  w_y5.a.z*w_y5.b.x - w_y5.b.z*w_y5.a.x , w_y5.a.x*w_y5.b.y - w_y5.b.x*w_y5.a.y );
+        r.b4y4w1 = Math.acos( (w.a2.x*w.b2.x + w.a2.y*w.b2.y + w.a2.z*w.b2.z) / (Math.sqrt( Math.pow(w.a2.x,2) + Math.pow(w.a2.y,2) + Math.pow(w.a2.z,2) ) * Math.sqrt( Math.pow(w.b2.x,2) + Math.pow(w.b2.y,2) + Math.pow(w.b2.z,2) )) );
+        w.c2.set( w.a2.y*w.b.z - w.b2.y*w.a2.z ,  w.a2.z*w.b2.x - w.b2.z*w.a2.x , w.a2.x*w.b2.y - w.b2.x*w.a2.y );
 
-        this.endQuaternion2.setFromAxisAngle(w_y5.c.normalize(), r.y5-w1);
+        this.endQuaternion2.setFromAxisAngle(w.c2.normalize(), r.b4y4w1);
 	
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
 
-        // extra rotation (y3y4o4-w1)--------------------
+        // extra rotation --------------------
 
 //        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
 
-        w_o4.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
-        w_o4.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
+        w.a.set( p.y3.x-p.y4.x, p.y3.y-p.y4.y, p.y3.z-p.y4.z );
+        w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
 
-        r.o4-w1 = Math.acos( (w_o4.a.x*w_o4.b.x + w_o4.a.y*w_o4.b.y + w_o4.a.z*w_o4.b.z) / (Math.sqrt( Math.pow(w_o4.a.x,2) + Math.pow(w_o4.a.y,2) + Math.pow(w_o4.a.z,2) ) * Math.sqrt( Math.pow(w_o4.b.x,2) + Math.pow(w_o4.b.y,2) + Math.pow(w_o4.b.z,2) )) );
-        w_o4.c.set( w_o4.a.y*w_o4.b.z - w_o4.b.y*w_o4.a.z ,  w_o4.a.z*w_o4.b.x - w_o4.b.z*w_o4.a.x , w_o4.a.x*w_o4.b.y - w_o4.b.x*w_o4.a.y );
+        r.y3y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
+        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y );
 
-        this.endQuaternion.setFromAxisAngle(w_o4.c.normalize(), r.o4-w1);
+        this.endQuaternion.setFromAxisAngle(w.c.normalize(), r.y3y4w1);
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
 
