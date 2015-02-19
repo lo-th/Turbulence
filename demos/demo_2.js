@@ -247,8 +247,9 @@ formula.prototype = {
                 this.snakeLink[0].rotation.z += this.f.points.y4.r;		
             }else if(name=='y5'){
                 this.snakeLink[1].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
-		this.snakeLink[1].quaternion.copy(this.f.endQuaternion2);
-                this.snakeLink[1].rotation.z += this.f.points.y4.r2;
+                this.snakeLink[1].rotation.z = p.r-(Math.PI/2);
+		this.snakeLink[1].quaternion.copy(this.f.endQuaternion);
+                this.snakeLink[1].rotation.z += this.f.points.y4.r;
             }else if(name!='o4'){
                 this.points[i].position.set(p.x*this.mul, p.y*this.mul,this.pointsDecal[i]);
                 this.points[i].rotation.z = p.r;
@@ -326,10 +327,10 @@ formula.prototype = {
 	    if(type=='high_norm'){
     	    t = 1;
        	    m1 = new THREE.Mesh(geos['c1'], centerShader);
-       	    m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
-       	    m1.add(m2);
+			m2 = new THREE.Mesh(geos['h1'], centerMorphShader);
+		    m1.add(m2);
      	    m1.rotation.y = -Math.PI/2;
-       	    m1.rotation.z = Math.PI/2;
+	    	m1.rotation.z = Math.PI/2;
         } else if(type=='low_norm'){
             t = 2;
             m1 = new THREE.Mesh(geos['c2'], centerShader);
@@ -339,19 +340,20 @@ formula.prototype = {
             this.lowAxe = m4;
             m4.add(m2);
             m1.rotation.x = 0;
-       	    m1.rotation.y = -Math.PI/2;
+	   		m1.rotation.y = -Math.PI/2;
         }
         n = n || 0;
         if(n==1 && t==1){
             m3 = new THREE.Mesh(geos['head'], headShader);
             m.add(m3);
-       	    m3.rotation.z = Math.PI*110/180;
+			m3.rotation.y = -Math.PI/2;
+	    	m3.rotation.z = Math.PI*110/180;
         }else if(n==2 && t==1){
-       	    m3 = new THREE.Mesh(geos['end'], v.mats.c1);
+        	m3 = new THREE.Mesh(geos['end'], v.mats.c1);
             m.add(m3);
-       	    m3.rotation.y = -Math.PI/2;
-       	    m3.rotation.z = Math.PI/2;			
-       	}
+			m3.rotation.y = -Math.PI/2;
+	    	m3.rotation.z = Math.PI/2;			
+		}
         m.add(m1);
         
         this.morphs.push(m2);
