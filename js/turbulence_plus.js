@@ -265,7 +265,7 @@ Turbulence.Formula.prototype = {
         r.b4y4w1 = Math.acos( (w.a2.x*w.b2.x + w.a2.y*w.b2.y + w.a2.z*w.b2.z) / (Math.sqrt( Math.pow(w.a2.x,2) + Math.pow(w.a2.y,2) + Math.pow(w.a2.z,2) ) * Math.sqrt( Math.pow(w.b2.x,2) + Math.pow(w.b2.y,2) + Math.pow(w.b2.z,2) )) );
         w.c2.set( w.a2.y*w.b.z - w.b2.y*w.a2.z ,  w.a2.z*w.b2.x - w.b2.z*w.a2.x , w.a2.x*w.b2.y - w.b2.x*w.a2.y );
 
-        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.b4y4w1);
+        this.endQuaternion2.setFromAxisAngle(w.c2.normalize(), r.b4y4w1);
 	
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
