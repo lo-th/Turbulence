@@ -255,20 +255,20 @@ Turbulence.Formula.prototype = {
         p.y5.x = (Math.cos(-r.b4y4y5) * tmp.x - Math.sin(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.x;
         p.y5.y = (Math.sin(-r.b4y4y5) * tmp.x + Math.cos(-r.b4y4y5) * tmp.y ) * s.y4y5 / s.b4y4 + p.y4.y;
 
-	// extra rotation 2 (b4y4w1)-------------------
+	// extra rotation 2 (y5y4w1)-------------------
 
-        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -5.0);
+        if(this.looking == 'base')this.w1.set(p.y4.x, p.y4.y, -1.5);
 
-        w.a2.set( p.b4.x-p.y4.x, p.b4.y-p.y4.y, p.b4.z-p.y4.z );
-        w.b2.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
+        w.a.set( p.y5.x-p.y4.x, p.y5.y-p.y4.y, p.y5.z-p.y4.z );
+        w.b.set( this.w1.x-p.y4.x, this.w1.y-p.y4.y, this.w1.z-p.y4.z );
 
-        r.b4y4w1 = Math.acos( (w.a2.x*w.b2.x + w.a2.y*w.b2.y + w.a2.z*w.b2.z) / (Math.sqrt( Math.pow(w.a2.x,2) + Math.pow(w.a2.y,2) + Math.pow(w.a2.z,2) ) * Math.sqrt( Math.pow(w.b2.x,2) + Math.pow(w.b2.y,2) + Math.pow(w.b2.z,2) )) );
-        w.c2.set( w.a2.y*w.b.z - w.b2.y*w.a2.z ,  w.a2.z*w.b2.x - w.b2.z*w.a2.x , w.a2.x*w.b2.y - w.b2.x*w.a2.y );
+        r.y5y4w1 = Math.acos( (w.a.x*w.b.x + w.a.y*w.b.y + w.a.z*w.b.z) / (Math.sqrt( Math.pow(w.a.x,2) + Math.pow(w.a.y,2) + Math.pow(w.a.z,2) ) * Math.sqrt( Math.pow(w.b.x,2) + Math.pow(w.b.y,2) + Math.pow(w.b.z,2) )) );
+        w.c.set( w.a.y*w.b.z - w.b.y*w.a.z ,  w.a.z*w.b.x - w.b.z*w.a.x , w.a.x*w.b.y - w.b.x*w.a.y );
 
-        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.b4y4w1);
-	
+        this.endQuaternion2.setFromAxisAngle(w.c.normalize(), r.y5y4w1);
         //this.endRotation.setFromQuaternion(this.endQuaternion);
         //p.y4.r = rr.z;
+
 
         // extra rotation --------------------
 
