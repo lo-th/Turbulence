@@ -1,7 +1,7 @@
 
 
 var v3d = new V3D.View();
-v3d.tell('The formula');
+v3d.tell('The formula with a divine joint');
 
 var ToRad = Math.PI / 180;
 var ToDeg = 180 / Math.PI;
@@ -19,7 +19,7 @@ var pp = new V3D.Particle(particules, ppmax);
 v.scene.add(particules)
 particules.position.z = -30;
 // formule points
-var points = ['a1','a2','b1','b2','b3','y1','y2','y3','y4','o1','o2', 'o3','o4','b4','y5'];
+var points = ['a1','a2', 'b1','b2','b3','y1','y2','y3','y4','o1','o2', 'o3','o4','b4','y5'];
 var meshs = {};
 var labels = {};
 var links = {};
@@ -171,12 +171,19 @@ function runFormule(){
     // a2 //
     var a2 = new THREE.Vector3(0.0, 0.0, 0.0);
 
+    // a3a2a1
+    var rad_a3a2a1 = 10*ToRad;
+    
     // a1 //
-    var a1 = new THREE.Vector3(a1a2, 0.0, 0.0);
+    var a1 = new THREE.Vector3(a2.x + (a1a2*Math.cos(rad_a3a2a1)), a2.y + (a1a2*Math.sin(rad_a3a2a1)), 0.0);
+
+    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
 
     // b1 //
-    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
-    var b1 = new THREE.Vector3((a1a2 - a1b1*Math.cos(rad_a2a1b1)), (a1b1*Math.sin(rad_a2a1b1)), 0.0);
+    var a1b1_X = (Math.cos(-rad_a2a1b1)*(a2.x - a1.x) - Math.sin(-rad_a2a1b1)*(a2.y - a1.y) ) * a1b1 / a1a2 + a1.x;
+    var a1b1_Y = (Math.sin(-rad_a2a1b1)*(a2.x - a1.x) + Math.cos(-rad_a2a1b1)*(a2.y - a1.y) ) * a1b1 / a1a2 + a1.y;
+
+    var b1 = new THREE.Vector3(a1b1_X, a1b1_Y, 0.0);
    
     // y1 //
     var rad_y1a2b1 = Math.acos((Math.pow(a2b1,2) + Math.pow(a2y1,2) - Math.pow(b1y1,2)) / (2*a2b1*a2y1));
@@ -352,7 +359,7 @@ function runFormule(){
 
     // _____ POSITION _____
     
-    meshs.a1.position.set(a1.x*factor, 0.0, 0.0);
+    meshs.a1.position.set(a1.x*factor, a1.y*factor, 0.0);
     meshs.a2.position.set(0.0, 0.0, 0.0);
 
     meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
@@ -373,7 +380,7 @@ function runFormule(){
 
     // _____ ROTATION _____
 
-    var angle_A = rad_a2y1b1+rad_a1a2y1;
+    var angle_A = rad_a3a2a1+rad_a2y1b1+rad_a1a2y1;
     var angle_B = angle_A-rad_b1y1y2;
     var angle_C = angle_B-rad_y1y2o1-rad_b2y2o1;
     var angle_D = -rad_b2y2y3-rad_y2y3o2+rad_b3y3o2;
@@ -381,19 +388,19 @@ function runFormule(){
     var angle_F = angle_C+angle_D-rad_b3y3y4;
 
     //meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
-    meshs.a1.rotation.z = -rad_a2a1b1 + Math.PI;
-
+    meshs.a1.rotation.z = rad_a3a2a1-rad_a2a1b1 + Math.PI;
+    
     meshs.b1.rotation.z = angle_A;
     meshs.b2.rotation.z = angle_C-rad_y2b2o1-Math.PI;
     meshs.b3.rotation.z = angle_C+angle_D+rad_y3b3o2;   
     meshs.b4.rotation.z = angle_C+angle_D+angle_E-rad_y4b4o3-Math.PI;
 
-    meshs.o1.rotation.z = -rad_y1a2o1+rad_a1a2y1+Math.PI;
+    meshs.o1.rotation.z = rad_a3a2a1-rad_y1a2o1+rad_a1a2y1+Math.PI;
     meshs.o2.rotation.z = angle_B-rad_y1y2o2+Math.PI;
     meshs.o3.rotation.z = angle_C-rad_b2y2y3-rad_y2y3o3;
     meshs.o4.rotation.z = angle_C+angle_D-rad_y3y4o4;//+Math.PI;
 
-    meshs.y1.rotation.z = rad_a1a2y1+Math.PI;
+    meshs.y1.rotation.z = rad_a3a2a1+rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = angle_B;
     meshs.y3.rotation.z = angle_C-rad_b2y2y3-Math.PI;
 
