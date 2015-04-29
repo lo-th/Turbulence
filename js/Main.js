@@ -233,7 +233,7 @@ LTH.Menu.prototype = {
 	constructor: LTH.Menu,
 	init:function(startDemo){
 		var name;
-		for(var i=0; i < 4; i++){
+		for(var i=0; i < 5; i++){
 			name = "demo_"+i+'.js';
 			this.pushFile(name, '#cccc00');
 			//testFile("demo_"+i+'.js');
