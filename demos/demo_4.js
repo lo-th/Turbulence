@@ -163,8 +163,8 @@ function runFormule(){
     var y4y5 = Math.sqrt(C);
     
 //          ['a1','a2' ,'b1' ,'b2' ,'b3' ,'y1' ,'y2' ,'y3' ,'y4' ,'o1' ,'o2' ,    'o3' ,'o4' ,'b4' ,'y5' ];
-    scale = [a1b1, a1a2, b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2,    y3o3, y4o4, b4o3, y4y5 ];
-
+    scale = [a1b1, a2a3, b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2,    y3o3, y4o4, b4o3, y4y5, a2a3 ];
+    
 
     var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
     var a2b1 = Math.sqrt((Math.pow(a1a2,2)) - 2*a1a2*a1b1*Math.cos(rad_a2a1b1) + (Math.pow(a1b1,2)));
