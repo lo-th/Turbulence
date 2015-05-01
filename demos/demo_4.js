@@ -86,7 +86,7 @@ function initObject(){
         t = v.addLabel(name);
         v.scene.add(t);
         // add Link
-        if(name=='a2') m = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c5);
+        if(name=='a3') m = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c5);
         else if(name=='y2' || name=='y3' || name=='y4') l = new THREE.Mesh( pool.geo(objName+'_joint'), v.mats.c7 );
         else l = new THREE.Mesh( pool.geo(objName+'_joint_1'), v.mats.c4 );
         
