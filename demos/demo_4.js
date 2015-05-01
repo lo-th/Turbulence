@@ -129,6 +129,7 @@ function runFormule(){
     if(type == 1) A = 0.01;
 
     var a1b1 = A * 0.5;
+    var a2a3 = A * 0.5;
 
     var a2o1 = A;
     var a2y1 = A;
@@ -168,11 +169,14 @@ function runFormule(){
     var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
     var a2b1 = Math.sqrt((Math.pow(a1a2,2)) - 2*a1a2*a1b1*Math.cos(rad_a2a1b1) + (Math.pow(a1b1,2)));
 
+    // a0a3a2
+    var rad_a0a3a2 = -30 *ToRad;
+
     // a2 //
-    var a2 = new THREE.Vector3(0.0, 0.0, 0.0);
+    var a2 = new THREE.Vector3(a2a3*Math.cos(rad_a0a3a2), a2a3*Math.sin(rad_a0a3a2), 0.0);
 
     // a3a2a1
-    var rad_a3a2a1 = 10*ToRad;
+    var rad_a3a2a1 = 60 *ToRad + rad_a0a3a2;
     
     // a1 //
     var a1 = new THREE.Vector3(a2.x + (a1a2*Math.cos(rad_a3a2a1)), a2.y + (a1a2*Math.sin(rad_a3a2a1)), 0.0);
@@ -187,8 +191,8 @@ function runFormule(){
    
     // y1 //
     var rad_y1a2b1 = Math.acos((Math.pow(a2b1,2) + Math.pow(a2y1,2) - Math.pow(b1y1,2)) / (2*a2b1*a2y1));
-    var a2y1_X = (Math.cos(rad_y1a2b1)*(b1.x - a2.x) - Math.sin(rad_y1a2b1)*(b1.y - a2.x) ) * a2y1 / a2b1 + a2.x;
-    var a2y1_Y = (Math.sin(rad_y1a2b1)*(b1.x - a2.x) + Math.cos(rad_y1a2b1)*(b1.y - a2.x) ) * a2y1 / a2b1 + a2.x;
+    var a2y1_X = (Math.cos(rad_y1a2b1)*(b1.x - a2.x) - Math.sin(rad_y1a2b1)*(b1.y - a2.y) ) * a2y1 / a2b1 + a2.x;
+    var a2y1_Y = (Math.sin(rad_y1a2b1)*(b1.x - a2.x) + Math.cos(rad_y1a2b1)*(b1.y - a2.y) ) * a2y1 / a2b1 + a2.y;
 
     var y1 = new THREE.Vector3(a2y1_X, a2y1_Y, 0.0);
 
@@ -198,8 +202,8 @@ function runFormule(){
 
     // o1 //
     var rad_y1a2o1 = Math.PI / 2;// 90
-    var a2o1_X = (Math.cos(-rad_y1a2o1)*y1.x - Math.sin(-rad_y1a2o1)*y1.y) * a2o1 / a2y1;
-    var a2o1_Y = (Math.sin(-rad_y1a2o1)*y1.x + Math.cos(-rad_y1a2o1)*y1.y) * a2o1 / a2y1;
+    var a2o1_X = (Math.cos(-rad_y1a2o1)*(y1.x - a2.x) - Math.sin(-rad_y1a2o1)*(y1.y - a2.y) ) * a2o1 / a2y1 + a2.x;
+    var a2o1_Y = (Math.sin(-rad_y1a2o1)*(y1.x - a2.x) + Math.cos(-rad_y1a2o1)*(y1.y - a2.y) ) * a2o1 / a2y1 + a2.y;
 
     var o1 = new THREE.Vector3(a2o1_X, a2o1_Y, 0.0);
 
@@ -360,7 +364,7 @@ function runFormule(){
     // _____ POSITION _____
     
     meshs.a1.position.set(a1.x*factor, a1.y*factor, 0.0);
-    meshs.a2.position.set(0.0, 0.0, 0.0);
+    meshs.a2.position.set(a2.x*factor, a2.y*factor, 0.0);
 
     meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
     meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
@@ -389,6 +393,7 @@ function runFormule(){
 
     //meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
     meshs.a1.rotation.z = rad_a3a2a1-rad_a2a1b1 + Math.PI;
+    meshs.a2.rotation.z = rad_a0a3a2 + Math.PI;
     
     meshs.b1.rotation.z = angle_A;
     meshs.b2.rotation.z = angle_C-rad_y2b2o1-Math.PI;
