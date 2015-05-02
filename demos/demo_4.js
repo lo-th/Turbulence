@@ -138,6 +138,8 @@ function runFormule(){
     var a1o1 = (A - a1b1);
     var a1a2 = Math.sqrt(Math.pow(a1o1,2) + Math.pow(a2o1,2));
 
+    var a1a3 = a1a2 + a2a3;
+
     var B = (Math.pow(a2y1,2) + Math.pow(a2o1,2));
 
     var y1o1 = Math.sqrt(B);
@@ -165,10 +167,6 @@ function runFormule(){
 //          ['a1','a2' ,'b1' ,'b2' ,'b3' ,'y1' ,'y2' ,'y3' ,'y4' ,'o1' ,'o2' ,    'o3' ,'o4' ,'b4' ,'y5' ];
     scale = [a1b1, a2a3, b1y1, b2o1, b3o2, a2y1, y1y2, y2y3, y3y4, a2o1, y2o2,    y3o3, y4o4, b4o3, y4y5, a2a3 ];
     
-
-    var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
-    var a2b1 = Math.sqrt((Math.pow(a1a2,2)) - 2*a1a2*a1b1*Math.cos(rad_a2a1b1) + (Math.pow(a1b1,2)));
-
     // a0a3a2
     var rad_a0a3a2 = -30 *ToRad;
 
@@ -183,6 +181,31 @@ function runFormule(){
 
     var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
 
+//  default of a2a1b1 is 116.5650512 degree
+//    var rad_a2a1b1 = 180-Math.atan(1/0.5);
+//    var a2b1 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b1*Maht.cos(rad_a2a1b1) + Math.pow(a1b1,2));
+
+//  a2a1b0 rotate 360 degree
+//    var rad_a2a1b0 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
+//    var a2b0 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b0*Math.cos(rad_a2a1b0) + Math.pow(a1b0,2));
+
+//  a2a1b1 rotate 360 degree
+    var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
+    var a2b1 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b1*Math.cos(rad_a2a1b1) + Math.pow(a1b1,2));
+
+//  b0a1b1
+//    var rad_b0a1b1 = (rad_a2a1b0 - rad_a2a1b1);
+            
+//    var b0b1 = sqrt((a1b0**2) - 2*a1b0*a1b1*cos(rad_b0a1b1) + (a1b1**2));
+//    var b0b1_textobj.data.body=str(b0b1);
+
+//    var rad_a1a2b0 = Math.asin(a1b0*Math.sin(rad_a2a1b0) / a2b0);
+
+//  b0 //
+//    var b0 = new THREE.Vector3(a1.x - (a1b0*cos(rad_a2a1b0)), (a1b0*Math.sin(rad_a2a1b0)) + a1.y, 0.0);
+
+//    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
+ 
     // b1 //
     var a1b1_X = (Math.cos(-rad_a2a1b1)*(a2.x - a1.x) - Math.sin(-rad_a2a1b1)*(a2.y - a1.y) ) * a1b1 / a1a2 + a1.x;
     var a1b1_Y = (Math.sin(-rad_a2a1b1)*(a2.x - a1.x) + Math.cos(-rad_a2a1b1)*(a2.y - a1.y) ) * a1b1 / a1a2 + a1.y;
