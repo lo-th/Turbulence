@@ -179,8 +179,6 @@ function runFormule(){
     // a1 //
     var a1 = new THREE.Vector3(a2.x + (a1a2*Math.cos(rad_a3a2a1)), a2.y + (a1a2*Math.sin(rad_a3a2a1)), 0.0);
 
-    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
-
 //  default of a2a1b1 is 116.5650512 degree
 //    var rad_a2a1b1 = 180-Math.atan(1/0.5);
 //    var a2b1 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b1*Maht.cos(rad_a2a1b1) + Math.pow(a1b1,2));
@@ -204,7 +202,7 @@ function runFormule(){
 //  b0 //
 //    var b0 = new THREE.Vector3(a1.x - (a1b0*cos(rad_a2a1b0)), (a1b0*Math.sin(rad_a2a1b0)) + a1.y, 0.0);
 
-//    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
+    var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
  
     // b1 //
     var a1b1_X = (Math.cos(-rad_a2a1b1)*(a2.x - a1.x) - Math.sin(-rad_a2a1b1)*(a2.y - a1.y) ) * a1b1 / a1a2 + a1.x;
