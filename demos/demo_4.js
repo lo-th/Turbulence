@@ -27,7 +27,7 @@ var scale = [];
 var pivot = null;
 var target = null;
 
-var hidePoints = ['a1', 'b1', 'b2', 'y1', 'b0'];
+var hidePoints = ['a1', 'b1', 'b2', 'y1', 'b0', 'a3'];
 var extraPoints = ['o3','o4','b4','y5'];
 var angles = [180,180];
 
@@ -79,7 +79,7 @@ function initObject(){
         else if(name=='y3') m = new THREE.Mesh( pool.geo(objName+'_point7'), v.mats.c6 );
         else if(name=='b3') m = new THREE.Mesh( pool.geo(objName+'_point8'), v.mats.c6 );
         else if(name=='y4') m = new THREE.Mesh( pool.geo(objName+'_point1'), v.mats.c6 );
-        else if(name=='a2' ) m = new THREE.Mesh( pool.geo(objName+'_point4'), v.mats.c6 );
+        else if(name=='a2' ) m = new THREE.Mesh( pool.geo(objName+'_point8'), v.mats.c6 );
         else m = new THREE.Mesh( pool.geo(objName+'_point5'), v.mats.c6 );
         v.scene.add(m);
 
@@ -448,26 +448,26 @@ function runFormule(){
 
     // _____ POSITION _____
     
-    meshs.a1.position.set(a1.x*factor, a1.y*factor, 0.0);
-    meshs.a2.position.set(a2.x*factor, a2.y*factor, 0.0);
+    meshs.a1.position.set(a1.x*factor, a1.y*factor, 7);
+    meshs.a2.position.set(a2.x*factor, a2.y*factor, -7);
 
-    meshs.b0.position.set(b0.x*factor, b0.y*factor, -14);
+    meshs.b0.position.set(b0.x*factor, b0.y*factor, -7);
     
-    meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
-    meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
-    meshs.b3.position.set(b3.x*factor, b3.y*factor, 0.0);
-    meshs.b4.position.set(b4.x*factor, b4.y*factor, -7);
+    meshs.b1.position.set(b1.x*factor, b1.y*factor, -7);
+    meshs.b2.position.set(b2.x*factor, b2.y*factor, 7);
+    meshs.b3.position.set(b3.x*factor, b3.y*factor, 7);
+    meshs.b4.position.set(b4.x*factor, b4.y*factor, 0.0);
 
-    meshs.y1.position.set(y1.x*factor, y1.y*factor, 0.0);
-    meshs.y2.position.set(y2.x*factor, y2.y*factor, 0.0);
-    meshs.y3.position.set(y3.x*factor, y3.y*factor, 0.0);
-    meshs.y4.position.set(y4.x*factor, y4.y*factor, 0.0);
-    meshs.y5.position.set(y5.x*factor, y5.y*factor, -7);
+    meshs.y1.position.set(y1.x*factor, y1.y*factor, 7);
+    meshs.y2.position.set(y2.x*factor, y2.y*factor, 7);
+    meshs.y3.position.set(y3.x*factor, y3.y*factor, 7);
+    meshs.y4.position.set(y4.x*factor, y4.y*factor, 7);
+    meshs.y5.position.set(y5.x*factor, y5.y*factor, 0.0);
 
-    meshs.o1.position.set(o1.x*factor, o1.y*factor, 0.0);
-    meshs.o2.position.set(o2.x*factor, o2.y*factor, 0.0);
-    meshs.o3.position.set(o3.x*factor, o3.y*factor, -7);
-    meshs.o4.position.set(o4.x*factor, o4.y*factor, -14);
+    meshs.o1.position.set(o1.x*factor, o1.y*factor, 7);
+    meshs.o2.position.set(o2.x*factor, o2.y*factor, 7);
+    meshs.o3.position.set(o3.x*factor, o3.y*factor, 0.0);
+    meshs.o4.position.set(o4.x*factor, o4.y*factor, -7);
 
     // _____ ROTATION _____
 
@@ -527,7 +527,7 @@ function runFormule(){
         if(name == 'y3'|| name == 'o1' || name == 'y1'||  name == 'b4') links[name].translateZ(-7);
         if(name == 'b3' ) links[name].translateZ(-14);
         if(name == 'a1') links[name].translateZ(-21);
-        if(name == 'a2') links[name].translateZ(-28);
+        if(name == 'a2') links[name].translateZ(-14);
         links[name].scale.x = (scale[i]*factor);
     }
     // y4 pivot position
