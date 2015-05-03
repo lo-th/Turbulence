@@ -19,7 +19,7 @@ var pp = new V3D.Particle(particules, ppmax);
 v.scene.add(particules)
 particules.position.z = -30;
 // formule points
-var points = ['a1','a2', 'b1','b2','b3','y1','y2','y3','y4','o1','o2', 'o3','o4','b4','y5'];
+var points = ['a1','a2', 'b1','b2','b3','y1','y2','y3','y4','o1','o2', 'o3','o4','b4','y5','a3','b0'];
 var meshs = {};
 var labels = {};
 var links = {};
@@ -27,7 +27,7 @@ var scale = [];
 var pivot = null;
 var target = null;
 
-var hidePoints = ['a1', 'b1', 'b2', 'y1'];
+var hidePoints = ['a1', 'b1', 'b2', 'y1', 'b0'];
 var extraPoints = ['o3','o4','b4','y5'];
 var angles = [180,180];
 
@@ -72,6 +72,7 @@ function initObject(){
         // init basic mesh point
         name = points[i];
         if(name=='a1') m = new THREE.Mesh( pool.geo(objName+'_point0'), v.mats.c6 );
+	else if(name=='a3') m = new THREE.Mesh( pool.geo(objName+'_point0'), v.mats.c6 );
         else if(name=='y1'|| name=='y2') m = new THREE.Mesh( pool.geo(objName+'_point2'), v.mats.c6 );
         else if(name=='o2'|| name=='b2') m = new THREE.Mesh( pool.geo(objName+'_point3'), v.mats.c6 );
         else if(name=='o4' || name=='y5')m = new THREE.Mesh( pool.geo(objName+'_point6'), v.mats.c6 ); 
@@ -92,7 +93,7 @@ function initObject(){
         
         v.scene.add(l);
 
-        if(name=='a1' || name=='a2'){
+        if(name=='a1' || name=='a3'){
             var c = new THREE.Mesh( pool.geo(objName+'_origin'), v.mats.c5 );
             t.add(c);
         }
@@ -128,6 +129,8 @@ function runFormule(){
     var A = 1.0;
     if(type == 1) A = 0.01;
 
+    var a1b0 = A * 0.5;
+    
     var a1b1 = A * 0.5;
     var a2a3 = A * 0.5;
 
@@ -180,27 +183,23 @@ function runFormule(){
     var a1 = new THREE.Vector3(a2.x + (a1a2*Math.cos(rad_a3a2a1)), a2.y + (a1a2*Math.sin(rad_a3a2a1)), 0.0);
 
 //  default of a2a1b1 is 116.5650512 degree
-//    var rad_a2a1b1 = 180-Math.atan(1/0.5);
-//    var a2b1 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b1*Maht.cos(rad_a2a1b1) + Math.pow(a1b1,2));
+    var rad_a2a1b1 = Math.PI - Math.atan(a2o1/a1o1);
 
-//  a2a1b0 rotate 360 degree
-//    var rad_a2a1b0 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
-//    var a2b0 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b0*Math.cos(rad_a2a1b0) + Math.pow(a1b0,2));
-
-//  a2a1b1 rotate 360 degree
-    var rad_a2a1b1 = Math.PI- Math.atan(a2o1/a1o1)-rotation.z;
     var a2b1 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b1*Math.cos(rad_a2a1b1) + Math.pow(a1b1,2));
 
-//  b0a1b1
-//    var rad_b0a1b1 = (rad_a2a1b0 - rad_a2a1b1);
-            
-//    var b0b1 = sqrt((a1b0**2) - 2*a1b0*a1b1*cos(rad_b0a1b1) + (a1b1**2));
-//    var b0b1_textobj.data.body=str(b0b1);
+//  a2a1b0 rotate 360 degree
+    var rad_a2a1b0 = Math.PI- Math.atan(a2o1/a1o1) + rad_a0a3a2 -rotation.z;
 
-//    var rad_a1a2b0 = Math.asin(a1b0*Math.sin(rad_a2a1b0) / a2b0);
+    var a2b0 = Math.sqrt(Math.pow(a1a2,2) - 2*a1a2*a1b0*Math.cos(rad_a2a1b0) + Math.pow(a1b0,2));
+
+//  b0a1b1
+    var rad_b0a1b1 = (rad_a2a1b0 - rad_a2a1b1);
+    var b0b1 = Math.sqrt(Math.pow(a1b0,2) - 2*a1b0*a1b1*Math.cos(rad_b0a1b1) + Math.pow(a1b1,2));
+    
+    var rad_a1a2b0 = Math.asin(a1b0*Math.sin(rad_a2a1b0) / a2b0);
 
 //  b0 //
-//    var b0 = new THREE.Vector3(a1.x - (a1b0*cos(rad_a2a1b0)), (a1b0*Math.sin(rad_a2a1b0)) + a1.y, 0.0);
+    var b0 = new THREE.Vector3(a1.x - (a1b0*Math.cos(rad_a2a1b0)), (a1b0*Math.sin(rad_a2a1b0)) + a1.y, 0.0);
 
     var rad_a1a2b1 = Math.asin(a1b1*Math.sin(rad_a2a1b1) / a2b1);
  
@@ -387,6 +386,8 @@ function runFormule(){
     meshs.a1.position.set(a1.x*factor, a1.y*factor, 0.0);
     meshs.a2.position.set(a2.x*factor, a2.y*factor, 0.0);
 
+    meshs.b0.position.set(b0.x*factor, b0.y*factor, -14);
+    
     meshs.b1.position.set(b1.x*factor, b1.y*factor, -14);
     meshs.b2.position.set(b2.x*factor, b2.y*factor, 0.0);
     meshs.b3.position.set(b3.x*factor, b3.y*factor, 0.0);
@@ -413,7 +414,7 @@ function runFormule(){
     var angle_F = angle_C+angle_D-rad_b3y3y4;
 
     //meshs.a1.rotation.z = Math.PI-rad_a2a1b1;
-    meshs.a1.rotation.z = rad_a3a2a1-rad_a2a1b1 + Math.PI;
+    meshs.a1.rotation.z = -rad_a2a1b0 + Math.PI;
     meshs.a2.rotation.z = rad_a0a3a2 + Math.PI;
     
     meshs.b1.rotation.z = angle_A;
@@ -442,7 +443,8 @@ function runFormule(){
     while(i--){
         name = points[i];
         labels[name].position.copy(meshs[name].position);
-        if(name == 'a1' || name == 'a2') labels[name].position.z = -28;
+	if(name == 'a1' || name == 'a3') labels[name].position.z = -28;
+	else if(name == 'a2') labels[name].position.z = -21;
     }
 
     // apply new position to each link
