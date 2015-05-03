@@ -232,12 +232,22 @@ function runFormule(){
 	
     var y1b0_X = 0;
     var y1b0_Y = 0;
+
+    var rad_b1a2a2 = 0;
+    var rad_b0a2a2 = 0;
+
+    var rad_allb1a2b0 = 0;
+    var rad_b1a2b0 = 0;
+
+    var a2b0_X = 0;
+    var a2b0_Y = 0;
     
+    //------------------------- IK
     // IK chain = a3 - a2 - y1 - b1
     // Effecter = b0
 	
     // y1b1->b0 start
-    // 1. step.1 : calculate rad_b1y1b0, rotate vector y1b1 -> y1b0
+    // step.1 : calculate rad_b1y1b0, rotate vector y1b1 -> y1b0
 
     rad_b1y1y1 = Math.atan((b1.y - y1.y)/(b1.x - y1.x));
     rad_b0y1y1 = Math.atan((b0.y - y1.y)/(b0.x - y1.x));
@@ -249,7 +259,31 @@ function runFormule(){
 
     b1 = new THREE.Vector3(y1b0_X, y1b0_Y, 0.0);
 
+    // a2b1->b0 start
+    // step.2 : calculate rad_b1a2b0, rotate vector a2b1 -> a2b0
+
+    rad_b1a2a2 = Math.atan((b1.y - a2.y)/(b1.x - a2.x));
+    rad_b0a2a2 = Math.atan((b0.y - a2.y)/(b0.x - a2.x));
+            
+    rad_allb1a2b0 = rad_allb1a2b0 + (+rad_b1a2a2 -rad_b0a2a2);
+    rad_b1a2b0 = (+rad_b1a2a2 -rad_b0a2a2);
+
+    //b1
+    a2b0_X = (Math.cos(-rad_b1a2b0)*(b1.x - a2.x) - Math.sin(-rad_b1a2b0)*(b1.y - a2.y)) + a2.x;
+    a2b0_Y = (Math.sin(-rad_b1a2b0)*(b1.x - a2.x) + Math.cos(-rad_b1a2b0)*(b1.y - a2.y)) + a2.y;
+
+    b1.x = a2b0_X;
+    b1.y = a2b0_Y;
+
+    //y1
+    a2b0_X = (Math.cos(-rad_b1a2b0)*(y1.x - a2.x) - Math.sin(-rad_b1a2b0)*(y1.y - a2.y)) + a2.x;
+    a2b0_Y = (Math.sin(-rad_b1a2b0)*(y1.x - a2.x) + Math.cos(-rad_b1a2b0)*(y1.y - a2.y)) + a2.y;
+
+    y1.x = a2b0_X;
+    y1.y = a2b0_Y;
+    
     rad_allb1a3b0 = rad_b1y1b0;
+    //------------------------- IK
     
     // o1 //
     var rad_y1a2o1 = Math.PI / 2;// 90
@@ -437,7 +471,7 @@ function runFormule(){
 
     // _____ ROTATION _____
 
-    var angle_A = rad_a3a2a1-rad_allb1a3b0+rad_a2y1b1+rad_a1a2y1;
+    var angle_A = rad_a3a2a1-rad_allb1a3b0-rad_allb1a2b0+rad_a2y1b1+rad_a1a2y1;
     var angle_B = angle_A-rad_b1y1y2;
     var angle_C = angle_B-rad_y1y2o1-rad_b2y2o1;
     var angle_D = -rad_b2y2y3-rad_y2y3o2+rad_b3y3o2;
@@ -453,12 +487,12 @@ function runFormule(){
     meshs.b3.rotation.z = angle_C+angle_D+rad_y3b3o2;   
     meshs.b4.rotation.z = angle_C+angle_D+angle_E-rad_y4b4o3-Math.PI;
 
-    meshs.o1.rotation.z = rad_a3a2a1-rad_y1a2o1+rad_a1a2y1+Math.PI;
+    meshs.o1.rotation.z = rad_a3a2a1-rad_allb1a2b0-rad_y1a2o1+rad_a1a2y1+Math.PI;
     meshs.o2.rotation.z = angle_B-rad_y1y2o2+Math.PI;
     meshs.o3.rotation.z = angle_C-rad_b2y2y3-rad_y2y3o3;
     meshs.o4.rotation.z = angle_C+angle_D-rad_y3y4o4;//+Math.PI;
 
-    meshs.y1.rotation.z = rad_a3a2a1+rad_a1a2y1+Math.PI;
+    meshs.y1.rotation.z = rad_a3a2a1-rad_allb1a2b0+rad_a1a2y1+Math.PI;
     meshs.y2.rotation.z = angle_B;
     meshs.y3.rotation.z = angle_C-rad_b2y2y3-Math.PI;
 
