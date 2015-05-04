@@ -64,7 +64,7 @@ UI.IK = function(name, fun, v, pos){
     i.appendChild(t);
 
     var t2 = document.createElement( 'input' );
-    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    t2.style.cssText =  'position:absolute; top:20px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
     //t2.contenteditable = 'true';
     t2.id = 'iksel';
     
@@ -93,7 +93,7 @@ UI.Iterations = function(name, fun, v, pos){
     r.appendChild(t);
 
     var t2 = document.createElement( 'input' );
-    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    t2.style.cssText =  'position:absolute; top:20px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
     //t2.contenteditable = 'true';
     t2.id = 'iterationssel';
     
@@ -122,7 +122,7 @@ UI.Length = function(name, fun, v, pos){
     l.appendChild(t);
 
     var t2 = document.createElement( 'input' );
-    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    t2.style.cssText =  'position:absolute; top:20px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
     //t2.contenteditable = 'true';
     t2.id = 'lengthsel';
     
@@ -167,7 +167,7 @@ UI.Clock = function(name, fun){
 	c.appendChild(d1);
 	c.appendChild(d2);
 	c.appendChild(d3);
-    c.appendChild(s);
+        c.appendChild(s);
 	document.body.appendChild(c);
 	document.body.appendChild(t);
 	this.c = c;
