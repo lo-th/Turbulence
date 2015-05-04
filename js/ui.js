@@ -25,11 +25,11 @@ UI.Button.prototype = {
 //--------------------------- ANGULAR
 
 UI.Angular = function(name, fun, v, pos){
-	pos = pos || 10;
-	var a = document.createElement( 'div' );
-	a.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
-	a.id = 'angular';
-	var t = document.createElement( 'div' );
+    pos = pos || 10;
+    var a = document.createElement( 'div' );
+    a.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
+    a.id = 'angular';
+    var t = document.createElement( 'div' );
     t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
     t.textContent = name + '°';
     a.appendChild(t);
@@ -48,20 +48,20 @@ UI.Angular = function(name, fun, v, pos){
 
     a.appendChild(t2);
 
-	document.body.appendChild(a);
+    document.body.appendChild(a);
 }
 
 //--------------------------- IK
 
 UI.IK = function(name, fun, v, pos){
-	pos = pos || 10;
-	var i = document.createElement( 'div' );
-	i.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
-	i.id = 'ik';
-	var t = document.createElement( 'div' );
+    pos = pos || 10;
+    var i = document.createElement( 'div' );
+    i.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
+    i.id = 'ik';
+    var t = document.createElement( 'div' );
     t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
     t.textContent = name;
-    a.appendChild(t);
+    i.appendChild(t);
 
     var t2 = document.createElement( 'input' );
     t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
@@ -75,9 +75,9 @@ UI.IK = function(name, fun, v, pos){
     	fun(t2.value);
     }
 
-    a.appendChild(t2);
+    i.appendChild(t2);
 
-	document.body.appendChild(a);
+    document.body.appendChild(i);
 }
 
 //--------------------------- ITERATIONS
@@ -90,7 +90,7 @@ UI.Iterations = function(name, fun, v, pos){
     var t = document.createElement( 'div' );
     t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
     t.textContent = name;
-    a.appendChild(t);
+    r.appendChild(t);
 
     var t2 = document.createElement( 'input' );
     t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
@@ -104,9 +104,9 @@ UI.Iterations = function(name, fun, v, pos){
     	fun(t2.value);
     }
 
-    a.appendChild(t2);
+    r.appendChild(t2);
 
-	document.body.appendChild(a);
+    document.body.appendChild(r);
 }
 
 //--------------------------- LENGTH
@@ -119,7 +119,7 @@ UI.Length = function(name, fun, v, pos){
     var t = document.createElement( 'div' );
     t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
     t.textContent = name;
-    a.appendChild(t);
+    l.appendChild(t);
 
     var t2 = document.createElement( 'input' );
     t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
@@ -133,9 +133,9 @@ UI.Length = function(name, fun, v, pos){
     	fun(t2.value);
     }
 
-    a.appendChild(t2);
+    l.appendChild(t2);
 
-	document.body.appendChild(a);
+    document.body.appendChild(l);
 }
 
 //--------------------------- CLOCK
