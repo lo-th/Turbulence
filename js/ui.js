@@ -51,6 +51,92 @@ UI.Angular = function(name, fun, v, pos){
 	document.body.appendChild(a);
 }
 
+//--------------------------- IK
+
+UI.IK = function(name, fun, v, pos){
+	pos = pos || 10;
+	var i = document.createElement( 'div' );
+	i.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
+	i.id = 'ik';
+	var t = document.createElement( 'div' );
+    t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
+    t.textContent = name;
+    a.appendChild(t);
+
+    var t2 = document.createElement( 'input' );
+    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    //t2.contenteditable = 'true';
+    t2.id = 'iksel';
+    
+    t2.value = v;
+
+    t2.onchange = function(){
+    	this.blur();
+    	fun(t2.value);
+    }
+
+    a.appendChild(t2);
+
+	document.body.appendChild(a);
+}
+
+//--------------------------- ITERATIONS
+
+UI.ITERATIONS = function(name, fun, v, pos){
+    pos = pos || 10;
+    var r = document.createElement( 'div' );
+    r.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
+    r.id = 'iterations';
+    var t = document.createElement( 'div' );
+    t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
+    t.textContent = name;
+    a.appendChild(t);
+
+    var t2 = document.createElement( 'input' );
+    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    //t2.contenteditable = 'true';
+    t2.id = 'iksel';
+    
+    t2.value = v;
+
+    t2.onchange = function(){
+    	this.blur();
+    	fun(t2.value);
+    }
+
+    a.appendChild(t2);
+
+	document.body.appendChild(a);
+}
+
+//--------------------------- LENGTH
+
+UI.LENGTH = function(name, fun, v, pos){
+    pos = pos || 10;
+    var l = document.createElement( 'div' );
+    l.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
+    l.id = 'length';
+    var t = document.createElement( 'div' );
+    t.style.cssText = 'position:absolute; top:0px; left:0px; width:60px; height:20px; text-align:center; '+UI.Unselect;
+    t.textContent = name;
+    a.appendChild(t);
+
+    var t2 = document.createElement( 'input' );
+    t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
+    //t2.contenteditable = 'true';
+    t2.id = 'iksel';
+    
+    t2.value = v;
+
+    t2.onchange = function(){
+    	this.blur();
+    	fun(t2.value);
+    }
+
+    a.appendChild(t2);
+
+	document.body.appendChild(a);
+}
 
 //--------------------------- CLOCK
 
