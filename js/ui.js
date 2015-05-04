@@ -95,7 +95,7 @@ UI.Iterations = function(name, fun, v, pos){
     var t2 = document.createElement( 'input' );
     t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
     //t2.contenteditable = 'true';
-    t2.id = 'iksel';
+    t2.id = 'iterationssel';
     
     t2.value = v;
 
@@ -124,7 +124,7 @@ UI.Length = function(name, fun, v, pos){
     var t2 = document.createElement( 'input' );
     t2.style.cssText =  'position:absolute; top:40px; left:10px; width:40px; height:20px; text-align:center; pointer-events:auto;';
     //t2.contenteditable = 'true';
-    t2.id = 'iksel';
+    t2.id = 'lengthsel';
     
     t2.value = v;
 

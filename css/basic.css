@@ -21,6 +21,31 @@ body.night{ background-color: #212324; overflow: hidden; color:#D6D6D6; font-fam
 #angularsel:hover{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #2b2e41; }
 #angularsel.night:hover{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #D6D6D6;}
 /*div{ padding: 10px; outline: 3px dashed #CCC; } div[contenteditable="true"]:hover{ background: rgba(255, 255, 153, 1); outline: 3px dashed #0090D2; }*/
+
+#ik{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  }
+#ik.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; }
+#iksel{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #2b2e41; }
+#iksel.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #D6D6D6;}
+#iksel:hover{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #2b2e41; }
+#iksel.night:hover{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #D6D6D6;}
+/*div{ padding: 10px; outline: 3px dashed #CCC; } div[contenteditable="true"]:hover{ background: rgba(255, 255, 153, 1); outline: 3px dashed #0090D2; }*/
+
+#iterations{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  }
+#iterations.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; }
+#iterationssel{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #2b2e41; }
+#iterationssel.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #D6D6D6;}
+#iterationssel:hover{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #2b2e41; }
+#iterationssel.night:hover{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #D6D6D6;}
+/*div{ padding: 10px; outline: 3px dashed #CCC; } div[contenteditable="true"]:hover{ background: rgba(255, 255, 153, 1); outline: 3px dashed #0090D2; }*/
+
+#length{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  }
+#length.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px; }
+#lengthsel{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #2b2e41; }
+#lengthsel.night{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px dashed #D6D6D6;}
+#lengthsel:hover{ background-color: none; color:#2b2e41; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #2b2e41; }
+#lengthsel.night:hover{ background-color: none; color:#D6D6D6; font-family:Consolas, 'ConsolasRegular', 'Courier New', monospace; font-size: 14px;  border:1px solid #D6D6D6;}
+/*div{ padding: 10px; outline: 3px dashed #CCC; } div[contenteditable="true"]:hover{ background: rgba(255, 255, 153, 1); outline: 3px dashed #0090D2; }*/
+
 #deco{ background-color: #2b2e41; }
 #deco.night{ background-color: #D6D6D6; }
 
