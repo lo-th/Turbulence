@@ -39,14 +39,14 @@ var formule = 1;
 var b1 = new UI.Button('type 0', setType);
 var b2 = new UI.Button('simple', setFormule, 110);
 
-var i1 = new UI.Angular('chains', setIK, 3);
-var r1 = new UI.Angular('iterations', setITR, 500, 60);
+var i1 = new UI.IK('chains', setIK, 3);
+var r1 = new UI.Iterations('iterations', setITR, 500, 60);
 
 var a1 = new UI.Angular('y2', setY2, 180, 110);
 var a2 = new UI.Angular('y3', setY3, 180, 160);
 var a3 = new UI.Angular('a3', setA3, -90, 210);
 
-var l1 = new UI.Angular('a2a3', setA2A3, 4.5, 260);
+var l1 = new UI.Length('a2a3', setA2A3, 4.5, 260);
 
 // add clock
 var c = new UI.Clock();
