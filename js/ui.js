@@ -82,7 +82,7 @@ UI.IK = function(name, fun, v, pos){
 
 //--------------------------- ITERATIONS
 
-UI.ITERATIONS = function(name, fun, v, pos){
+UI.Iterations = function(name, fun, v, pos){
     pos = pos || 10;
     var r = document.createElement( 'div' );
     r.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
@@ -111,7 +111,7 @@ UI.ITERATIONS = function(name, fun, v, pos){
 
 //--------------------------- LENGTH
 
-UI.LENGTH = function(name, fun, v, pos){
+UI.Length = function(name, fun, v, pos){
     pos = pos || 10;
     var l = document.createElement( 'div' );
     l.style.cssText =  UI.Unselect+'position:absolute; top:'+pos+'px; right:10px; width:60px; height:50px;';//' background:#ff0000';
