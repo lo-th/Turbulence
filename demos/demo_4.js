@@ -28,25 +28,27 @@ var target = null;
 
 var hidePoints = ['a1', 'b1', 'b2', 'y1'];
 var extraPoints = ['o3','o4','b4','y5'];
-var angles = [180,180,-90];
-var length = [4.5];
+var angles = [180,180,5];
+var length = [0.4];
 var ik = [3];
 var iterations = [500];
 
 var type = 0;
 var formule = 1;
+var ik_type = 0;
 
 var b1 = new UI.Button('type 0', setType);
 var b2 = new UI.Button('simple', setFormule, 110);
+var b3 = new UI.Button('IK type 0', setIKType, 210);
 
 var i1 = new UI.IK('chains', setIK, 3);
 var r1 = new UI.Iterations('iterations', setITR, 500, 60);
 
 var a1 = new UI.Angular('y2', setY2, 180, 110);
 var a2 = new UI.Angular('y3', setY3, 180, 160);
-var a3 = new UI.Angular('a3', setA3, -90, 210);
+var a3 = new UI.Angular('a3', setA3, 5, 210);
 
-var l1 = new UI.Length('a2a3', setA2A3, 4.5, 260);
+var l1 = new UI.Length('a2a3', setA2A3, 0.4, 260);
 
 // add clock
 var c = new UI.Clock();
@@ -268,22 +270,42 @@ function runFormule(){
     // IK chain = a3 - a2 - y1 - b1
     // Effecter = b0
 
-    while (count < max) {
+    if (ik_type == 0) {
     
-    	if (ik[0]>0){
-            // y1b1->b0 start
-            // step.1 : calculate rad_b1y1b0, rotate vector y1b1 -> y1b0
+        while (count < max) {
+	
+            if (ik[0]>2) {
 
-            rad_b1y1y1 = Math.atan((b1.x - y1.x)/(b1.y - y1.y));
-            rad_b0y1y1 = Math.atan((b0.x - y1.x)/(b0.y - y1.y));
+                // a3b1->b0 start
+                // step.3 : calculate rad_b1a3b0, rotate vector a3b1 -> a3b0
+    
+                rad_b1a3a3 = Math.atan((b1.y - a3.y)/(b1.x - a3.x));
+                rad_b0a3a3 = Math.atan((b0.y - a3.y)/(b0.x - a3.x));
 
-            rad_allb1y1b0 = rad_allb1y1b0 + (-rad_b1y1y1 +rad_b0y1y1);
-            rad_b1y1b0 = (-rad_b1y1y1 +rad_b0y1y1);
+                rad_allb1a3b0 = rad_allb1a3b0 + (+rad_b1a3a3 -rad_b0a3a3);
+                rad_b1a3b0 = (+rad_b1a3a3 -rad_b0a3a3);
 
-            y1b0_X = (Math.cos(-rad_b1y1b0)*(b1.x - y1.x) - Math.sin(-rad_b1y1b0)*(b1.y - y1.y)) + y1.x;
-            y1b0_Y = (Math.sin(-rad_b1y1b0)*(b1.x - y1.x) + Math.cos(-rad_b1y1b0)*(b1.y - y1.y)) + y1.y;
+                // b1
+                a3b0_X = (Math.cos(-rad_b1a3b0)*(b1.x - a3.x) - Math.sin(-rad_b1a3b0)*(b1.y - a3.y)) + a3.x;
+                a3b0_Y = (Math.sin(-rad_b1a3b0)*(b1.x - a3.x) + Math.cos(-rad_b1a3b0)*(b1.y - a3.y)) + a3.y;
 
-            b1 = new THREE.Vector3(y1b0_X, y1b0_Y, 0.0);
+                b1.x = a3b0_X;
+                b1.y = a3b0_Y;
+        
+                // y1
+                a3b0_X = (Math.cos(-rad_b1a3b0)*(y1.x - a3.x) - Math.sin(-rad_b1a3b0)*(y1.y - a3.y)) + a3.x;
+                a3b0_Y = (Math.sin(-rad_b1a3b0)*(y1.x - a3.x) + Math.cos(-rad_b1a3b0)*(y1.y - a3.y)) + a3.y;
+
+                y1.x = a3b0_X;
+                y1.y = a3b0_Y;
+        
+                // a2
+                a3b0_X = (Math.cos(-rad_b1a3b0)*(a2.x - a3.x) - Math.sin(-rad_b1a3b0)*(a2.y - a3.y)) + a3.x;
+                a3b0_Y = (Math.sin(-rad_b1a3b0)*(a2.x - a3.x) + Math.cos(-rad_b1a3b0)*(a2.y - a3.y)) + a3.y;
+
+                a2.x = a3b0_X;
+                a2.y = a3b0_Y;
+            }
 
             if (ik[0]>1){
 
@@ -309,41 +331,105 @@ function runFormule(){
 
                 y1.x = a2b0_X;
                 y1.y = a2b0_Y;
+            }
 
-                if (ik[0]>2){
-                    // a3b1->b0 start
-                    // step.3 : calculate rad_b1a3b0, rotate vector a3b1 -> a3b0
+            if (ik[0]>0){
+		        // y1b1->b0 start
+                // step.1 : calculate rad_b1y1b0, rotate vector y1b1 -> y1b0
+
+                rad_b1y1y1 = Math.atan((b1.x - y1.x)/(b1.y - y1.y));
+                rad_b0y1y1 = Math.atan((b0.x - y1.x)/(b0.y - y1.y));
+
+                rad_allb1y1b0 = rad_allb1y1b0 + (-rad_b1y1y1 +rad_b0y1y1);
+                rad_b1y1b0 = (-rad_b1y1y1 +rad_b0y1y1);
+
+                y1b0_X = (Math.cos(-rad_b1y1b0)*(b1.x - y1.x) - Math.sin(-rad_b1y1b0)*(b1.y - y1.y)) + y1.x;
+                y1b0_Y = (Math.sin(-rad_b1y1b0)*(b1.x - y1.x) + Math.cos(-rad_b1y1b0)*(b1.y - y1.y)) + y1.y;
+
+                b1 = new THREE.Vector3(y1b0_X, y1b0_Y, 0.0);
+            }
+            count = count +1;
+        }
+    }
+    else {
+	
+        while (count < max) {
     
-                    rad_b1a3a3 = Math.atan((b1.y - a3.y)/(b1.x - a3.x));
-                    rad_b0a3a3 = Math.atan((b0.y - a3.y)/(b0.x - a3.x));
+    	    if (ik[0]>0){
+                // y1b1->b0 start
+                // step.1 : calculate rad_b1y1b0, rotate vector y1b1 -> y1b0
 
-                    rad_allb1a3b0 = rad_allb1a3b0 + (+rad_b1a3a3 -rad_b0a3a3);
-                    rad_b1a3b0 = (+rad_b1a3a3 -rad_b0a3a3);
+                rad_b1y1y1 = Math.atan((b1.x - y1.x)/(b1.y - y1.y));
+                rad_b0y1y1 = Math.atan((b0.x - y1.x)/(b0.y - y1.y));
 
-                    // b1
-                    a3b0_X = (Math.cos(-rad_b1a3b0)*(b1.x - a3.x) - Math.sin(-rad_b1a3b0)*(b1.y - a3.y)) + a3.x;
-                    a3b0_Y = (Math.sin(-rad_b1a3b0)*(b1.x - a3.x) + Math.cos(-rad_b1a3b0)*(b1.y - a3.y)) + a3.y;
+                rad_allb1y1b0 = rad_allb1y1b0 + (-rad_b1y1y1 +rad_b0y1y1);
+                rad_b1y1b0 = (-rad_b1y1y1 +rad_b0y1y1);
 
-                    b1.x = a3b0_X;
-                    b1.y = a3b0_Y;
+                y1b0_X = (Math.cos(-rad_b1y1b0)*(b1.x - y1.x) - Math.sin(-rad_b1y1b0)*(b1.y - y1.y)) + y1.x;
+                y1b0_Y = (Math.sin(-rad_b1y1b0)*(b1.x - y1.x) + Math.cos(-rad_b1y1b0)*(b1.y - y1.y)) + y1.y;
+
+                b1 = new THREE.Vector3(y1b0_X, y1b0_Y, 0.0);
+
+                if (ik[0]>1){
+
+                    // a2b1->b0 start
+                    // step.2 : calculate rad_b1a2b0, rotate vector a2b1 -> a2b0
+
+                    rad_b1a2a2 = Math.atan((b1.y - a2.y)/(b1.x - a2.x));
+                    rad_b0a2a2 = Math.atan((b0.y - a2.y)/(b0.x - a2.x));
+            
+                    rad_allb1a2b0 = rad_allb1a2b0 + (+rad_b1a2a2 -rad_b0a2a2);
+                    rad_b1a2b0 = (+rad_b1a2a2 -rad_b0a2a2);
+
+                    //b1
+                    a2b0_X = (Math.cos(-rad_b1a2b0)*(b1.x - a2.x) - Math.sin(-rad_b1a2b0)*(b1.y - a2.y)) + a2.x;
+                    a2b0_Y = (Math.sin(-rad_b1a2b0)*(b1.x - a2.x) + Math.cos(-rad_b1a2b0)*(b1.y - a2.y)) + a2.y;
+
+                    b1.x = a2b0_X;
+                    b1.y = a2b0_Y;
+
+                    //y1
+                    a2b0_X = (Math.cos(-rad_b1a2b0)*(y1.x - a2.x) - Math.sin(-rad_b1a2b0)*(y1.y - a2.y)) + a2.x;
+                    a2b0_Y = (Math.sin(-rad_b1a2b0)*(y1.x - a2.x) + Math.cos(-rad_b1a2b0)*(y1.y - a2.y)) + a2.y;
+
+                    y1.x = a2b0_X;
+                    y1.y = a2b0_Y;
+
+                    if (ik[0]>2){
+                        // a3b1->b0 start
+                        // step.3 : calculate rad_b1a3b0, rotate vector a3b1 -> a3b0
+    
+                        rad_b1a3a3 = Math.atan((b1.y - a3.y)/(b1.x - a3.x));
+                        rad_b0a3a3 = Math.atan((b0.y - a3.y)/(b0.x - a3.x));
+
+                        rad_allb1a3b0 = rad_allb1a3b0 + (+rad_b1a3a3 -rad_b0a3a3);
+                        rad_b1a3b0 = (+rad_b1a3a3 -rad_b0a3a3);
+
+                        // b1
+                        a3b0_X = (Math.cos(-rad_b1a3b0)*(b1.x - a3.x) - Math.sin(-rad_b1a3b0)*(b1.y - a3.y)) + a3.x;
+                        a3b0_Y = (Math.sin(-rad_b1a3b0)*(b1.x - a3.x) + Math.cos(-rad_b1a3b0)*(b1.y - a3.y)) + a3.y;
+
+                        b1.x = a3b0_X;
+                        b1.y = a3b0_Y;
         
-                    // y1
-                    a3b0_X = (Math.cos(-rad_b1a3b0)*(y1.x - a3.x) - Math.sin(-rad_b1a3b0)*(y1.y - a3.y)) + a3.x;
-                    a3b0_Y = (Math.sin(-rad_b1a3b0)*(y1.x - a3.x) + Math.cos(-rad_b1a3b0)*(y1.y - a3.y)) + a3.y;
+                        // y1
+                        a3b0_X = (Math.cos(-rad_b1a3b0)*(y1.x - a3.x) - Math.sin(-rad_b1a3b0)*(y1.y - a3.y)) + a3.x;
+                        a3b0_Y = (Math.sin(-rad_b1a3b0)*(y1.x - a3.x) + Math.cos(-rad_b1a3b0)*(y1.y - a3.y)) + a3.y;
 
-                    y1.x = a3b0_X;
-                    y1.y = a3b0_Y;
+                        y1.x = a3b0_X;
+                        y1.y = a3b0_Y;
         
-                    // a2
-                    a3b0_X = (Math.cos(-rad_b1a3b0)*(a2.x - a3.x) - Math.sin(-rad_b1a3b0)*(a2.y - a3.y)) + a3.x;
-                    a3b0_Y = (Math.sin(-rad_b1a3b0)*(a2.x - a3.x) + Math.cos(-rad_b1a3b0)*(a2.y - a3.y)) + a3.y;
+                        // a2
+                        a3b0_X = (Math.cos(-rad_b1a3b0)*(a2.x - a3.x) - Math.sin(-rad_b1a3b0)*(a2.y - a3.y)) + a3.x;
+                        a3b0_Y = (Math.sin(-rad_b1a3b0)*(a2.x - a3.x) + Math.cos(-rad_b1a3b0)*(a2.y - a3.y)) + a3.y;
 
-                    a2.x = a3b0_X;
-                    a2.y = a3b0_Y;
+                        a2.x = a3b0_X;
+                        a2.y = a3b0_Y;
+                    }
                 }
             }
+            count = count +1;
         }
-        count = count +1;
     }
     //------------------------- IK
     
@@ -703,5 +789,18 @@ function setFormule(){
             links[name].visible = false;
         }
         links.bx2.visible = false;
+    }
+}
+
+function setIKType(){
+    if(ik_type == 0) ik_type = 1;
+    else ik_type = 0;
+    var i = hidePoints.length, name;
+    if(ik_type == 1 ){
+        b3.text('IK type 1');
+
+    }else{
+        b3.text('IK type 0');
+
     }
 }
